@@ -97,6 +97,20 @@ app.get('/api/users/lookup', (req, res) => {
   ok(res, safe);
 });
 
+app.get('/api/users/:id/photo', (req, res) => {
+  const user = db.getById('users', req.params.id);
+  if (!user) return fail(res, 404, 'User not found');
+  const photo = user.passportDataUrl || user.avatar || user.photo;
+  if (!photo) return fail(res, 404, 'No passport photo');
+  if (typeof photo !== 'string' || !photo.startsWith('data:')) return fail(res, 404, 'No passport photo');
+  const match = photo.match(/^data:([^;]+);base64,(.+)$/);
+  if (!match) return fail(res, 404, 'No passport photo');
+  const mime = match[1] || 'image/png';
+  res.set('Content-Type', mime);
+  res.set('Cache-Control', 'public, max-age=3600');
+  res.send(Buffer.from(match[2], 'base64'));
+});
+
 app.get('/api/users/:id', (req, res) => {
   const user = db.getById('users', req.params.id);
   if (!user) return fail(res, 404, 'User not found');
@@ -127,7 +141,7 @@ app.post('/api/users', (req, res) => {
 
 app.put('/api/users/:id', (req, res) => {
   const patch = { ...req.body };
-  delete patch.id; delete patch.createdAt;
+  delete patch.id; delete patch.createdAt; delete patch.password;
   const updated = db.update('users', req.params.id, patch);
   if (!updated) return fail(res, 404, 'User not found');
   const { password, ...safe } = updated;

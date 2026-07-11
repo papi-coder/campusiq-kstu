@@ -186,7 +186,16 @@ function launchApp(){
   document.getElementById('nav').classList.remove('hidden');
   document.getElementById('notice-ticker').classList.remove('hidden');
   document.getElementById('main').classList.remove('hidden');
-  document.getElementById('nav-av').textContent = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const navText = document.getElementById('nav-av-text');
+  const navImg = document.getElementById('nav-av-img');
+  if(currentUser.passportDataUrl){
+    navImg.src = currentUser.passportDataUrl;
+    navImg.style.display = 'block';
+    if(navText) navText.style.display = 'none';
+  } else {
+    navImg.style.display = 'none';
+    if(navText){ navText.style.display = 'flex'; navText.textContent = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+  }
   buildNav();
   showScreen('home');
   loadNoticeTicker();
@@ -919,11 +928,18 @@ function getBuildingName(lat, lng){
 function renderIDCard(){
   if(!currentUser) return;
   const initials = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  document.getElementById('id-avatar').textContent = initials;
+  const avatarEl = document.getElementById('id-avatar');
+  if(currentUser.passportDataUrl){
+    avatarEl.innerHTML = `<img src="${escAttr(currentUser.passportDataUrl)}" alt="Passport">`;
+  } else {
+    avatarEl.textContent = initials;
+  }
   document.getElementById('id-name').textContent = currentUser.name;
   document.getElementById('id-programme').textContent = currentUser.programme || currentUser.role;
   document.getElementById('id-studentid').textContent = currentUser.studentId || '—';
   document.getElementById('id-level').textContent = currentUser.level || '—';
+  const removeBtn = document.getElementById('passport-remove-btn');
+  if(removeBtn) removeBtn.style.display = currentUser.passportDataUrl ? 'inline-flex' : 'none';
   // Simple QR-like representation (text-based, no external lib needed)
   const profileUrl = `${location.origin}${location.pathname}?student=${currentUser.studentId || currentUser.id}`;
   document.getElementById('id-qr').innerHTML = `<div class="id-qr-text-static">${profileUrl}</div>`;
@@ -1133,6 +1149,68 @@ async function viewAsgnSubs(id, title){
 }
 
 // Init
+function fileToDataUrl(file, maxWidth=400){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        if(w > maxWidth){ h = Math.round(h * maxWidth / w); w = maxWidth; }
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.onerror = reject;
+      img.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+async function uploadPassport(event){
+  const file = event.target.files && event.target.files[0];
+  if(!file) return;
+  const msg = document.getElementById('passport-msg');
+  if(msg){ msg.style.color='#93c5fd'; msg.textContent='Uploading photo...'; }
+  try{
+    const dataUrl = await fileToDataUrl(file);
+    const updated = await CampusAPI.updateUser(currentUser.id, { passportDataUrl: dataUrl });
+    currentUser.passportDataUrl = updated.passportDataUrl || dataUrl;
+    renderIDCard();
+    const navText = document.getElementById('nav-av-text');
+    const navImg = document.getElementById('nav-av-img');
+    navImg.src = currentUser.passportDataUrl;
+    navImg.style.display = 'block';
+    if(navText) navText.style.display = 'none';
+    if(msg){ msg.style.color='#047857'; msg.textContent='Photo updated!'; }
+  }catch(err){
+    console.warn(err);
+    if(msg){ msg.style.color='#fca5a5'; msg.textContent='Upload failed: ' + err.message; }
+  }
+}
+async function removePassport(){
+  if(!confirm('Remove your passport photo?')) return;
+  try{
+    const updated = await CampusAPI.updateUser(currentUser.id, { passportDataUrl: null });
+    currentUser.passportDataUrl = null;
+    renderIDCard();
+    const navText = document.getElementById('nav-av-text');
+    const navImg = document.getElementById('nav-av-img');
+    navImg.style.display = 'none';
+    if(navText){ navText.style.display = 'flex'; navText.textContent = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+    const removeBtn = document.getElementById('passport-remove-btn');
+    if(removeBtn) removeBtn.style.display = 'none';
+    const msg = document.getElementById('passport-msg');
+    if(msg){ msg.style.color='#047857'; msg.textContent='Photo removed.'; }
+  }catch(err){
+    console.warn(err);
+    const msg = document.getElementById('passport-msg');
+    if(msg){ msg.style.color='#fca5a5'; msg.textContent='Failed to remove photo.'; }
+  }
+}
 (async function init(){
   const params = new URLSearchParams(location.search);
   const studentId = params.get('student');
@@ -1146,10 +1224,13 @@ async function viewAsgnSubs(id, title){
       if(!user) throw new Error('Student not found');
       const initials = user.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
       const card = document.getElementById('public-id-card');
+      const photoHtml = user.passportDataUrl
+        ? `<div style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#06b6d4);margin:0 auto 0.75rem;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:#fff;overflow:hidden"><img src="/api/users/${escAttr(user.id)}/photo" style="width:100%;height:100%;object-fit:cover;display:block" alt="Passport"></div>`
+        : `<div style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#06b6d4);margin:0 auto 0.75rem;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:#fff">${initials}</div>`;
       card.innerHTML = `
         <div style="background:linear-gradient(135deg,#1e3a5f,#0d1b2e);border:1px solid #3b82f6;border-radius:16px;padding:1.5rem;color:#fff;text-align:center;position:relative;overflow:hidden">
           <div style="position:absolute;right:-20px;top:10px;font-family:'Orbitron',sans-serif;font-size:4rem;color:rgba(59,130,246,0.08);transform:rotate(10deg)">KsTU</div>
-          <div style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#06b6d4);margin:0 auto 0.75rem;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:#fff">${initials}</div>
+          ${photoHtml}
           <div style="font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.4rem;color:#fff">${escHtml(user.name)}</div>
           <div style="font-size:0.75rem;color:#94a3b8;margin-bottom:0.875rem">${escHtml(user.programme || user.role)}</div>
           <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:#cbd5e1;margin-bottom:0.5rem">
