@@ -7,6 +7,7 @@
  <title>CampusIQ — KsTU</title>
 <link rel="manifest" href="../manifest.json">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png" sizes="180x180">
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -22,6 +23,9 @@ body{min-height:100vh}
 
 /* LOGIN */
 #login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;padding:1rem;background:radial-gradient(ellipse at 50% 40%,rgba(59,130,246,0.08),transparent 70%)}
+#public-profile-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;padding:1rem;background:radial-gradient(ellipse at 50% 40%,rgba(59,130,246,0.08),transparent 70%)}
+#public-id-card{color:#f8fafc;font-size:0.85rem;line-height:1.8;text-align:center;margin-top:0.5rem}
+#public-id-card strong{color:#60c8ff}
 .login-box{background:#0f172a;border:1px solid rgba(255,255,255,0.14);border-radius:22px;padding:2rem;width:100%;max-width:400px;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
 .logo-txt{font-family:'Orbitron',sans-serif;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);font-size:1.5rem;font-weight:900;background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-align:center}
 .logo-sub{text-align:center;color:#f8fafc;font-size:0.68rem;letter-spacing:0.18em;margin:3px 0 1.5rem}
@@ -186,6 +190,7 @@ window.doLogin = async function () {
   try {
     const user = await CampusAPI.login(email, pass, window.loginRole || 'student');
     window.currentUser = user;
+    if (window.hidePublicProfile) { window.hidePublicProfile(); }
     if (window.launchApp) { window.launchApp(); }
   } catch (err) {
     if (loginMessage) loginMessage.textContent = err.message || 'Login failed';
@@ -209,6 +214,15 @@ window.doLogin = async function () {
     <button class="btn-login" onclick="window.doLogin()">Sign In to CampusIQ</button>
     <div class="login-err" id="l-err"></div>
     <div class="notice">🔐 Accounts are created by the KsTU Admin. Contact your department if you need login details.</div>
+  </div>
+</div>
+
+<div id="public-profile-screen" class="hidden">
+  <div class="login-box">
+    <div class="logo-txt">⬡ CampusIQ</div>
+    <div class="logo-sub">STUDENT ID CARD</div>
+    <div id="public-id-card"></div>
+    <button class="btn-login" style="margin-top:1rem;background:#2563eb;" onclick="location.href='/'">← Back to Home</button>
   </div>
 </div>
 

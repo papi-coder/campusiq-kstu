@@ -88,6 +88,15 @@ app.get('/api/users', (req, res) => {
   ok(res, users.map(({ password, ...u }) => u)); // never return passwords in list
 });
 
+app.get('/api/users/lookup', (req, res) => {
+  const { studentId } = req.query;
+  if (!studentId) return fail(res, 400, 'studentId is required');
+  const user = db.findOne('users', u => String(u.studentId||'').includes(studentId));
+  if (!user) return fail(res, 404, 'User not found');
+  const { password, ...safe } = user;
+  ok(res, safe);
+});
+
 app.get('/api/users/:id', (req, res) => {
   const user = db.getById('users', req.params.id);
   if (!user) return fail(res, 404, 'User not found');

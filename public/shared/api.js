@@ -49,6 +49,7 @@ const CampusAPI = (() => {
     createUser: (user) => CampusAPI.post('/api/users', user),
     updateUser: (id, patch) => CampusAPI.put(`/api/users/${id}`, patch),
     deleteUser: (id) => CampusAPI.del(`/api/users/${id}`),
+    getUserByStudentId: (studentId) => CampusAPI.get(`/api/users/lookup?studentId=${encodeURIComponent(studentId)}`),
 
     listHostels: () => CampusAPI.get('/api/hostels'),
     createHostel: (h) => CampusAPI.post('/api/hostels', h),

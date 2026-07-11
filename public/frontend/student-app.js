@@ -198,6 +198,10 @@ function logout(){
   clearInterval(notifInterval); clearInterval(chatInterval);
   currentUser = null; location.reload();
 }
+function hidePublicProfile(){
+  const el = document.getElementById('public-profile-screen');
+  if(el){ el.classList.add('hidden'); el.style.display = 'none'; }
+}
 
 // NAV CONFIG
 const NAV = {
@@ -990,6 +994,12 @@ function escAttr(s){
     .replaceAll('\u003C','&lt;')
     .replaceAll('\u003E','&gt;');
 }
+function escHtml(s){
+  return String(s==null?'':s)
+    .replaceAll('&','&amp;')
+    .replaceAll('\u003C','&lt;')
+    .replaceAll('\u003E','&gt;');
+}
 async function startExam(id){
   try{
     const ex = await CampusAPI.getExam(id);
@@ -1117,3 +1127,36 @@ async function viewAsgnSubs(id, title){
 }
 
 // Init
+(async function init(){
+  const params = new URLSearchParams(location.search);
+  const studentId = params.get('student');
+  if(studentId){
+    if(currentUser){
+      showScreen('idcard');
+      return;
+    }
+    try{
+      const user = await CampusAPI.getUserByStudentId(studentId);
+      if(!user) throw new Error('Student not found');
+      const initials = user.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+      const card = document.getElementById('public-id-card');
+      card.innerHTML = `
+        <div style="background:linear-gradient(135deg,#1e3a5f,#0d1b2e);border:1px solid #3b82f6;border-radius:16px;padding:1.5rem;color:#fff;text-align:center;position:relative;overflow:hidden">
+          <div style="position:absolute;right:-20px;top:10px;font-family:'Orbitron',sans-serif;font-size:4rem;color:rgba(59,130,246,0.08);transform:rotate(10deg)">KsTU</div>
+          <div style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#06b6d4);margin:0 auto 0.75rem;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:#fff">${initials}</div>
+          <div style="font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.4rem;color:#fff">${escHtml(user.name)}</div>
+          <div style="font-size:0.75rem;color:#94a3b8;margin-bottom:0.875rem">${escHtml(user.programme || user.role)}</div>
+          <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:#cbd5e1;margin-bottom:0.5rem">
+            <div><div style="font-size:0.6rem;color:#64748b;text-transform:uppercase;letter-spacing:0.05em">Student ID</div><div style="font-weight:600;color:#f8fafc">${escHtml(user.studentId || '—')}</div></div>
+            <div><div style="font-size:0.6rem;color:#64748b;text-transform:uppercase;letter-spacing:0.05em">Level</div><div style="font-weight:600;color:#f8fafc">${escHtml(user.level || '—')}</div></div>
+          </div>
+          <div style="font-size:0.6rem;color:#64748b;margin-top:0.75rem">Powered by CampusIQ · Papi</div>
+        </div>
+      `;
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('public-profile-screen').classList.remove('hidden');
+    }catch(e){
+      console.warn('Public profile load failed:', e);
+    }
+  }
+})();
