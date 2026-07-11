@@ -190,7 +190,7 @@ window.doLogin = async function () {
   try {
     const user = await CampusAPI.login(email, pass, window.loginRole || 'student');
     window.currentUser = user;
-    if (window.hidePublicProfile) { window.hidePublicProfile(); }
+    if (window.showLogin) { window.showLogin(); }
     if (window.launchApp) { window.launchApp(); }
   } catch (err) {
     if (loginMessage) loginMessage.textContent = err.message || 'Login failed';
@@ -222,7 +222,8 @@ window.doLogin = async function () {
     <div class="logo-txt">⬡ CampusIQ</div>
     <div class="logo-sub">STUDENT ID CARD</div>
     <div id="public-id-card"></div>
-    <button class="btn-login" style="margin-top:1rem;background:#2563eb;" onclick="location.href='/'">← Back to Home</button>
+    <button class="btn-login" onclick="if(window.showLogin)window.showLogin()">🔑 Login to CampusIQ</button>
+    <button class="btn-login" style="margin-top:0.5rem;background:#1d4ed8;" onclick="location.href='/'">← Back to Home</button>
   </div>
 </div>
 

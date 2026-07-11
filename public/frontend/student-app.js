@@ -202,6 +202,12 @@ function hidePublicProfile(){
   const el = document.getElementById('public-profile-screen');
   if(el){ el.classList.add('hidden'); el.style.display = 'none'; }
 }
+function showLogin(){
+  const el = document.getElementById('login-screen');
+  if(el){ el.classList.remove('hidden'); el.style.display = ''; }
+  const pub = document.getElementById('public-profile-screen');
+  if(pub){ pub.classList.add('hidden'); pub.style.display = 'none'; }
+}
 
 // NAV CONFIG
 const NAV = {
