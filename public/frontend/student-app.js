@@ -5,11 +5,16 @@
 // =====================================================================
 let currentUser = null;
 let loginRole = 'student';
-let currentLang = 'en';
+let currentLang = (typeof localStorage !== 'undefined' && localStorage.getItem('campusiq_lang')) || 'en';
 let isDark = true;
 let locationInterval = null;
 let chatInterval = null;
 let examResultCache = {};
+
+// Replace with your actual Google Maps API key from https://console.cloud.google.com/apis/credentials
+const MAPS_API_KEY = 'YOUR_API_KEY';
+let mapsScriptLoading = false;
+let mapsLoadFailed = false;
 // Helper functions to reduce nested ternaries
 function renderExamAction(ex, submitted, isLec) {
   if (isLec) {
@@ -91,10 +96,7 @@ function sendLocationSnapshot(){
     const lng = p.coords.longitude;
     const building = getBuildingName(lat, lng);
     await CampusAPI.updateLocation({userId:currentUser.id,userName:currentUser.name,role:currentUser.role,lat,lng,building}).catch(()=>{});
-    if(googleMap){
-      if(mapMarkers[currentUser.id]) mapMarkers[currentUser.id].setPosition({lat,lng});
-      else updateMapMarkers();
-    }
+    if(mapProvider){ updateMapMarkers(); }
     document.getElementById('loc-my-building').textContent = building || 'On campus';
     loadLiveLocations();
   }, ()=>{}, {enableHighAccuracy:true});
@@ -120,6 +122,7 @@ let currentChatCourse = '';
 let activeSubmitAsgnId = null;
 let mapInitialized = false;
 let googleMap = null;
+let leafletMap = null;
 let mapMarkers = {};
 
 // =====================================================================
@@ -127,29 +130,158 @@ let mapMarkers = {};
 // =====================================================================
 const T = {
   en: {
-    timetable:'This Week\'s Timetable', upcoming:'Upcoming Events', classroom:'Virtual Classroom',
+    // Navigation
+    home:'Home', ai:'Papi AI', classroom:'Classroom', attendance:'Attendance',
+    results:'Results', register:'Register', fees:'Fees', hostels:'Hostels',
+    tt:'Timetable', locator:'Locator', idcard:'ID Card', chat:'Chat', calendar:'Calendar',
+    // Screen titles & section headings
+    timetable:'This Week', upcoming:'Upcoming Events', classroom_t:'Virtual Classroom',
     exams:'Exams', assignments:'Assignments', materials:'Course Materials',
-    attendance:'Attendance', results:'Results & GPA', tt:'Timetable',
-    home:'Home', ai:'Papi AI'
+    attendance_t:'Attendance', results_t:'Results & GPA', reg_t:'Course Registration',
+    fees_t:'Fees & Finance', hostels_t:'Hostels & Accommodation', locator_t:'Live Campus Locator',
+    idcard_t:'Student ID Card', chat_t:'Course Chat', calendar_t:'Academic Calendar',
+    gpa_overview:'GPA Overview', grade_breakdown:'Grade Breakdown', history:'History',
+    take_attendance:'Take Attendance', payment_history:'Payment History', submit_receipt:'Submit Payment Receipt',
+    my_location:'My Location Controls', busy_areas:'Busy Areas', available_courses:'Available Courses',
+    my_courses:'My Registered Courses',
+    // Status messages
+    loading:'Loading…', error:'Error', success:'Success', warning:'Warning', info:'Info',
+    nodata:'No data', empty:'No items found', online:'Online', offline:'Offline',
+    // Common buttons
+    submit:'Submit', cancel:'Cancel', delete:'Delete', edit:'Edit', save:'Save', close:'Close',
+    add:'Add', create:'Create', update:'Update', open:'Open', search:'Search', filter:'Filter',
+    export:'Export', import:'Import', print:'Print', refresh:'Refresh', confirm:'Confirm',
+    reject:'Reject', view:'View', send:'Send', login:'Login', logout:'Logout', signin:'Sign In',
+    signout:'Sign Out',
+    // Form labels
+    name:'Name', email:'Email', password:'Password', course:'Course', programme:'Programme',
+    level:'Level', department:'Department', room:'Room', building:'Building', fee:'Fee',
+    payment:'Payment', receipt:'Receipt', title:'Title', date:'Date', time:'Time', location:'Location',
+    description:'Description', required:'Required', optional:'Optional',
+    studentid:'Student ID', staffid:'Staff ID', amount:'Amount', method:'Method', reference:'Reference',
+    note:'Note', message:'Type a message…', student_names:'Kwame Owusu, Abena Mensah…',
+    ai_ph:'Ask Papi anything about your KsTU courses, exams, career…',
+    // Misc vocabulary
+    all:'All', none:'None', yes:'Yes', no:'No', please:'Please', today:'Today', yesterday:'Yesterday',
+    tomorrow:'Tomorrow', thisweek:'This Week', thismonth:'This Month', thisyear:'This Year',
+    student:'Student', lecturer:'Lecturer', hod:'HOD', admin:'Admin',
+    confirmed:'Confirmed', pending:'Pending', approved:'Approved', rejected_s:'Rejected',
+    submitted:'Submitted', graded:'Graded', published:'Published', active:'Active', inactive:'Inactive',
+    male:'Male', female:'Female', mixed:'Mixed', available:'Available', full:'Full',
+    present:'Present', late:'Late', absent:'Absent', oncampus:'On campus', offcampus:'Off campus',
+    search_ph:'Search…',
+    papi_tutor:'Papi — Your KsTU AI Tutor',
+    papi_sub:'Ask anything about your courses, exams, career, or campus life',
+    signin_btn:'Sign In to CampusIQ',
+    accounts_note:'Accounts are created by the KsTU Admin. Contact your department if you need login details.',
+    install_app:'Install CampusIQ App',
+    login_to:'Login to CampusIQ',
+    back_home:'Back to Home',
+    student_label:'Student', lecturer_label:'Lecturer', hod_label:'HOD',
+    upload_q:'📎 Upload', attach_chip:'Attached:', clear_file:'✕',
+    id_card_title:'Your Student ID Card', passport_upload:'Upload Passport Photo',
+    papi_ask_ph:'Ask Papi anything…'
   },
   tw: {
-    timetable:'Nnawotwe Yi Amammui', upcoming:'Ahorow a Ɛreba', classroom:'Ɔkwankyerɛ Mu Asɔrekɔbea',
-    exams:'Nhwɛsoɔ', assignments:'Adwuma', materials:'Kɔrsɔ Nhyehyɛe',
-    attendance:'Wɔ Hɔ', results:'Abusuadeɛ', tt:'Bɔɔding',
-    home:'Fie', ai:'Papi AI'
+    // Navigation
+    home:'Fie', ai:'Papi AI', classroom:'Ɔkwankyerɛ Mu Asɔrekɔbea', attendance:'Wo-hɔ',
+    results:'Nsonsonoe', register:'Kyerɛw Kɔɔs', fees:'Ka-sɛm', hostels:'Mpa-aban',
+    tt:'Nnawotwe-ahoroɔ', locator:'Beae Nhwɛsoɔ', idcard:'Sukuuni Kaad', chat:'Kɔnta', calendar:'Kalɛnda',
+    // Screen titles & section headings
+    timetable:'Nnawotwe Yi', upcoming:'Ahorow a Ɛreba', classroom_t:'Ɔkwankyerɛ Mu Asɔrekɔbea',
+    exams:'Nhwɛsoɔ', assignments:'Adwuma', materials:'Kɔɔs Nhyehyɛe',
+    attendance_t:'Wo-hɔ', results_t:'Nsonsonoe ne GPA', reg_t:'Kɔɔs Tɔn',
+    fees_t:'Ka-sɛm ne Sika', hostels_t:'Mpa-aban ne Tenabea', locator_t:'Ɔkwan So Nhwɛsoɔ',
+    idcard_t:'Sukuuni Kaad', chat_t:'Kɔɔs Kɔnta', calendar_t:'Sukuu Kalɛnda',
+    gpa_overview:'GPA Nhwɛsoɔ', grade_breakdown:'Nipa Nkyekyɛmu', history:'Abakɔsɛm',
+    take_attendance:'Fa Wo-hɔ', payment_history:'Sika Tua Ho Nsɛm', submit_receipt:'Fa Sika Tua Nkrataa',
+    my_location:'Me Beae So', busy_areas:'Beaɛ a Ɛyɛ Den', available_courses:'Kɔɔs a Wɔama',
+    my_courses:'Mekyerɛw Kɔɔs no',
+    // Status messages
+    loading:'Rɛre…', error:'Mfomso', success:'Nkonim', warning:'Kɔkɔbɔ', info:'Nsɛm',
+    nodata:'Nkrataa biara nni hɔ', empty:'Biribiara nni hɔ', online:'Ɛyɛ adwuma', offline:'Ennyɛ adwuma',
+    // Common buttons
+    submit:'Fa ma', cancel:'Twi', delete:'Pe', edit:'Sesae', save:'Kora', close:'To mu',
+    add:'Ka ho', create:'Yɛ', update:'Nsosɔ', open:'Bue', search:'Hwehwɛ', filter:'Hwɛ',
+    export:'Yi', import:'Kɔ', print:'Pɛn', refresh:'Sesa', confirm:'Gye',
+    reject:'Pɛ', view:'Hwɛ', send:'Soma', login:'Kɔ mu', logout:'Pue', signin:'Kɔ mu',
+    signout:'Pue',
+    // Form labels
+    name:'Din', email:'E-mail', password:'Paswɔɔde', course:'Kɔɔs', programme:'Program',
+    level:'Sɛpɛ', department:'Nnwuma', room:'Romu', building:'Adan', fee:'Ka',
+    payment:'Ka-sɛm', receipt:'Nsɛm', title:'Ahosɛm', date:'Da', time:'Berɛ', location:'Beae',
+    description:'Nsɛm', required:'Ɛho hia', optional:'Ɛnyɛ ohia',
+    studentid:'Sukuuni-ID', staffid:'Adwuma-ID', amount:'Sika', method:'Akwan', reference:'Nnansa',
+    note:'Nsɛm', message:'Kɔnta nsɛm…', student_names:'Kwame Owusu, Abena Mensah…',
+    ai_ph:'Bisa Papi biribiara wɔ wo KsTU kɔɔs, nhwɛsoɔ, adwuma…',
+    // Misc vocabulary
+    all:'Nyinaa', none:'Biara nni hɔ', yes:'Yiw', no:'Daabi', please:'Mepa wo kyɛw', today:'Nnɛ', yesterday:'Nnansa',
+    tomorrow:'Ɔkyena', thisweek:'Nnawotwe yi', thismonth:'Bosome yi', thisyear:'Afe yi',
+    student:'Sukuuni', lecturer:'Kyerɛkyerɛni', hod:'Hwɛsofoɔ', admin:'Admin',
+    confirmed:'Gyina so', pending:'Retɔ', approved:'Gyee so', rejected_s:'Gpee',
+    submitted:'Fa ma', graded:'Hwehwɛ', published:'Publish', active:'Yɛ adwuma', inactive:'Nni adwuma',
+    male:'Barima', female:'Ɔbaa', mixed:'Mara-mara', available:'Wɔ hɔ', full:'Ahyɛ ma',
+    present:'Ɔwɔ hɔ', late:'Atrɛ', absent:'Nni hɔ', oncampus:'Ɔwɔ kɔlege no so', offcampus:'Nni kɔlege no so',
+    search_ph:'Hwehwɛ…',
+    papi_tutor:'Papi — Wo KsTU AI Kyerɛkyerɛni',
+    papi_sub:'Bisa biribiara wɔ wo kɔɔs, nhwɛsoɔ, adwuma, anaa sukuu asetra ho',
+    signin_btn:'Kɔ mu CampusIQ',
+    accounts_note:'KsTU Admin na ɛyɛ akɔntaabu. Sɛ wopɛ nsɛm kɔ wo department',
+    install_app:'Fa CampusIQ App',
+    login_to:'Kɔ mu CampusIQ',
+    back_home:'San kɔ Fie',
+    student_label:'Sukuuni', lecturer_label:'Kyerɛkyerɛni', hod_label:'Hwɛsofoɔ',
+    upload_q:'📎 Fa', attach_chip:'Ɛka ho:', clear_file:'✕',
+    id_card_title:'Wo Sukuuni Kaad', passport_upload:'Fa Wo Mfonini',
+    papi_ask_ph:'Bisa Papi biribiara…'
   }
 };
 function t(key){ return (T[currentLang]||T.en)[key] || key; }
 function toggleLang(){
   currentLang = currentLang === 'en' ? 'tw' : 'en';
+  try { localStorage.setItem('campusiq_lang', currentLang); } catch(e){}
   document.getElementById('lang-btn').textContent = currentLang === 'en' ? '🇬🇭 TW' : '🇬🇧 EN';
   applyTranslations();
 }
+// Placeholder map: existing input ids -> translation key
+const PLACEHOLDER_KEYS = {
+  'l-email':'email', 'l-pass':'password',
+  'pay-amount':'amount', 'pay-ref':'reference', 'pay-note':'note',
+  'att-course':'course', 'att-students':'student_names',
+  'chat-input':'message', 'ai-input':'ai_ph',
+  'mat-course':'course', 'mat-title':'title', 'mat-week':'optional', 'mat-url':'reference'
+};
 function applyTranslations(){
-  Object.keys(T.en).forEach(k => {
-    const el = document.getElementById('t-'+k);
-    if(el) el.textContent = t(k);
+  // Rebuild nav so tab labels reflect the new language
+  buildNav();
+  // Text elements carrying a translation key (id="t-<key>")
+  document.querySelectorAll('[id^="t-"]').forEach(el => {
+    const key = el.id.slice(2);
+    if(T.en[key] !== undefined) el.textContent = t(key);
   });
+  // Generic data-i18n attributes added throughout the markup
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if(T.en[key] !== undefined) el.textContent = t(key);
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.getAttribute('data-i18n-ph');
+    if(T.en[key] !== undefined) el.setAttribute('placeholder', t(key));
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.getAttribute('data-i18n-title');
+    if(T.en[key] !== undefined) el.setAttribute('title', t(key));
+  });
+  // Placeholder attributes for known inputs
+  Object.keys(PLACEHOLDER_KEYS).forEach(id => {
+    const el = document.getElementById(id);
+    if(el){
+      const key = PLACEHOLDER_KEYS[id];
+      if(T.en[key] !== undefined) el.placeholder = t(key);
+    }
+  });
+  const lb = document.getElementById('lang-btn');
+  if(lb) lb.textContent = currentLang === 'en' ? '🇬🇭 TW' : '🇬🇧 EN';
 }
 
 // =====================================================================
@@ -197,6 +329,7 @@ function launchApp(){
     if(navText){ navText.style.display = 'flex'; navText.textContent = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
   }
   buildNav();
+  applyTranslations();
   showScreen('home');
   loadNoticeTicker();
   loadNotifications();
@@ -221,36 +354,37 @@ function showLogin(){
 // NAV CONFIG
 const NAV = {
   student: [
-    {id:'home',icon:'🏠',label:'Home'},{id:'ai',icon:'🧠',label:'Papi AI'},
-    {id:'classroom',icon:'🧑‍💻',label:'Classroom'},{id:'attendance',icon:'✅',label:'Attendance'},
-    {id:'results',icon:'🏆',label:'Results'},{id:'registration',icon:'📝',label:'Register'},
-    {id:'fees',icon:'💰',label:'Fees'},{id:'hostels',icon:'🏠',label:'Hostels'},
-    {id:'timetable',icon:'📅',label:'Timetable'},{id:'locator',icon:'📍',label:'Locator'},
-    {id:'idcard',icon:'🪪',label:'ID Card'},{id:'chat',icon:'💬',label:'Chat'},
-    {id:'calendar',icon:'📆',label:'Calendar'},
+    {id:'home',icon:'🏠',tkey:'home'},{id:'ai',icon:'🧠',tkey:'ai'},
+    {id:'classroom',icon:'🧑‍💻',tkey:'classroom'},{id:'attendance',icon:'✅',tkey:'attendance'},
+    {id:'results',icon:'🏆',tkey:'results'},{id:'registration',icon:'📝',tkey:'register'},
+    {id:'fees',icon:'💰',tkey:'fees'},{id:'hostels',icon:'🏠',tkey:'hostels'},
+    {id:'timetable',icon:'📅',tkey:'tt'},{id:'locator',icon:'📍',tkey:'locator'},
+    {id:'idcard',icon:'🪪',tkey:'idcard'},{id:'chat',icon:'💬',tkey:'chat'},
+    {id:'calendar',icon:'📆',tkey:'calendar'},
   ],
   lecturer: [
-    {id:'home',icon:'🏠',label:'Home'},{id:'ai',icon:'🧠',label:'Papi AI'},
-    {id:'classroom',icon:'🧑‍💻',label:'Classroom'},{id:'attendance',icon:'✅',label:'Attendance'},
-    {id:'results',icon:'🏆',label:'Results'},{id:'timetable',icon:'📅',label:'Timetable'},
-    {id:'locator',icon:'📍',label:'Locator'},{id:'chat',icon:'💬',label:'Chat'},
-    {id:'calendar',icon:'📆',label:'Calendar'},
+    {id:'home',icon:'🏠',tkey:'home'},{id:'ai',icon:'🧠',tkey:'ai'},
+    {id:'classroom',icon:'🧑‍💻',tkey:'classroom'},{id:'attendance',icon:'✅',tkey:'attendance'},
+    {id:'results',icon:'🏆',tkey:'results'},{id:'timetable',icon:'📅',tkey:'tt'},
+    {id:'locator',icon:'📍',tkey:'locator'},{id:'chat',icon:'💬',tkey:'chat'},
+    {id:'calendar',icon:'📆',tkey:'calendar'},
   ],
   hod: [
-    {id:'home',icon:'🏠',label:'Home'},{id:'ai',icon:'🧠',label:'Papi AI'},
-    {id:'classroom',icon:'🧑‍💻',label:'Classroom'},{id:'results',icon:'🏆',label:'Results'},
-    {id:'timetable',icon:'📅',label:'Timetable'},{id:'locator',icon:'📍',label:'Locator'},
-    {id:'chat',icon:'💬',label:'Chat'},{id:'calendar',icon:'📆',label:'Calendar'},
+    {id:'home',icon:'🏠',tkey:'home'},{id:'ai',icon:'🧠',tkey:'ai'},
+    {id:'classroom',icon:'🧑‍💻',tkey:'classroom'},{id:'results',icon:'🏆',tkey:'results'},
+    {id:'timetable',icon:'📅',tkey:'tt'},{id:'locator',icon:'📍',tkey:'locator'},
+    {id:'chat',icon:'💬',tkey:'chat'},{id:'calendar',icon:'📆',tkey:'calendar'},
   ],
 };
 function buildNav(){
   const tabs = document.getElementById('ntabs');
+  if(!tabs || !currentUser) return;
   tabs.innerHTML = '';
-  (NAV[currentUser.role]||[]).forEach(t => {
+  (NAV[currentUser.role]||[]).forEach(item => {
     const b = document.createElement('button');
     b.className = 'ntab';
-    b.textContent = t.icon + ' ' + t.label;
-    b.onclick = () => showScreen(t.id);
+    b.textContent = item.icon + ' ' + t(item.tkey);
+    b.onclick = () => showScreen(item.id);
     tabs.appendChild(b);
   });
 }
@@ -336,57 +470,189 @@ Your abilities:
 Be warm, encouraging, concise (under 200 words unless the question needs more), and always relevant to KsTU students in Ghana. Use relatable Ghanaian examples where helpful.`;
 
 let papiHistory = [];
+let papiAttachments = []; // [{ name, type, size, dataUrl, text }]
 
 async function askPapi(prefill){
   const input = document.getElementById('ai-input');
-  const msg = prefill || input.value.trim();
-  if(!msg) return;
-  input.value = '';
+  const msg = prefill || (input ? input.value.trim() : '');
+  const files = papiAttachments.slice();
+  if(!msg && !files.length) return;
+  if(input) input.value = '';
   const sendBtn = document.getElementById('ai-send-btn');
-  sendBtn.disabled = true; sendBtn.textContent = '…';
-  addAIMsg(msg, 'user');
-  const thinking = addAIMsg('Papi is thinking…', 'ai thinking');
-  papiHistory.push({ role:'user', content:msg });
-  if(papiHistory.length > 20) papiHistory = papiHistory.slice(-20);
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:1024,
-        system:PAPI_SYSTEM,
-        messages:papiHistory
-      })
-    });
-    const data = await res.json();
-    const reply = data.content?.[0]?.text;
-    if(reply){
-      thinking.textContent = reply;
-      thinking.classList.remove('thinking');
-      papiHistory.push({ role:'assistant', content:reply });
-    } else {
-      thinking.textContent = getPapiOffline(msg);
-      thinking.classList.remove('thinking');
-    }
-  } catch(err){ console.warn(err);
-    thinking.textContent = getPapiOffline(msg);
-    thinking.classList.remove('thinking');
+  if(sendBtn){ sendBtn.disabled = true; sendBtn.textContent = '…'; }
+  // Display the user's question together with any attached files
+  let displayMsg = msg;
+  if(files.length) displayMsg += (displayMsg ? '\n' : '') + '[Attachments: ' + files.map(f => f.name).join(', ') + ']';
+  addAIMsgWithFiles(displayMsg, 'user', files);
+  // Build the prompt text sent to the model (includes attachment context)
+  let promptText = msg;
+  if(files.length){
+    const names = files.map(f => f.name + (f.type ? ' (' + f.type + ')' : '')).join(', ');
+    const texts = files.map(f => (f.text ? '\n--- ' + f.name + ' ---\n' + f.text : '')).join('');
+    promptText += (promptText ? '\n' : '') + 'The user attached these files: ' + names + '.' + texts;
   }
-  sendBtn.disabled = false; sendBtn.textContent = 'SEND';
-  document.getElementById('ai-msgs').scrollTop = 9999;
+  const thinking = addAIMsg('Papi is thinking…', 'ai thinking');
+  papiHistory.push({ role:'user', content: promptText });
+  if(papiHistory.length > 20) papiHistory = papiHistory.slice(-20);
+  let reply = null;
+  try {
+    const fileContent = files.map(f => f.text || '').filter(Boolean).join('\n\n');
+    const data = await CampusAPI.askAI({ messages: papiHistory, system: PAPI_SYSTEM, locale: currentLang, fileContent });
+    if(data && data.reply) reply = data.reply;
+  } catch(err){ console.warn('Papi backend unavailable, using offline replies:', err); }
+  if(!reply) reply = getPapiOffline(msg);
+  thinking.textContent = reply;
+  thinking.classList.remove('thinking');
+  if(reply) papiHistory.push({ role:'assistant', content: reply });
+  // Embed a live map when the question is about a location
+  const mapQuery = detectLocationQuery(msg || (files.length ? files[0].name : ''));
+  if(mapQuery) thinking.appendChild(renderMapEmbed(mapQuery));
+  // Reset attachment state
+  papiAttachments = [];
+  renderAiAttachments();
+  if(sendBtn){ sendBtn.disabled = false; sendBtn.textContent = 'SEND'; }
+  const msgs = document.getElementById('ai-msgs');
+  if(msgs) msgs.scrollTop = 9999;
+}
+
+function addAiFiles(event){
+  const files = Array.from((event && event.target && event.target.files) || []);
+  files.forEach(f => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      readFileAsText(f).then(text => {
+        papiAttachments.push({ name:f.name, type:f.type, size:f.size, dataUrl:reader.result, text });
+        renderAiAttachments();
+      }).catch(() => {
+        papiAttachments.push({ name:f.name, type:f.type, size:f.size, dataUrl:reader.result, text:'' });
+        renderAiAttachments();
+      });
+    };
+    reader.onerror = () => console.warn('Could not read file', f.name);
+    reader.readAsDataURL(f);
+  });
+  if(event && event.target) event.target.value = '';
+}
+function renderAiAttachments(){
+  const wrap = document.getElementById('ai-attachments');
+  if(!wrap) return;
+  if(!papiAttachments.length){ wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+  wrap.style.display = 'flex';
+  wrap.innerHTML = papiAttachments.map((a,i) => {
+    const isImg = a.type && a.type.startsWith('image/');
+    const thumb = isImg ? `<img src="${a.dataUrl}" style="width:30px;height:30px;object-fit:cover;border-radius:6px" alt="">` : '📄';
+    return `<div style="display:inline-flex;align-items:center;gap:0.35rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:0.25rem 0.4rem;font-size:0.72rem;color:#dbeafe">
+      ${thumb}<span>${escHtml(a.name)}</span><button onclick="removeAiFile(${i})" style="background:none;border:none;color:#fca5a5;cursor:pointer;font-size:0.8rem">✕</button>
+    </div>`;
+  }).join('');
+}
+function removeAiFile(i){
+  papiAttachments.splice(i,1);
+  renderAiAttachments();
+}
+function clearPapiChat(){
+  papiHistory = [];
+  papiAttachments = [];
+  renderAiAttachments();
+  const msgs = document.getElementById('ai-msgs');
+  if(msgs) msgs.innerHTML = '<div class="ai-msg-ai">👋 Chat cleared! I\'m <strong>Papi</strong>, your KsTU AI tutor. Ask me anything about your courses, exams, career, or campus life at KsTU.</div>';
 }
 
 function addAIMsg(text, cls){
+  return addAIMsgWithFiles(text, cls, null);
+}
+function addAIMsgWithFiles(text, cls, files){
   const msgs = document.getElementById('ai-msgs');
+  if(!msgs) return null;
   const d = document.createElement('div');
-  d.classList.add(cls.includes('user')?'ai-msg-user':'ai-msg-ai');
+  d.classList.add(cls.includes('user') ? 'ai-msg-user' : 'ai-msg-ai');
   if(cls.includes('thinking')) d.classList.add('ai-msg-thinking');
   d.textContent = text;
+  if(files && files.length){
+    const wrap = document.createElement('div');
+    wrap.className = 'ai-att-list';
+    wrap.style.marginTop = '0.4rem';
+    files.forEach(f => {
+      const isImg = f.type && f.type.startsWith('image/');
+      const link = document.createElement('a');
+      link.href = f.dataUrl; link.target = '_blank'; link.rel = 'noopener';
+      link.className = 'ai-att';
+      link.style.display = 'inline-block';
+      link.style.margin = '0.2rem 0.3rem 0 0';
+      link.style.padding = '0.25rem 0.5rem';
+      link.style.borderRadius = '8px';
+      link.style.fontSize = '0.72rem';
+      link.style.background = 'rgba(255,255,255,0.08)';
+      link.style.color = '#dbeafe';
+      link.textContent = (isImg ? '🖼 ' : '📄 ') + f.name;
+      wrap.appendChild(link);
+    });
+    d.appendChild(wrap);
+  }
   msgs.appendChild(d); msgs.scrollTop = 9999;
   return d;
 }
 
+// File content helpers (best-effort text extraction for the AI)
+async function readFileAsText(file){
+  const name = (file.name || '').toLowerCase();
+  const type = file.type || '';
+  try {
+    if(type.startsWith('text/') || /\.(txt|md|csv|json|log)$/.test(name) || type === 'application/json'){
+      return (await file.text()).slice(0, 12000);
+    }
+    if(type === 'application/pdf' || name.endsWith('.pdf')){
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      const txt = extractPdfText(bytes);
+      return txt ? txt.slice(0, 12000) : '[PDF uploaded — text could not be auto-extracted. Please describe your question in text so Papi can help.]';
+    }
+    if(type.startsWith('image/')){
+      return '[Image uploaded: ' + file.name + ']. Describe what is in the image and Papi will help.';
+    }
+  } catch(e){ /* ignore */ }
+  return ((await file.text().catch(() => '')) || '').slice(0, 12000);
+}
+function extractPdfText(bytes){
+  try {
+    let raw = '';
+    const chunk = 8192;
+    for(let i=0;i<bytes.length;i+=chunk){ raw += String.fromCharCode.apply(null, bytes.subarray(i, i+chunk)); }
+    const chunks = raw.match(/\[([^\]]*)\]|\(([^()\\]*)\)/g) || [];
+    let out = chunks.map(c => c.startsWith('[') ? c.slice(1,-1).replace(/\(|\)/g,'') : c.slice(1,-1)).join(' ');
+    return out.replace(/\\([nrt])/g,' ').replace(/\s+/g,' ').trim();
+  } catch(e){ return ''; }
+}
+
+// Detect location-related questions and return a Google Maps query, or null
+function detectLocationQuery(text){
+  if(!text) return null;
+  const t = text.toLowerCase();
+  const locWords = ['where is','where are','directions','direction','locate',' map','show map','find','how do i get','route','address','location','near me','campus','library','hostel','cafeteria','lecture','administration','admin block','sports','field','engineering block','applied','building'];
+  if(!locWords.some(w => t.includes(w))) return null;
+  let place = 'Kumasi Technical University';
+  const m = t.match(/(?:to|at|of|for|near|in|on|is|are)\s+([a-z0-9 .'-]{2,40})/);
+  if(m){
+    let cand = m[1].trim().replace(/\s+(please|pls|on campus|for me|located).*$/,'');
+    if(cand.length > 2) place = cand;
+  }
+  if(t.includes('campus')) place = 'Kumasi Technical University';
+  if(t.includes('library')) place = 'KsTU Library, Kumasi';
+  if(t.includes('hostel')) place = 'KsTU Hostels, Kumasi';
+  if(t.includes('cafeteria')) place = 'KsTU Cafeteria, Kumasi';
+  return place;
+}
+function renderMapEmbed(query){
+  const wrap = document.createElement('div');
+  wrap.className = 'ai-map-wrap';
+  const iframe = document.createElement('iframe');
+  iframe.className = 'ai-map';
+  iframe.src = 'https://www.google.com/maps?q=' + encodeURIComponent(query) + '&output=embed';
+  iframe.loading = 'lazy';
+  iframe.setAttribute('referrerpolicy','no-referrer-when-downgrade');
+  iframe.setAttribute('allowfullscreen','');
+  wrap.appendChild(iframe);
+  return wrap;
+}
 function getPapiOffline(msg){
   const m = msg.toLowerCase();
   if(m.includes('big o')||m.includes('algorithm')) return "Big O notation describes algorithm efficiency:\n• O(1) — constant (best)\n• O(log n) — logarithmic (binary search)\n• O(n) — linear (looping)\n• O(n²) — quadratic (nested loops)\n\nFor CPT 301, focus on identifying the dominant term. Would you like practice problems?";
@@ -437,11 +703,17 @@ document.addEventListener('click', e => {
 // =====================================================================
 // NOTICE TICKER
 // =====================================================================
+// Notices are global announcements — they are shown to EVERY user (students,
+// lecturers, HODs and admin) regardless of role. No role-based filtering.
 async function loadNoticeTicker(){
   try {
-    const notices = await CampusAPI.listNotices();
-    if(!notices.length) return;
     const ticker = document.getElementById('notice-ticker-inner');
+    if(!ticker) return;
+    const notices = await CampusAPI.listNotices();
+    if(!notices.length){
+      ticker.textContent = '📢 ' + t('nodata');
+      return;
+    }
     const txt = notices.map(n=>`📢 ${n.title}: ${n.body.slice(0,60)}`).join('   ·   ');
     ticker.textContent = txt + '   ·   ' + txt;
   } catch(err){console.warn(err);}
@@ -573,14 +845,12 @@ async function delExam(id){
   loadClassroom();
 }
 async function viewSubs(id, title){
-  document.getElementById('subs-title').textContent = 'Submissions — '+title;
+  document.getElementById('subs-title').textContent = 'Exam Submissions — '+title;
   const subs = await CampusAPI.examSubmissions(id);
   const rows = subs.map(s => {
-    const linkHtml = s.link ? `<a href="${escAttr(s.link)}" target="_blank" class="u-inline-35">Link</a>` : '—';
-    const scoreHtml = s.score != null ? s.score : '—';
-    return `<tr><td>${escAttr(s.studentName)}</td><td class="u-inline-105">${escAttr((s.response || '').slice(0,60))}</td><td>${linkHtml}</td><td>${scoreHtml}</td><td><button class="btn-sm bs-blue" onclick="gradeAsgn('${s.id}')">Grade</button></td></tr>`;
+    return `<tr><td>${escAttr(s.studentName)}</td><td>${escAttr((s.answers||[]).map((a,i)=>'Q'+(i+1)+': '+(a>=0?'Option '+String.fromCharCode(65+a):'—')).join('; '))}</td><td><strong>${s.score ?? '—'}</strong> / ${s.totalPoints ?? '—'}</td><td><span class="badge ${getResultBadgeClass(s.percentage ?? 0)}">${s.percentage ?? 0}%</span></td><td>${new Date(s.submittedAt).toLocaleString()}</td></tr>`;
   }).join('');
-  const tableHtml = `<table><thead><tr><th>Student</th><th>Response</th><th>Link</th><th>Score</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>`;
+  const tableHtml = `<table><thead><tr><th>Student</th><th>Answers</th><th>Score</th><th>Grade</th><th>Submitted</th></tr></thead><tbody>${rows}</tbody></table>`;
   document.getElementById('subs-content').innerHTML = subs.length ? tableHtml : '<div class="u-inline-94">No submissions yet.</div>';
   document.getElementById('subs-modal').classList.add('open');
 }
@@ -617,6 +887,8 @@ async function loadAttendanceScreen(){
   document.getElementById('att-student-view').style.display = isLec ? 'none' : 'block';
   document.getElementById('att-lecturer-view').style.display = isLec ? 'block' : 'none';
   if(!isLec){
+    document.getElementById('att-self-date').value = new Date().toISOString().slice(0,10);
+    document.getElementById('att-self-name-input').value = currentUser.name;
     try {
       const [summary, rows] = await Promise.all([CampusAPI.attendanceSummary(currentUser.id), CampusAPI.listAttendance({studentId:currentUser.id})]);
       document.getElementById('att-stats').innerHTML = `
@@ -625,23 +897,109 @@ async function loadAttendanceScreen(){
         <div class="gc gold text-center"><div class="att-stat-value text-gold">${summary.late}</div><div class="att-stat-label">Late</div></div>
         <div class="gc red text-center"><div class="att-stat-value text-red">${summary.absent}</div><div class="att-stat-label">Absent</div></div>`;
       document.getElementById('att-history').innerHTML = rows.length ? rows.slice(0,30).map(r=>`<tr><td>${r.date}</td><td>${r.courseCode}</td><td><span class="badge ${attendanceBadgeClass(r.status)}">${r.status}</span></td></tr>`).join('') : '<tr><td colspan="3" class="table-empty-center">No attendance records yet.</td></tr>';
+      await loadSelfCourseOptions();
     } catch(err){console.warn(err);}
   } else {
     document.getElementById('att-date').value = new Date().toISOString().slice(0,10);
   }
 }
+async function loadSelfCourseOptions(){
+  try {
+    const regs = await CampusAPI.getRegistrations({studentId:currentUser.id});
+    const sel = document.getElementById('att-self-course');
+    const codes = [...new Set(regs.map(r=>r.courseCode))];
+    sel.innerHTML = '<option value="">Choose a course…</option>' + codes.map(c=>`<option>${escAttr(c)}</option>`).join('');
+  } catch(err){console.warn(err);}
+}
+async function loadSelfRoster(){
+  const course = document.getElementById('att-self-course').value;
+  const date = document.getElementById('att-self-date').value;
+  const container = document.getElementById('att-self-roster');
+  const btn = document.getElementById('att-self-btn');
+  if(!course || !date){
+    container.innerHTML = '';
+    btn.classList.add('hidden');
+    return;
+  }
+  try {
+    const roster = await CampusAPI.getAttendanceRoster(course, date);
+    const me = roster.find(r => r.studentId === currentUser.id);
+    const nameInput = document.getElementById('att-self-name-input');
+    if(me){
+      nameInput.value = me.studentName || currentUser.name;
+      if(me.status === 'present' || me.status === 'late' || me.status === 'absent'){
+        container.innerHTML = `<div class="text-base text-green">You are already marked as <strong>${me.status}</strong> on ${date} for ${course}.</div>`;
+        btn.classList.add('hidden');
+        nameInput.disabled = true;
+        return;
+      }
+    } else {
+      nameInput.value = currentUser.name;
+    }
+    nameInput.disabled = false;
+    container.innerHTML = `<div class="text-base text-t2">You are not yet marked for <strong>${course}</strong> on <strong>${date}</strong>.</div>`;
+    btn.classList.remove('hidden');
+  } catch(err){
+    container.innerHTML = '<div class="text-072 text-red">Failed to load roster.</div>';
+    btn.classList.add('hidden');
+  }
+}
+async function markSelfAttendance(){
+  const course = document.getElementById('att-self-course').value;
+  const date = document.getElementById('att-self-date').value;
+  const studentName = document.getElementById('att-self-name-input').value.trim();
+  const msg = document.getElementById('att-self-msg');
+  if(!course || !date){msg.style.color='#fca5a5';msg.textContent='Select course and date.';return;}
+  if(!studentName){msg.style.color='#fca5a5';msg.textContent='Please enter your full name.';return;}
+  try {
+    await CampusAPI.markSelfAttendance({courseCode:course,date,studentId:currentUser.id,studentName});
+    msg.style.color='#34d399';msg.textContent='✅ Attendance marked as present.';
+    document.getElementById('att-self-btn').classList.add('hidden');
+    document.getElementById('att-self-name-input').disabled = true;
+    document.getElementById('att-self-roster').innerHTML = `<div class="text-base text-green">You are marked as <strong>present</strong> on ${date} for ${course}.</div>`;
+  } catch(err){ console.warn(err);msg.style.color='#fca5a5';msg.textContent=err.message;}
+}
+async function loadAutoRoster(){
+  const course = document.getElementById('att-course').value.trim();
+  const date = document.getElementById('att-date').value;
+  const msg = document.getElementById('att-msg');
+  if(!course || !date){msg.style.color='#fca5a5';msg.textContent='Enter course code and date first.';return;}
+  try {
+    const roster = await CampusAPI.getAttendanceRoster(course, date);
+    const c = document.getElementById('att-form-rows');
+    if(!roster.length){
+      c.innerHTML = '<div class="text-072 text-t2">No registered students found for this course.</div>';
+      document.getElementById('att-submit-btn').style.display='none';
+      document.getElementById('att-submit-btn').dataset.names = '[]';
+      document.getElementById('att-selected-names').textContent = 'None';
+      return;
+    }
+    const names = roster.map(r => r.studentName);
+    c.innerHTML = '<div class="text-072 text-t2 mb-4">Mark attendance from roster:</div>' + roster.map((r,i)=>`<div class="list-item-flex-between"><span class="text-sm">${escAttr(r.studentName)}</span><select class="fi2 att-roster-select" data-index="${i}" style="padding:0.25rem 0.4rem;font-size:0.75rem;width:auto"><option value="present">Present</option><option value="late">Late</option><option value="absent">Absent</option></select></div>`).join('');
+    document.getElementById('att-submit-btn').style.display='block';
+    document.getElementById('att-submit-btn').dataset.names = JSON.stringify(names);
+    document.getElementById('att-selected-names').textContent = names.join(', ');
+    document.querySelectorAll('.att-roster-select').forEach(sel => {
+      const idx = Number(sel.dataset.index);
+      const status = roster[idx].status;
+      if(['present','late','absent'].includes(status)) sel.value = status;
+    });
+    msg.textContent = '';
+  } catch(err){ console.warn(err);msg.style.color='#fca5a5';msg.textContent=err.message;}
+}
 function buildAttForm(){
   const names = document.getElementById('att-students').value.split(',').map(s=>s.trim()).filter(Boolean);
   const c = document.getElementById('att-form-rows');
-  if(!names.length){ c.innerHTML=''; document.getElementById('att-submit-btn').style.display='none'; return; }
-  c.innerHTML = '<div class="text-072 text-t2 mb-4">Mark each student:</div>' + names.map((n,i)=>`<div class="list-item-flex-between"><span class="text-sm">${n}</span><select id="ats${i}" class="fi2" style="padding:0.25rem 0.4rem;font-size:0.75rem;width:auto"><option value="present">Present</option><option value="late">Late</option><option value="absent">Absent</option></select></div>`).join('');
+  if(!names.length){ c.innerHTML=''; document.getElementById('att-submit-btn').style.display='none'; document.getElementById('att-selected-names').textContent='None'; return; }
+  c.innerHTML = '<div class="text-072 text-t2 mb-4">Mark each student:</div>' + names.map((n,i)=>`<div class="list-item-flex-between"><span class="text-sm">${n}</span><select class="fi2 att-roster-select" data-index="${i}" style="padding:0.25rem 0.4rem;font-size:0.75rem;width:auto"><option value="present">Present</option><option value="late">Late</option><option value="absent">Absent</option></select></div>`).join('');
   document.getElementById('att-submit-btn').style.display='block';
   document.getElementById('att-submit-btn').dataset.names = JSON.stringify(names);
+  document.getElementById('att-selected-names').textContent = names.join(', ');
 }
 async function submitAttendance(){
-  const course=document.getElementById('att-course').value.trim(), date=document.getElementById('att-date').value, names=JSON.parse(document.getElementById('att-submit-btn').dataset.names||'[]'), msg=document.getElementById('att-msg');
+  const course=document.getElementById('att-course').value.trim(), date=document.getElementById('att-date').value, names=JSON.parse(document.getElementById('att-submit-btn').dataset.names||'[]'), msg=document.getElementById('att-msg'), selects = document.querySelectorAll('#att-form-rows .att-roster-select');
   if(!course||!date||!names.length){msg.style.color='#fca5a5';msg.textContent='Course, date, and students required.';return;}
-  const records = names.map((n,i)=>({studentId:n.toLowerCase().replace(/\s+/g,'-'),studentName:n,status:document.getElementById('ats'+i).value}));
+  const records = names.map((n,i)=>({studentId:n.toLowerCase().replace(/\s+/g,'-'),studentName:n,status: selects[i] ? selects[i].value : 'present'}));
    try { await CampusAPI.submitAttendanceSession({courseCode:course,date,lecturerId:currentUser.id,records}); msg.style.color='#34d399'; msg.textContent='✅ Attendance saved for '+records.length+' students.'; } catch(err){ console.warn(err);msg.style.color='#fca5a5';msg.textContent=err.message;}
 }
 function generateAttQR(){
@@ -798,36 +1156,117 @@ async function applyHostel(hostelId, hostelName){
 }
 
 // =====================================================================
-// CAMPUS LOCATOR — Google Maps
+// CAMPUS LOCATOR — Google Maps (if key set) or Leaflet/OpenStreetMap
 // =====================================================================
 let sharingLocation = false;
+let mapProvider = null; // 'google' | 'leaflet'
+const KSTU_CENTER = { lat: 6.6885, lng: -1.6244 };
 
 async function loadLocator(){
   await loadLiveLocations();
   loadBusyAreas();
-  if(!mapInitialized) initMap();
+  if(!mapInitialized){
+    if(typeof google !== 'undefined' && MAPS_API_KEY && MAPS_API_KEY !== 'YOUR_API_KEY'){
+      initMap();
+    } else if(typeof L !== 'undefined'){
+      initMap();
+    } else if(!mapsScriptLoading && !mapsLoadFailed){
+      await loadMapLibrary();
+    } else if(mapsLoadFailed){
+      showMapFallback();
+    }
+  }
+}
+
+function loadMapLibrary(){
+  // Prefer Google Maps when a key is configured; otherwise use free Leaflet/OSM.
+  if(MAPS_API_KEY && MAPS_API_KEY !== 'YOUR_API_KEY'){
+    return loadGoogleMaps();
+  }
+  return loadLeaflet();
+}
+
+function loadGoogleMaps(){
+  return new Promise((resolve, reject) => {
+    mapsScriptLoading = true;
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=__initMapCb`;
+    script.async = true;
+    script.defer = true;
+    script.onerror = () => {
+      mapsLoadFailed = true;
+      mapsScriptLoading = false;
+      loadLeaflet().then(resolve).catch(reject);
+    };
+    window.__initMapCb = () => {
+      mapsScriptLoading = false;
+      initMap();
+      resolve();
+    };
+    document.head.appendChild(script);
+  });
+}
+
+function loadLeaflet(){
+  return new Promise((resolve, reject) => {
+    if(typeof L !== 'undefined'){ initMap(); resolve(); return; }
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    css.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+    css.crossOrigin = '';
+    document.head.appendChild(css);
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+    script.crossOrigin = '';
+    script.onload = () => { initMap(); resolve(); };
+    script.onerror = () => { mapsLoadFailed = true; showMapFallback(); reject(new Error('Failed to load map')); };
+    document.head.appendChild(script);
+  });
+}
+
+function showMapFallback(){
+  const mapContainer = document.getElementById('map-container');
+  if(!mapContainer || mapContainer.querySelector('.map-fallback')) return;
+  mapContainer.innerHTML = `<div class="map-fallback">
+    <div class="map-fallback-icon">🗺</div>
+    <div class="map-fallback-title">Campus Locator</div>
+    <div class="map-fallback-desc">Live map is unavailable. Showing current students on campus below.</div>
+    <div class="map-fallback-coords">📍 KsTU — Kumasi Technical University</div>
+    <div id="map-fallback-students" class="map-fallback-students"></div>
+  </div>`;
+  renderMapFallback();
+}
+
+function clearMapMarkers(){
+  Object.values(mapMarkers).forEach(m => {
+    try { if(m.provider === 'google') m.obj.setMap(null); else if(m.obj && m.obj.remove) m.obj.remove(); } catch(e){}
+  });
+  mapMarkers = {};
 }
 
 function initMap(){
   mapInitialized = true;
+  mapsScriptLoading = false;
+  mapsLoadFailed = false;
   const mapContainer = document.getElementById('map-container');
-  if(typeof google === 'undefined'){
-    mapContainer.innerHTML = `<div class="map-fallback">
-      <div class="map-fallback-icon">🗺</div>
-      <div class="map-fallback-title">Google Maps requires an API key</div>
-      <div class="map-fallback-desc">To enable the live campus map with Google Maps, add your Google Maps API key to the &lt;head&gt; of this file:<br><code style="background:rgba(255,255,255,0.1);padding:0.2rem 0.4rem;border-radius:4px;font-size:0.72rem">&lt;script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"&gt;&lt;/script&gt;</code></div>
-      <div class="map-fallback-coords">KsTU coordinates: 6.6885°N, 1.6244°W</div>
-      <div id="map-fallback-students" class="map-fallback-students"></div>
-    </div>`;
-    renderMapFallback();
+  if(MAPS_API_KEY && MAPS_API_KEY !== 'YOUR_API_KEY' && typeof google !== 'undefined'){
+    googleMap = new google.maps.Map(mapContainer, {
+      center: KSTU_CENTER, zoom: 17, mapTypeId: 'roadmap',
+      styles:[{elementType:'geometry',stylers:[{color:'#1d2c4d'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#0e1626'}]},{elementType:'labels.text.fill',stylers:[{color:'#8ec3b9'}]}]
+    });
+    mapProvider = 'google';
+  } else if(typeof L !== 'undefined'){
+    leafletMap = L.map(mapContainer, { zoomControl: true }).setView([KSTU_CENTER.lat, KSTU_CENTER.lng], 17);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19, attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(leafletMap);
+    mapProvider = 'leaflet';
+  } else {
+    showMapFallback();
     return;
   }
-  googleMap = new google.maps.Map(mapContainer, {
-    center:{lat:6.6885,lng:-1.6244},
-    zoom:17,
-    mapTypeId:'roadmap',
-    styles:[{elementType:'geometry',stylers:[{color:'#1d2c4d'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#0e1626'}]},{elementType:'labels.text.fill',stylers:[{color:'#8ec3b9'}]}]
-  });
   updateMapMarkers();
 }
 
@@ -839,20 +1278,27 @@ async function renderMapFallback(){
 }
 
 async function updateMapMarkers(){
-  if(!googleMap) return;
+  if(!mapProvider) return;
   const locs = await CampusAPI.getLiveLocations().catch(()=>[]);
-  // Clear old markers
-  Object.values(mapMarkers).forEach(m => m.setMap(null));
-  mapMarkers = {};
+  clearMapMarkers();
   locs.forEach(l => {
     if(l.lat && l.lng){
-      const marker = new google.maps.Marker({
-        position:{lat:l.lat,lng:l.lng},
-        map:googleMap,
-        title:l.userName + ' (' + (l.building||'On campus') + ')',
-        icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:l.userId===currentUser?.id?'#3b82f6':'#10b981',fillOpacity:1,strokeWeight:2,strokeColor:'#ffffff'}
-      });
-      mapMarkers[l.userId] = marker;
+      const isMe = l.userId === currentUser?.id;
+      const color = isMe ? '#3b82f6' : '#10b981';
+      if(mapProvider === 'google'){
+        const marker = new google.maps.Marker({
+          position:{lat:l.lat,lng:l.lng},
+          map:googleMap,
+          title:l.userName + ' (' + (l.building||'On campus') + ')',
+          icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:color,fillOpacity:1,strokeWeight:2,strokeColor:'#ffffff'}
+        });
+        mapMarkers[l.userId] = { provider:'google', obj: marker };
+      } else {
+        const marker = L.marker([l.lat,l.lng]).addTo(leafletMap)
+          .bindPopup('<strong>'+l.userName+'</strong><br>'+(l.building||'On campus'));
+        marker._papiColor = color;
+        mapMarkers[l.userId] = { provider:'leaflet', obj: marker };
+      }
     }
   });
 }
@@ -888,7 +1334,7 @@ async function toggleLocationSharing(){
     await CampusAPI.stopSharing(currentUser.id).catch(()=>{});
     btn.textContent = 'Enable Sharing'; btn.className = 'btn-g';
     status.textContent = 'Currently not sharing';
-    if(mapMarkers[currentUser.id]){ mapMarkers[currentUser.id].setMap(null); delete mapMarkers[currentUser.id]; }
+    if(mapMarkers[currentUser.id]){ delete mapMarkers[currentUser.id]; clearMapMarkers(); updateMapMarkers(); }
     loadLiveLocations();
     return;
   }
@@ -1116,7 +1562,7 @@ async function submitAssignment(){
 function openSubmitAsgn(id, title, desc){
   activeSubmitAsgnId = id;
   document.getElementById('sa-title').textContent = 'Submit: ' + title;
-  document.getElementById('sa-desc').innerHTML = desc ? escAttr(desc) : '<em>No description provided.</em>';
+  document.getElementById('sa-desc').innerHTML = desc ? escAttr(desc) : '<em>No additional description provided. Contact your lecturer if you have questions about this assignment.</em>';
   document.getElementById('sa-response').value='';
   document.getElementById('sa-link').value='';
   document.getElementById('sa-msg').textContent='';
@@ -1147,6 +1593,9 @@ async function viewAsgnSubs(id, title){
     document.getElementById('subs-modal').classList.add('open');
   }catch(err){ console.warn(err); document.getElementById('subs-content').textContent='Error loading submissions.'; }
 }
+
+// Apply stored language + translate static markup on load
+try { applyTranslations(); } catch(e){ console.warn('i18n init', e); }
 
 // Init
 function fileToDataUrl(file, maxWidth=400){

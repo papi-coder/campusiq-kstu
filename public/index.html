@@ -26,32 +26,34 @@ a{text-decoration:none}
 .card-sub{font-size:.68rem;color:#94a3b8}
 .papi{font-size:.62rem;color:#64748b;letter-spacing:.2em;margin-top:1.5rem}
 .install-btn{margin-top:1rem;padding:.4rem 1rem;border:1px solid rgba(96,165,250,0.7);background:#1d4ed8;color:#ffffff;border-radius:20px;font-size:.72rem;font-family:inherit;cursor:pointer;display:none}
+.lang-toggle{position:fixed;top:.8rem;right:.8rem;z-index:10;background:none;border:1px solid rgba(255,255,255,0.18);color:#94a3b8;border-radius:20px;padding:.25rem .6rem;font-size:.7rem;cursor:pointer;font-family:inherit}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <button class="lang-toggle" id="landing-lang" onclick="toggleLandingLang()">🇬🇭 TW</button>
   <div class="logo">⬡ CampusIQ</div>
-  <div class="sub">Kumasi Technical University · Powered by Papi</div>
+  <div class="sub" data-i18n="kstu">Kumasi Technical University · Powered by Papi</div>
   <div class="cards">
     <a href="frontend/index.html" class="card c1">
       <div class="card-icon">🎓</div>
-      <div class="card-title">Student Portal</div>
-      <div class="card-sub">Students · Lecturers · HODs</div>
+      <div class="card-title" data-i18n="student_portal">Student Portal</div>
+      <div class="card-sub" data-i18n="students_sub">Students · Lecturers · HODs</div>
     </a>
     <a href="backend/admin.html" class="card c2">
       <div class="card-icon">🛡</div>
-      <div class="card-title">Admin Backend</div>
-      <div class="card-sub">Accounts · Fees · Results · Notices</div>
+      <div class="card-title" data-i18n="admin_backend">Admin Backend</div>
+      <div class="card-sub" data-i18n="admin_sub">Accounts · Fees · Results · Notices</div>
     </a>
     <a href="frontend/careers.html" class="card c3">
       <div class="card-icon">💼</div>
-      <div class="card-title">Career Hub</div>
-      <div class="card-sub">Jobs · Skills · CV · Alumni · Salary Map</div>
+      <div class="card-title" data-i18n="career_hub">Career Hub</div>
+      <div class="card-sub" data-i18n="career_sub">Jobs · Skills · CV · Alumni · Salary Map</div>
     </a>
     <button class="card c4" onclick="installPWA()">
       <div class="card-icon">📱</div>
-      <div class="card-title">Install App</div>
-      <div class="card-sub">Add to home screen · Works offline</div>
+      <div class="card-title" data-i18n="install_app">Install App</div>
+      <div class="card-sub" data-i18n="install_sub">Add to home screen · Works offline</div>
     </button>
   </div>
   <button class="install-btn" id="install-btn" onclick="installPWA()">📱 Install CampusIQ App</button>
@@ -68,6 +70,29 @@ function installPWA(){
   else { alert('To install: tap the browser menu → "Add to Home Screen"'); }
 }
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW registration failed:',e));
+
+// ---- Twi language (shared with the other portals via localStorage) ----
+const LANDING_T = {
+  en:{ kstu:'Kumasi Technical University · Powered by Papi', student_portal:'Student Portal', students_sub:'Students · Lecturers · HODs', admin_backend:'Admin Backend', admin_sub:'Accounts · Fees · Results · Notices', career_hub:'Career Hub', career_sub:'Jobs · Skills · CV · Alumni · Salary Map', install_app:'Install App', install_sub:'Add to home screen · Works offline' },
+  tw:{ kstu:'Kumasi Technical University · Papi Na Ɛyɛ', student_portal:'Sukuuni Portal', students_sub:'Sukuuni · Kyerɛkyerɛni · Hwɛsofoɔ', admin_backend:'Admin Backend', admin_sub:'Akawnt · Ka-sɛm · Nsonsonoe · Nkɔm', career_hub:'Adwuma Hub', career_sub:'Adwuma · Nimdeɛ · CV · Alumni · Ka Map', install_app:'Fa App', install_sub:'Fa abɔ mu · Ɛyɛ adwuma' }
+};
+function getLandingLang(){ try { return localStorage.getItem('campusiq_lang') || 'en'; } catch(e){ return 'en'; } }
+function applyLandingLang(){
+  const lang = getLandingLang();
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if(LANDING_T[lang] && LANDING_T[lang][k] !== undefined) el.textContent = LANDING_T[lang][k];
+  });
+  const btn = document.getElementById('landing-lang');
+  if(btn) btn.textContent = lang === 'en' ? '🇬🇭 TW' : '🇬🇧 EN';
+  document.documentElement.lang = lang;
+}
+function toggleLandingLang(){
+  const next = getLandingLang() === 'en' ? 'tw' : 'en';
+  try { localStorage.setItem('campusiq_lang', next); } catch(e){}
+  applyLandingLang();
+}
+applyLandingLang();
 </script>
 </body>
 </html>

@@ -28,5 +28,25 @@
     "occupied": 213,
     "feePerSemester": 650,
     "status": "available"
+  },
+  {
+    "id": "f61bff55-f680-4d63-a800-f9cd4a1e8e36",
+    "createdAt": "2026-07-11T20:58:15.778Z",
+    "name": "Test Hall",
+    "type": "Mixed",
+    "capacity": 100,
+    "occupied": 50,
+    "feePerSemester": 500,
+    "status": "available"
+  },
+  {
+    "id": "c3489c9b-45e6-4858-9e02-00c9bdc68151",
+    "createdAt": "2026-07-11T21:04:00.870Z",
+    "name": "Test Hall",
+    "type": "Mixed",
+    "capacity": 100,
+    "occupied": 50,
+    "feePerSemester": 500,
+    "status": "available"
   }
 ]

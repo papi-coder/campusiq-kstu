@@ -1,0 +1,82 @@
+[
+  {
+    "id": "73061024-e544-4441-9223-969e060cae0f",
+    "createdAt": "2026-07-11T19:53:39.063Z",
+    "studentId": "df300db6-90a8-40d8-95b6-f6d29d334449",
+    "studentName": "papi",
+    "courseCode": "CPT 301",
+    "courseName": "Data Structures & Algorithms",
+    "semester": "2025/2026 Sem 2",
+    "status": "registered"
+  },
+  {
+    "id": "612dca88-4bfe-48a5-9f8f-edf2cefd6afc",
+    "createdAt": "2026-07-11T19:53:41.868Z",
+    "studentId": "df300db6-90a8-40d8-95b6-f6d29d334449",
+    "studentName": "papi",
+    "courseCode": "CPT 305",
+    "courseName": "AI & Machine Learning",
+    "semester": "2025/2026 Sem 2",
+    "status": "registered"
+  },
+  {
+    "id": "c9b91cdb-a9d1-4678-8303-d5439739636f",
+    "createdAt": "2026-07-11T19:53:43.983Z",
+    "studentId": "df300db6-90a8-40d8-95b6-f6d29d334449",
+    "studentName": "papi",
+    "courseCode": "MAT 201",
+    "courseName": "Calculus II",
+    "semester": "2025/2026 Sem 2",
+    "status": "registered"
+  },
+  {
+    "id": "4896b592-9bc6-4603-ba3f-4f178ca6834e",
+    "createdAt": "2026-07-11T19:53:45.543Z",
+    "studentId": "df300db6-90a8-40d8-95b6-f6d29d334449",
+    "studentName": "papi",
+    "courseCode": "DSC 201",
+    "courseName": "Statistics for Data Science",
+    "semester": "2025/2026 Sem 2",
+    "status": "registered"
+  },
+  {
+    "id": "d0f55785-b959-47f2-9a63-39a6df69fc3d",
+    "createdAt": "2026-07-11T19:53:47.237Z",
+    "studentId": "df300db6-90a8-40d8-95b6-f6d29d334449",
+    "studentName": "papi",
+    "courseCode": "CPT 201",
+    "courseName": "Object-Oriented Programming",
+    "semester": "2025/2026 Sem 2",
+    "status": "registered"
+  },
+  {
+    "id": "a4615ef3-7046-4b2b-8820-c9794dfbc04f",
+    "createdAt": "2026-07-11T19:53:48.629Z",
+    "studentId": "df300db6-90a8-40d8-95b6-f6d29d334449",
+    "studentName": "papi",
+    "courseCode": "EEE 301",
+    "courseName": "Power Systems Engineering",
+    "semester": "2025/2026 Sem 2",
+    "status": "registered"
+  },
+  {
+    "id": "4628251d-3fb5-411d-82d1-8d944e64d180",
+    "createdAt": "2026-07-11T19:53:50.207Z",
+    "studentId": "df300db6-90a8-40d8-95b6-f6d29d334449",
+    "studentName": "papi",
+    "courseCode": "FIN 201",
+    "courseName": "Commercial Banking & Finance",
+    "semester": "2025/2026 Sem 2",
+    "status": "registered"
+  },
+  {
+    "id": "abba967f-82d2-48d6-bbe9-40ca88b6e715",
+    "createdAt": "2026-07-11T19:53:51.819Z",
+    "studentId": "df300db6-90a8-40d8-95b6-f6d29d334449",
+    "studentName": "papi",
+    "courseCode": "MKT 301",
+    "courseName": "Digital Marketing",
+    "semester": "2025/2026 Sem 2",
+    "status": "registered"
+  }
+]

@@ -97,6 +97,8 @@ const CampusAPI = (() => {
     },
     submitAttendanceSession: (session) => CampusAPI.post('/api/attendance/session', session),
     attendanceSummary: (studentId) => CampusAPI.get(`/api/attendance/summary/${studentId}`),
+    getAttendanceRoster: (courseCode, date) => CampusAPI.get(`/api/attendance/roster?courseCode=${encodeURIComponent(courseCode)}&date=${encodeURIComponent(date)}`),
+    markSelfAttendance: (data) => CampusAPI.post('/api/attendance/self', data),
   };
 })();
 
@@ -111,6 +113,7 @@ Object.assign(CampusAPI, {
   getPayments: (studentId) => CampusAPI.get(`/api/fees/payments/${studentId}`),
   submitReceipt: (studentId, p) => CampusAPI.post(`/api/fees/payments/${studentId}/receipt`, p),
   confirmPayment: (id) => CampusAPI.put(`/api/fees/payments/${id}/confirm`, {}),
+  updatePayment: (id, patch) => CampusAPI.put(`/api/fees/payments/${id}`, patch),
 
   // Course registration
   getRegistrations: (params = {}) => { const q = new URLSearchParams(params).toString(); return CampusAPI.get('/api/registrations' + (q ? '?' + q : '')); },
@@ -154,6 +157,9 @@ Object.assign(CampusAPI, {
   // Course chat
   getChatMessages: (courseCode) => CampusAPI.get(`/api/chat/${courseCode}`),
   sendChatMessage: (courseCode, m) => CampusAPI.post(`/api/chat/${courseCode}`, m),
+
+  // Papi AI tutor
+  askAI: (payload) => CampusAPI.post('/api/ai', payload),
 });
 
 // Portfolio, alumni, referrals
@@ -163,7 +169,9 @@ Object.assign(CampusAPI, {
   deletePortfolioItem: (id) => CampusAPI.del(`/api/portfolio/${id}`),
   getAlumniQuestions: (userId) => CampusAPI.get(`/api/alumni-questions/${userId}`),
   askAlumniQuestion: (q) => CampusAPI.post('/api/alumni-questions', q),
-  getReferrals: (userId) => CampusAPI.get(`/api/referrals/${userId}`),
-  createReferral: (r) => CampusAPI.post('/api/referrals', r),
-  useReferral: (id) => CampusAPI.put(`/api/referrals/${id}/use`, {}),
+    getReferrals: (userId) => CampusAPI.get(`/api/referrals/${userId}`),
+    useReferral: (id) => CampusAPI.put(`/api/referrals/${id}/use`, {}),
+
+    // Papi AI
+    askAI: (payload) => CampusAPI.post('/api/ai/ask', payload),
 });

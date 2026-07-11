@@ -41,6 +41,14 @@ button{cursor:pointer;font-family:inherit;border:none;border-radius:20px;font-we
 .dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:blink 2s infinite}
 @keyframes blink{50%{opacity:0.3}}
 .logout{padding:0.25rem 0.7rem;border:1px solid #991b1b;background:#7f1d1d;color:#fff5f5;border-radius:20px;font-size:0.7rem}
+.admin-bell{position:relative;padding:0.25rem 0.6rem}
+.admin-notif-badge{position:absolute;top:-4px;right:-4px;background:#dc2626;color:#fff;font-size:0.55rem;min-width:14px;height:14px;border-radius:50%;display:none;align-items:center;justify-content:center;font-weight:700;padding:0 2px}
+.admin-notif-badge.show{display:flex}
+.admin-notif-panel{position:fixed;top:50px;right:0;width:340px;max-height:70vh;background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:0 0 16px 16px;z-index:200;overflow-y:auto;display:none;padding:1rem}
+.admin-notif-panel.open{display:block}
+.admin-notif-item{padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:0.8rem}
+.admin-notif-item .t{font-weight:600;margin-bottom:2px}
+.admin-notif-item .m{color:#94a3b8;font-size:0.74rem}
 .layout{display:flex;min-height:calc(100vh - 50px)}
 .sidebar{width:190px;background:rgba(13,17,23,0.7);border-right:1px solid rgba(255,255,255,0.06);padding:0.75rem 0;flex-shrink:0}
 .sb-item{display:flex;align-items:center;gap:0.55rem;padding:0.5rem 0.875rem;cursor:pointer;font-size:0.78rem;color:var(--t2);border-left:2px solid transparent}
@@ -92,6 +100,50 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 .msg{font-size:0.78rem;min-height:1rem;margin-bottom:0.5rem;text-align:center}
 .cred-box{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:0.875rem;font-size:0.8rem;line-height:1.9}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+
+/* Mobile hamburger + overlay (hidden on desktop) */
+.hamburger{display:none;background:none;border:none;color:var(--t1);font-size:1.25rem;line-height:1;cursor:pointer;padding:0.3rem 0.5rem;border-radius:8px}
+.hamburger:hover{background:rgba(255,255,255,0.06)}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:90}
+body.sidebar-open{overflow:hidden}
+
+@media (max-width:768px){
+  .hamburger{display:block}
+  .sidebar{
+    position:fixed;top:0;left:0;bottom:0;
+    width:240px;max-width:80vw;height:100vh;
+    transform:translateX(-100%);
+    transition:transform .25s ease;
+    z-index:100;overflow-y:auto;
+  }
+  .layout.nav-open .sidebar{transform:translateX(0)}
+  .layout.nav-open .sidebar-overlay{display:block}
+  .content{padding:0.875rem;overflow-x:hidden}
+  .card{padding:0.75rem}
+  .page-title{font-size:0.9rem;margin-bottom:0.75rem}
+  table{font-size:0.72rem}
+  th{padding:0.4rem 0.35rem}
+  td{padding:0.4rem 0.35rem}
+  .card.overflow-x-auto{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .grid2,.grid4{grid-template-columns:1fr}
+  .topbar{gap:0.5rem;padding:0 0.6rem}
+  .modal-bg{padding:0.5rem}
+  .modal{max-width:100%;max-height:94vh;border-radius:12px;padding:1.1rem}
+  .modal h2{font-size:0.85rem}
+  .stat .v{font-size:1.3rem}
+  .login-box{padding:1.5rem}
+}
+
+@media (max-width:480px){
+  .topbar{height:auto;flex-direction:column;align-items:flex-start;gap:0.4rem;padding:0.5rem 0.6rem}
+  .tb-r{margin-left:0;flex-wrap:wrap}
+  .content{padding:0.7rem}
+  .card{padding:0.6rem}
+  .page-title{font-size:0.82rem}
+  .row-between{flex-direction:column;align-items:stretch;gap:0.6rem}
+  .row-between .btn-fill{width:100%}
+  .btn-fill{padding:.55rem 0.9rem;font-size:.78rem}
+}
 </style>
 <link rel="manifest" href="../manifest.json">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png" sizes="180x180">
@@ -100,59 +152,70 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
 <div id="login-screen">
   <div class="login-box">
-    <h1>🛡 Admin Portal</h1>
-    <div class="sub">CAMPUSIQ · KSTU BACKEND</div>
-    <input id="a-user" aria-label="Username" placeholder="Username">
-    <input id="a-pass" type="password" aria-label="Password" placeholder="Password" onkeydown="if(event.key==='Enter')adminLogin()">
-    <button class="btn-primary" onclick="adminLogin()">Sign In</button>
+    <h1 data-i18n="login_title">🛡 Admin Portal</h1>
+    <div class="sub" data-i18n="login_sub">CAMPUSIQ · KSTU BACKEND</div>
+    <input id="a-user" aria-label="Username" placeholder="Username" data-i18n-ph="username">
+    <input id="a-pass" type="password" aria-label="Password" placeholder="Password" onkeydown="if(event.key==='Enter')adminLogin()" data-i18n-ph="password">
+    <button class="btn-primary" onclick="adminLogin()" data-i18n="signin">Sign In</button>
     <div class="err" id="a-err"></div>
-    <div class="hint">Default: <strong>admin</strong> / <strong>admin123</strong></div>
+    <div class="hint" data-i18n="default_hint">Default: <strong>admin</strong> / <strong>admin123</strong></div>
   </div>
 </div>
 
 <div class="topbar hidden" id="topbar">
+  <button type="button" class="hamburger" id="hamburger" aria-label="Toggle menu" onclick="toggleSidebar()">☰</button>
   <span>🛡</span><span class="tb-logo">CampusIQ Admin</span>
-  <div class="tb-r"><span class="dot"></span> API Connected <button class="logout" onclick="logout()">Sign Out</button></div>
+  <div class="tb-r">
+    <span class="dot"></span> API Connected
+    <button class="logout" id="admin-lang-btn" onclick="toggleAdminLang()">🇬🇭 TW</button>
+    <button class="logout admin-bell" id="admin-bell" onclick="toggleAdminNotif()">🔔<span id="admin-notif-badge" class="admin-notif-badge"></span></button>
+    <button class="logout" onclick="logout()">Sign Out</button>
+  </div>
+</div>
+<div class="admin-notif-panel" id="admin-notif-panel">
+  <div class="row-between mb-1"><div class="page-title no-margin">📢 Announcements</div><button class="btn-sm btn-red" onclick="toggleAdminNotif()">✕</button></div>
+  <div id="admin-notif-list"><div class="table-empty">Loading…</div></div>
 </div>
 
 <div class="layout hidden" id="layout">
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
   <div class="sidebar">
     <div class="sb-sec">Overview</div>
-    <button type="button" class="sb-item active" onclick="go('dash',this)">📊 Dashboard</button>
+    <button type="button" class="sb-item active" onclick="go('dash',this)" data-i18n="dashboard">📊 Dashboard</button>
     <div class="sb-sec">Accounts</div>
-    <button type="button" class="sb-item" onclick="go('students',this)">🎓 Students</button>
-    <button type="button" class="sb-item" onclick="go('lecturers',this)">👨‍🏫 Lecturers</button>
-    <button type="button" class="sb-item" onclick="go('hods',this)">🏛 HODs</button>
+    <button type="button" class="sb-item" onclick="go('students',this)" data-i18n="students">🎓 Students</button>
+    <button type="button" class="sb-item" onclick="go('lecturers',this)" data-i18n="lecturers">👨‍🏫 Lecturers</button>
+    <button type="button" class="sb-item" onclick="go('hods',this)" data-i18n="hods">🏛 HODs</button>
     <div class="sb-sec">Academic</div>
-    <button type="button" class="sb-item" onclick="go('timetable',this)">📅 Timetable</button>
-    <button type="button" class="sb-item" onclick="go('results',this)">🏆 Results & Grading</button>
+    <button type="button" class="sb-item" onclick="go('timetable',this)" data-i18n="timetable">📅 Timetable</button>
+    <button type="button" class="sb-item" onclick="go('results',this)" data-i18n="results">🏆 Results & Grading</button>
     <div class="sb-sec">Campus</div>
-    <button type="button" class="sb-item" onclick="go('hostels',this)">🏠 Hostels</button>
-    <button type="button" class="sb-item" onclick="go('fees',this)">💰 Fees & Finance</button>
+    <button type="button" class="sb-item" onclick="go('hostels',this)" data-i18n="hostels">🏠 Hostels</button>
+    <button type="button" class="sb-item" onclick="go('fees',this)" data-i18n="fees">💰 Fees & Finance</button>
     <div class="sb-sec">System</div>
-    <button type="button" class="sb-item" onclick="go('settings',this)">⚙️ Settings</button>
+    <button type="button" class="sb-item" onclick="go('settings',this)" data-i18n="settings">⚙️ Settings</button>
     <div class="sb-sec">Communications</div>
-    <button type="button" class="sb-item" onclick="go('notices',this)">📢 Notice Board</button>
-    <button type="button" class="sb-item" onclick="go('calendar',this)">📆 Academic Calendar</button>
+    <button type="button" class="sb-item" onclick="go('notices',this)" data-i18n="notices">📢 Notice Board</button>
+    <button type="button" class="sb-item" onclick="go('calendar',this)" data-i18n="calendar">📆 Academic Calendar</button>
     <div class="sb-sec">Manage</div>
-    <button type="button" class="sb-item" onclick="go('allocations',this)">🏠 Hostel Allocations</button>
-    <button type="button" class="sb-item" onclick="go('payments',this)">💳 Fee Payments</button>
-    <button type="button" class="sb-item" onclick="go('bulk',this)">📂 Bulk Import</button>
+    <button type="button" class="sb-item" onclick="go('allocations',this)" data-i18n="allocations">🏠 Hostel Allocations</button>
+    <button type="button" class="sb-item" onclick="go('payments',this)" data-i18n="payments">💳 Fee Payments</button>
+    <button type="button" class="sb-item" onclick="go('bulk',this)" data-i18n="bulk">📂 Bulk Import</button>
   </div>
   <div class="content">
 
     <div class="page active" id="page-dash">
-      <div class="page-title">Dashboard</div>
+      <div class="page-title" data-i18n="dashboard">Dashboard</div>
       <div class="grid4 mb-1" id="dash-stats"></div>
       <div class="grid2">
         <div class="card">
-          <h3 class="section-heading-small">Quick Create</h3>
-          <button class="btn-fill button-full mb-075" onclick="openUserModal('student')">+ Add Student</button>
-          <button class="btn-fill button-full mb-075" onclick="openUserModal('lecturer')">+ Add Lecturer</button>
-          <button class="btn-fill button-full" onclick="openUserModal('hod')">+ Add HOD</button>
+          <h3 class="section-heading-small" data-i18n="quick_create">Quick Create</h3>
+          <button class="btn-fill button-full mb-075" onclick="openUserModal('student')">+ <span data-i18n="add_student">Add Student</span></button>
+          <button class="btn-fill button-full mb-075" onclick="openUserModal('lecturer')">+ <span data-i18n="add_lecturer">Add Lecturer</span></button>
+          <button class="btn-fill button-full" onclick="openUserModal('hod')">+ <span data-i18n="add_hod">Add HOD</span></button>
         </div>
         <div class="card">
-          <h3 class="section-heading-small">Recently Created</h3>
+          <h3 class="section-heading-small" data-i18n="recently_created">Recently Created</h3>
           <div id="recent-users"></div>
         </div>
       </div>
@@ -160,8 +223,8 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <div class="page" id="page-students">
       <div class="row-between mb-1">
-        <div class="page-title no-margin">Students</div>
-        <button class="btn-fill" onclick="openUserModal('student')">+ Add Student</button>
+        <div class="page-title no-margin" data-i18n="students">Students</div>
+        <button class="btn-fill" onclick="openUserModal('student')">+ <span data-i18n="add_student">Add Student</span></button>
       </div>
       <div class="card overflow-x-auto">
         <table><thead><tr><th>Name</th><th>Email</th><th>Programme</th><th>Level</th><th>Student ID</th><th>Actions</th></tr></thead>
@@ -171,8 +234,8 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <div class="page" id="page-lecturers">
       <div class="row-between mb-1">
-        <div class="page-title no-margin">Lecturers</div>
-        <button class="btn-fill" onclick="openUserModal('lecturer')">+ Add Lecturer</button>
+        <div class="page-title no-margin" data-i18n="lecturers">Lecturers</div>
+        <button class="btn-fill" onclick="openUserModal('lecturer')">+ <span data-i18n="add_lecturer">Add Lecturer</span></button>
       </div>
       <div class="card overflow-x-auto">
         <table><thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Staff ID</th><th>Actions</th></tr></thead>
@@ -182,8 +245,8 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <div class="page" id="page-hods">
       <div class="row-between mb-1">
-        <div class="page-title no-margin">HODs</div>
-        <button class="btn-fill" onclick="openUserModal('hod')">+ Add HOD</button>
+        <div class="page-title no-margin" data-i18n="hods">HODs</div>
+        <button class="btn-fill" onclick="openUserModal('hod')">+ <span data-i18n="add_hod">Add HOD</span></button>
       </div>
       <div class="card overflow-x-auto">
         <table><thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Staff ID</th><th>Actions</th></tr></thead>
@@ -193,8 +256,8 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <div class="page" id="page-timetable">
       <div class="row-between mb-1">
-        <div class="page-title no-margin">University Timetable</div>
-        <button class="btn-fill" onclick="openTimetableModal()">+ Add Entry</button>
+        <div class="page-title no-margin" data-i18n="timetable">University Timetable</div>
+        <button class="btn-fill" onclick="openTimetableModal()">+ <span data-i18n="add_entry">Add Entry</span></button>
       </div>
       <div class="card overflow-x-auto">
         <table><thead><tr><th>Day</th><th>Time</th><th>Course</th><th>Room</th><th>Lecturer</th><th>Actions</th></tr></thead>
@@ -204,8 +267,8 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <div class="page" id="page-results">
       <div class="row-between mb-1">
-        <div class="page-title no-margin">Results & Grading</div>
-        <button class="btn-fill" onclick="openResultModal()">+ Add Result</button>
+        <div class="page-title no-margin" data-i18n="results">Results & Grading</div>
+        <button class="btn-fill" onclick="openResultModal()">+ <span data-i18n="add_result">Add Result</span></button>
       </div>
       <div class="card overflow-x-auto">
         <table><thead><tr><th>Student</th><th>Course</th><th>CA</th><th>Exam</th><th>Total</th><th>Grade</th><th>Actions</th></tr></thead>
@@ -215,8 +278,8 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <div class="page" id="page-hostels">
       <div class="row-between mb-1">
-        <div class="page-title no-margin">Hostel Management</div>
-        <button class="btn-fill" onclick="openHostelModal()">+ Add Hostel</button>
+        <div class="page-title no-margin" data-i18n="hostels">Hostel Management</div>
+        <button class="btn-fill" onclick="openHostelModal()">+ <span data-i18n="add_hostel">Add Hostel</span></button>
       </div>
       <div class="card overflow-x-auto">
         <table><thead><tr><th>Name</th><th>Type</th><th>Capacity</th><th>Occupied</th><th>Fee/Sem</th><th>Status</th><th>Actions</th></tr></thead>
@@ -226,8 +289,8 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <div class="page" id="page-fees">
       <div class="row-between mb-1">
-        <div class="page-title no-margin">Fees & Finance</div>
-        <button class="btn-fill" onclick="openFeeModal()">+ Add Fee Structure</button>
+        <div class="page-title no-margin" data-i18n="fees">Fees & Finance</div>
+        <button class="btn-fill" onclick="openFeeModal()">+ <span data-i18n="add_fee">Add Fee Structure</span></button>
       </div>
       <div class="card overflow-x-auto">
         <table><thead><tr><th>Programme</th><th>Level</th><th>Year</th><th>Tuition</th><th>Hostel</th><th>Exam</th><th>SRC</th><th>Total</th><th>Actions</th></tr></thead>
@@ -236,12 +299,12 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
     </div>
 
     <div class="page" id="page-settings">
-      <div class="page-title">Settings</div>
+      <div class="page-title" data-i18n="settings">Settings</div>
       <div class="card max-w-420">
-        <h3 class="section-heading-small">Change Admin Password</h3>
-        <input id="set-oldpw" type="password" aria-label="Current password" placeholder="Current password">
-        <input id="set-newpw" type="password" aria-label="New password" placeholder="New password (min 6 chars)">
-        <button class="btn-fill button-full" onclick="changeAdminPw()">Update Password</button>
+        <h3 class="section-heading-small" data-i18n="change_pw">Change Admin Password</h3>
+        <input id="set-oldpw" type="password" aria-label="Current password" placeholder="Current password" data-i18n-ph="pw">
+        <input id="set-newpw" type="password" aria-label="New password" placeholder="New password (min 6 chars)" data-i18n-ph="new_pw">
+        <button class="btn-fill button-full" onclick="changeAdminPw()" data-i18n="update_pw">Update Password</button>
         <div class="msg" id="set-msg"></div>
       </div>
     </div>
@@ -333,9 +396,43 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
   </div>
 </div>
 
+<div class="modal-bg" id="cal-edit-modal">
+  <div class="modal">
+    <h2><span id="cal-edit-title">Edit Calendar Event</span><button onclick="closeModal('cal-edit-modal')">✕</button></h2>
+    <input type="hidden" id="cal-edit-id">
+    <label for="cal-edit-title-f" class="label">Event Title *</label><input id="cal-edit-title-f" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none">
+    <label for="cal-edit-type" class="label">Type</label><select id="cal-edit-type" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none"><option value="event">Event</option><option value="exam">Exam</option><option value="semester">Semester</option><option value="holiday">Holiday</option></select>
+    <label for="cal-edit-start" class="label">Start Date *</label><input id="cal-edit-start" type="date" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none">
+    <label for="cal-edit-end" class="label">End Date</label><input id="cal-edit-end" type="date" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none">
+    <div class="msg" id="cal-edit-msg"></div><button class="btn-fill" onclick="submitEditCalendarEvent()">Save Event</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="alloc-edit-modal">
+  <div class="modal">
+    <h2><span id="alloc-edit-title">Edit Allocation</span><button onclick="closeModal('alloc-edit-modal')">✕</button></h2>
+    <input type="hidden" id="alloc-edit-id">
+    <label for="alloc-edit-room" class="label">Room Number</label><input id="alloc-edit-room" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none" placeholder="e.g. A-204">
+    <label for="alloc-edit-status" class="label">Status</label><select id="alloc-edit-status" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select>
+    <div class="msg" id="alloc-edit-msg"></div><button class="btn-fill" onclick="submitEditAlloc()">Save Allocation</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="pay-edit-modal">
+  <div class="modal">
+    <h2><span id="pay-edit-title">Edit Payment</span><button onclick="closeModal('pay-edit-modal')">✕</button></h2>
+    <input type="hidden" id="pay-edit-id">
+    <label for="pay-edit-amount" class="label">Amount (GHS)</label><input id="pay-edit-amount" type="number" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none">
+    <label for="pay-edit-method" class="label">Method</label><input id="pay-edit-method" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none">
+    <label for="pay-edit-status" class="label">Status</label><select id="pay-edit-status" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none"><option value="pending_confirmation">Pending</option><option value="confirmed">Confirmed</option><option value="rejected">Rejected</option></select>
+    <div class="msg" id="pay-edit-msg"></div><button class="btn-fill" onclick="submitEditPay()">Save Payment</button>
+  </div>
+  </div>
+
 <div class="modal-bg" id="result-modal">
   <div class="modal">
-    <h2><span>Add Result</span><button onclick="closeModal('result-modal')">✕</button></h2>
+    <h2><span id="rm-title">Add Result</span><button onclick="closeModal('result-modal')">✕</button></h2>
+    <input type="hidden" id="rm-id">
     <label for="rm-studentid" class="label">Student ID *</label><input id="rm-studentid" placeholder="KsTU/24/042">
     <label for="rm-studentname" class="label">Student Name</label><input id="rm-studentname">
     <label for="rm-course" class="label">Course Code *</label><input id="rm-course" placeholder="CPT 301">
@@ -349,6 +446,77 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 <script src="../shared/api.js"></script>
 <script>
 let currentRole='student';
+let __editCache={};
+let __editCacheCounter=0;
+function cacheForEdit(obj){
+  const key='_'+(__editCacheCounter++);
+  __editCache[key]=obj;
+  return key;
+}
+
+// =====================================================================
+// TRANSLATIONS (English / Twi) — applied via data-i18n attributes
+// =====================================================================
+let adminLang = (typeof localStorage !== 'undefined' && localStorage.getItem('campusiq_lang')) || 'en';
+const TA = {
+  en: {
+    login_title:'🛡 Admin Portal', login_sub:'CAMPUSIQ · KSTU BACKEND',
+    username:'Username', password:'Password', signin:'Sign In',
+    default_hint:'Default: admin / admin123',
+    dashboard:'Dashboard', students:'Students', lecturers:'Lecturers', hods:'HODs',
+    timetable:'Timetable', results:'Results & Grading', hostels:'Hostels', fees:'Fees & Finance',
+    settings:'Settings', notices:'Notice Board', calendar:'Academic Calendar',
+    allocations:'Hostel Allocations', payments:'Fee Payments', bulk:'Bulk Import',
+    add_student:'+ Add Student', add_lecturer:'+ Add Lecturer', add_hod:'+ Add HOD',
+    quick_create:'Quick Create', recently_created:'Recently Created',
+    change_pw:'Change Admin Password', new_pw:'New password (min 6 chars)', update_pw:'Update Password',
+    post_announcement:'Post New Announcement', category:'Category', message:'Message',
+    post_all:'Post to All Users', posted:'Posted Announcements',
+    add_entry:'+ Add Entry', add_result:'+ Add Result', add_hostel:'+ Add Hostel',
+    add_fee:'+ Add Fee Structure', add_event:'Add Event', confirm:'Confirm', allocate:'Allocate',
+    reject:'Reject', process:'Process Import', save:'Save', delete:'Delete', edit:'Edit', add:'Add',
+    name:'Name', email:'Email', pw:'Password', title:'Title', loading:'Loading…',
+    alloc_req:'Hostel Allocation Requests', payments_title:'Fee Payment Confirmations', bulk_title:'Bulk Account Import'
+  },
+  tw: {
+    login_title:'🛡 Aban Nhwɛsoɔ', login_sub:'CAMPUSIQ · KSTU AKYI',
+    username:'Dinin', password:'Nsɛm hunu', signin:'Kɔ mu',
+    default_hint:'Mfitiaseɛ: admin / admin123',
+    dashboard:'Nhwɛsoɔ', students:'Sukuuni', lecturers:'Kyerɛkyerɛfoɔ', hods:'Hwɛsofoɔ',
+    timetable:'Nnawotwe', results:'Nsonsonoe', hostels:'Mpa-aban', fees:'Ka-sɛm',
+    settings:'Nsɛm', notices:'Nkratoɔ', calendar:'Kalɛnda',
+    allocations:'Mpa-aban', payments:'Ka tua', bulk:'Dɔɔso',
+    add_student:'+ Fa Sukuuni', add_lecturer:'+ Fa Kyerɛkyerɛfoɔ', add_hod:'+ Fa Hwɛsofoɔ',
+    quick_create:'Yɛ ntɛm', recently_created:'Wɔyɛɛ',
+    change_pw:'Sesa Aban Nsɛm hunu', new_pw:'Foforɔ (mfã 6)', update_pw:'Sesa',
+    post_announcement:'Fa Nkratoɔ Foforɔ', category:'Ahwɛ', message:'Nkratoɔ',
+    post_all:'Fa ma Nyinaa', posted:'Wɔde',
+    add_entry:'+ Fa', add_result:'+ Fa Nsonsonoe', add_hostel:'+ Fa Mpa-aban',
+    add_fee:'+ Fa Ka-sɛm', add_event:'Fa', confirm:'Gye', allocate:'Ma',
+    reject:'Pɛ', process:'Yɛ', save:'Kora', delete:'Pe', edit:'Sesae', add:'Fa',
+    name:'Din', email:'E-mail', pw:'Nsɛm hunu', title:'Ahosɛm', loading:'Rɛre…',
+    alloc_req:'Mpa-aban Ɛhia', payments_title:'Ka Tua', bulk_title:'Dɔɔso Akɔntaabu'
+  }
+};
+function ta(key){ return (TA[adminLang]||TA.en)[key] || key; }
+function applyAdminTranslations(){
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if(TA.en[k] !== undefined) el.textContent = ta(k);
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const k = el.getAttribute('data-i18n-ph');
+    if(TA.en[k] !== undefined) el.setAttribute('placeholder', ta(k));
+  });
+  const lb = document.getElementById('admin-lang-btn');
+  if(lb) lb.textContent = adminLang === 'en' ? '🇬🇭 TW' : '🇬🇧 EN';
+}
+function toggleAdminLang(){
+  adminLang = adminLang === 'en' ? 'tw' : 'en';
+  try { localStorage.setItem('campusiq_lang', adminLang); } catch(e){}
+  applyAdminTranslations();
+  loadNotices(); loadCalendar(); loadTimetable(); loadResults(); loadHostels(); loadFees();
+}
 
 function getRoleBadgeClass(role){
   if(role==='student') return 'b-blue';
@@ -397,10 +565,35 @@ function adminLogin(){
     document.getElementById('login-screen').style.display='none';
     document.getElementById('topbar').classList.remove('hidden');
     document.getElementById('layout').classList.remove('hidden');
+    applyAdminTranslations();
     loadDashboard();
+    loadAdminNotif();
+    if(adminNotifInterval) clearInterval(adminNotifInterval);
+    adminNotifInterval = setInterval(loadAdminNotif, 30000);
   }).catch(e=>{err.textContent=e.message;});
 }
 function logout(){location.reload();}
+
+function toggleSidebar(){
+  const layout=document.getElementById('layout');
+  const open=layout.classList.toggle('nav-open');
+  document.body.classList.toggle('sidebar-open', open);
+}
+function closeSidebar(){
+  document.getElementById('layout').classList.remove('nav-open');
+  document.body.classList.remove('sidebar-open');
+}
+document.addEventListener('click', function(e){
+  const layout=document.getElementById('layout');
+  if(!layout.classList.contains('nav-open')) return;
+  if(window.innerWidth > 768) return;
+  const sidebar=document.querySelector('.sidebar');
+  const hb=document.getElementById('hamburger');
+  if(sidebar.contains(e.target) || hb.contains(e.target)) return;
+  closeSidebar();
+});
+document.querySelectorAll('.sb-item').forEach(function(item){ item.addEventListener('click', closeSidebar); });
+window.addEventListener('resize', function(){ if(window.innerWidth > 768) closeSidebar(); });
 
 const pageLoaders = {
   dash: loadDashboard,
@@ -530,7 +723,7 @@ async function loadHostels(){
     tbody.innerHTML=rows.length?rows.map(function(h){
       const statusBadge=getHostelBadgeClass(h.occupied, h.capacity);
       const statusText=getHostelStatusText(h.occupied, h.capacity);
-      const escapedHostel=escapeForHtmlAttribute(h);
+       const escapedHostel=cacheForEdit(h);
       return '<tr><td>'+h.name+'</td><td>'+h.type+'</td><td>'+h.capacity+'</td><td>'+h.occupied+'</td><td>GHS '+h.feePerSemester+'</td><td><span class="badge '+statusBadge+'">'+statusText+'</span></td><td><button class="btn-sm btn-blue" onclick=\'editHostel('+escapedHostel+')\'>Edit</button> <button class="btn-sm btn-red" onclick="deleteHostel(\''+h.id+'\')">Delete</button></td></tr>';
     }).join(''):'<tr><td colspan="7" class="table-empty">No hostels yet.</td></tr>';
   }catch(e){tbody.innerHTML='<tr><td colspan="7" style="color:#fca5a5">Error: '+e.message+'</td></tr>';}
@@ -544,6 +737,10 @@ function openHostelModal(){
   document.getElementById('hostel-modal').classList.add('open');
 }
 function editHostel(h){
+  if(typeof h === 'string' && h.startsWith('_')){
+    h = globalThis.__editCache && globalThis.__editCache[h];
+  }
+  if(!h){ console.error('Missing cached hostel for key:', h); return; }
   document.getElementById('hm-title').textContent='Edit Hostel';
   document.getElementById('hm-id').value=h.id;
   document.getElementById('hm-name').value=h.name;
@@ -580,7 +777,7 @@ async function loadFees(){
   try{
     var rows=await CampusAPI.listFeeStructures();
     tbody.innerHTML=rows.length?rows.map(function(f){
-      const escapedFee=escapeForHtmlAttribute(f);
+       const escapedFee=cacheForEdit(f);
       return '<tr><td>'+f.programme+'</td><td>'+f.level+'</td><td>'+f.academicYear+'</td><td>'+f.tuition+'</td><td>'+f.hostel+'</td><td>'+f.examFee+'</td><td>'+f.srcDues+'</td><td style="color:#047857;font-weight:600">GHS '+f.total+'</td><td><button class="btn-sm btn-blue" onclick=\'editFee('+escapedFee+')\'>Edit</button> <button class="btn-sm btn-red" onclick="deleteFee(\''+f.id+'\')">Delete</button></td></tr>';
     }).join(''):'<tr><td colspan="9" class="table-empty">No fee structures yet.</td></tr>';
   }catch(e){tbody.innerHTML='<tr><td colspan="9" class="text-red">Error: '+e.message+'</td></tr>';}
@@ -594,6 +791,10 @@ function openFeeModal(){
   document.getElementById('fee-modal').classList.add('open');
 }
 function editFee(f){
+  if(typeof f === 'string' && f.startsWith('_')){
+    f = globalThis.__editCache && globalThis.__editCache[f];
+  }
+  if(!f){ console.error('Missing cached fee for key:', f); return; }
   document.getElementById('fm-title').textContent='Edit Fee Structure';
   document.getElementById('fm-id').value=f.id;
   document.getElementById('fm-programme').value=f.programme;
@@ -634,7 +835,7 @@ async function loadTimetable(){
   try{
     var rows=await CampusAPI.listTimetable();
     tbody.innerHTML=rows.length?rows.map(function(t){
-      const escapedTimetable=escapeForHtmlAttribute(t);
+       const escapedTimetable=cacheForEdit(t);
       return '<tr><td>'+t.day+'</td><td>'+t.time+'</td><td>'+t.courseCode+'</td><td>'+t.room+'</td><td>'+(t.lecturer||'—')+'</td><td><button class="btn-sm btn-blue" onclick=\'editTimetable('+escapedTimetable+')\'>Edit</button> <button class="btn-sm btn-red" onclick="deleteTimetable(\''+t.id+'\')">Delete</button></td></tr>';
     }).join(''):'<tr><td colspan="6" class="table-empty">No timetable entries yet.</td></tr>';
   }catch(e){tbody.innerHTML='<tr><td colspan="6" style="color:#fca5a5">Error: '+e.message+'</td></tr>';} 
@@ -647,6 +848,10 @@ function openTimetableModal(){
   document.getElementById('timetable-modal').classList.add('open');
 }
 function editTimetable(t){
+  if(typeof t === 'string' && t.startsWith('_')){
+    t = globalThis.__editCache && globalThis.__editCache[t];
+  }
+  if(!t){ console.error('Missing cached timetable for key:', t); return; }
   document.getElementById('tm-title').textContent='Edit Entry';
   document.getElementById('tm-id').value=t.id;
   document.getElementById('tm-day').value=t.day;
@@ -682,16 +887,34 @@ async function loadResults(){
   try{
     var rows=await CampusAPI.listResults();
     tbody.innerHTML=rows.length?rows.map(function(r){
-      return '<tr><td>'+(r.studentName||r.studentId)+'</td><td>'+r.courseCode+'</td><td>'+r.caScore+'</td><td>'+r.examScore+'</td><td>'+r.total+'</td><td><span class="badge '+getGradeBadgeClass(r.grade)+'">'+r.grade+'</span></td><td><button class="btn-sm btn-red" onclick="deleteResult(\''+r.id+'\')">Delete</button></td></tr>';
+      return '<tr><td>'+(r.studentName||r.studentId)+'</td><td>'+r.courseCode+'</td><td>'+r.caScore+'</td><td>'+r.examScore+'</td><td>'+r.total+'</td><td><span class="badge '+getGradeBadgeClass(r.grade)+'">'+r.grade+'</span></td><td><button class="btn-sm btn-blue" onclick=\'editResult('+cacheForEdit(r)+')\'>Edit</button> <button class="btn-sm btn-red" onclick="deleteResult(\''+r.id+'\')">Delete</button></td></tr>';
     }).join(''):'<tr><td colspan="7" class="table-empty">No results yet.</td></tr>';
   }catch(e){tbody.innerHTML='<tr><td colspan="7" style="color:#fca5a5">Error: '+e.message+'</td></tr>';}
 }
 function openResultModal(){
+  document.getElementById('rm-title').textContent='Add Result';
+  document.getElementById('rm-id').value='';
   ['rm-studentid','rm-studentname','rm-course','rm-ca','rm-exam'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('rm-msg').textContent='';
   document.getElementById('result-modal').classList.add('open');
 }
+function editResult(r){
+  if(typeof r === 'string' && r.startsWith('_')){
+    r = globalThis.__editCache && globalThis.__editCache[r];
+  }
+  if(!r){ console.error('Missing cached result for key:', r); return; }
+  document.getElementById('rm-title').textContent='Edit Result';
+  document.getElementById('rm-id').value=r.id;
+  document.getElementById('rm-studentid').value=r.studentId||'';
+  document.getElementById('rm-studentname').value=r.studentName||'';
+  document.getElementById('rm-course').value=r.courseCode||'';
+  document.getElementById('rm-ca').value=r.caScore!=null?r.caScore:'';
+  document.getElementById('rm-exam').value=r.examScore!=null?r.examScore:'';
+  document.getElementById('rm-msg').textContent='';
+  document.getElementById('result-modal').classList.add('open');
+}
 async function submitResult(){
+  var id=document.getElementById('rm-id').value;
   var studentId=document.getElementById('rm-studentid').value.trim();
   var studentName=document.getElementById('rm-studentname').value.trim();
   var courseCode=document.getElementById('rm-course').value.trim();
@@ -700,7 +923,9 @@ async function submitResult(){
   var msg=document.getElementById('rm-msg');
   if(!studentId||!courseCode||caScore===''||examScore===''){msg.style.color='#fca5a5';msg.textContent='All fields except name are required.';return;}
   try{
-    await CampusAPI.createResult({studentId:studentId,studentName:studentName,courseCode:courseCode,caScore:Number(caScore),examScore:Number(examScore)});
+    var payload={studentId:studentId,studentName:studentName,courseCode:courseCode,caScore:Number(caScore),examScore:Number(examScore)};
+    if(id) await CampusAPI.updateResult(id,payload);
+    else await CampusAPI.createResult(payload);
     closeModal('result-modal');loadResults();
   }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
 }
@@ -720,16 +945,38 @@ async function changeAdminPw(){
   }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
 }
 
+// =====================================================================
+// ADMIN NOTIFICATIONS / ANNOUNCEMENTS VIEW
+// =====================================================================
+let adminNotifInterval = null;
+function escHtml(s){ return String(s==null?'':s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+function toggleAdminNotif(){
+  const p = document.getElementById('admin-notif-panel');
+  const open = p.classList.toggle('open');
+  if(open) loadAdminNotif();
+}
+async function loadAdminNotif(){
+  try{
+    const notices = await CampusAPI.listNotices();
+    const badge = document.getElementById('admin-notif-badge');
+    badge.textContent = notices.length;
+    badge.classList.toggle('show', notices.length > 0);
+    document.getElementById('admin-notif-list').innerHTML = notices.length
+      ? notices.map(n => `<div class="admin-notif-item"><div class="t">📢 ${escHtml(n.title)} <span class="badge b-blue" style="font-size:.6rem">${n.category||'general'}</span></div><div class="m">${escHtml(n.body)}</div><div class="m" style="margin-top:3px">${new Date(n.createdAt).toLocaleString()}</div></div>`).join('')
+      : '<div class="table-empty">No announcements yet.</div>';
+  }catch(e){ console.warn(e); }
+}
+
 // Extended: Notices
 async function loadNotices(){
   var pg=document.getElementById('page-notices');
   if(!pg){pg=document.createElement('div');pg.className='page';pg.id='page-notices';document.querySelector('.content').appendChild(pg);}
-  pg.innerHTML='<div class="page-title">Notice Board</div><div class="card" style="margin-bottom:1rem"><h3 style="font-size:.85rem;margin-bottom:.75rem">Post New Announcement</h3>'+
+  pg.innerHTML='<div class="page-title">'+ta('notices')+'</div><div class="card" style="margin-bottom:1rem"><h3 style="font-size:.85rem;margin-bottom:.75rem">'+ta('post_announcement')+'</h3>'+
     '<label for="n-title" class="label">Title *</label><input id="n-title" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none;margin-bottom:.65rem">'+
     '<label for="n-cat" class="label">Category</label><select id="n-cat" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none;margin-bottom:.65rem"><option value="general">General</option><option value="exam">Exams</option><option value="fees">Fees</option><option value="event">Events</option><option value="urgent">Urgent</option></select>'+
     '<label for="n-body" class="label">Message *</label><textarea id="n-body" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none;margin-bottom:.65rem;min-height:80px;resize:vertical"></textarea>'+
-    '<div class="msg" id="n-msg"></div><button class="btn-fill" style="width:100%" onclick="postNotice()">Post to All Users</button></div>'+
-    '<h3 style="font-size:.85rem;margin-bottom:.6rem">Posted Announcements</h3><div id="notices-list"><div style="text-align:center;color:#475569;padding:1rem">Loading...</div></div>';
+    '<div class="msg" id="n-msg"></div><button class="btn-fill" style="width:100%" onclick="postNotice()">'+ta('post_all')+'</button></div>'+
+    '<h3 style="font-size:.85rem;margin-bottom:.6rem">'+ta('posted')+'</h3><div id="notices-list"><div style="text-align:center;color:#475569;padding:1rem">Loading...</div></div>';
   try{
     var notices=await CampusAPI.listNotices();
     document.getElementById('notices-list').innerHTML=notices.length?notices.map(function(n){return '<div class="card" style="margin-bottom:.6rem;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.5rem"><div><div style="font-size:.85rem;font-weight:600">'+n.title+' <span class="badge b-blue" style="font-size:.6rem">'+(n.category||'general')+'</span></div><div style="font-size:.78rem;color:#94a3b8;margin-top:3px">'+n.body+'</div><div style="font-size:.68rem;color:#334155;margin-top:4px">'+new Date(n.createdAt).toLocaleString()+'</div></div><button class="btn-sm btn-red" onclick="deleteNotice(\''+n.id+'\')">Delete</button></div>';}).join(''):'<div style="color:#475569;font-size:.82rem">No notices posted yet.</div>';
@@ -758,7 +1005,7 @@ async function deleteNotice(id){
 async function loadCalendar(){
   var pg=document.getElementById('page-calendar');
   if(!pg){pg=document.createElement('div');pg.className='page';pg.id='page-calendar';document.querySelector('.content').appendChild(pg);}
-  pg.innerHTML='<div class="page-title">Academic Calendar</div><div class="card" style="margin-bottom:1rem"><h3 style="font-size:.85rem;margin-bottom:.75rem">Add Calendar Event</h3>'+
+  pg.innerHTML='<div class="page-title">'+ta('calendar')+'</div><div class="card" style="margin-bottom:1rem"><h3 style="font-size:.85rem;margin-bottom:.75rem">Add Calendar Event</h3>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">'+
     '<div><label for="cal-title" class="label">Event Title *</label><input id="cal-title" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none"></div>'+
     '<div><label for="cal-type" class="label">Type</label><select id="cal-type" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none"><option value="event">Event</option><option value="exam">Exam</option><option value="semester">Semester</option><option value="holiday">Holiday</option></select></div>'+
@@ -770,7 +1017,7 @@ async function loadCalendar(){
     var events=await CampusAPI.listCalendar();
     var typeColors={semester:'b-blue',exam:'b-red',holiday:'b-green',event:'b-gold'};
     document.getElementById('cal-list').innerHTML=events.length?'<div class="card" style="overflow-x:auto"><table><thead><tr><th>Event</th><th>Type</th><th>Start</th><th>End</th><th>Actions</th></tr></thead><tbody>'+
-      events.map(function(e){return '<tr><td>'+e.title+'</td><td><span class="badge '+(typeColors[e.type]||'b-blue')+'">'+e.type+'</span></td><td>'+e.startDate+'</td><td>'+(e.endDate||'—')+'</td><td><button class="btn-sm btn-red" onclick="deleteCalEvent(\''+e.id+'\')">Delete</button></td></tr>';}).join('')+
+      events.map(function(e){return '<tr><td>'+e.title+'</td><td><span class="badge '+(typeColors[e.type]||'b-blue')+'">'+e.type+'</span></td><td>'+e.startDate+'</td><td>'+(e.endDate||'—')+'</td><td><button class="btn-sm btn-blue" onclick=\'editCalEvent('+cacheForEdit(e)+')\'>Edit</button> <button class="btn-sm btn-red" onclick="deleteCalEvent(\''+e.id+'\')">Delete</button></td></tr>';}).join('')+
       '</tbody></table></div>':'<div style="color:#475569;font-size:.82rem">No calendar events yet.</div>';
   }catch(e){console.warn(e)}
 }
@@ -781,7 +1028,27 @@ async function addCalendarEvent(){
   var endDate=document.getElementById('cal-end').value;
   var msg=document.getElementById('cal-msg');
   if(!title||!startDate){msg.style.color='#fca5a5';msg.textContent='Title and start date required.';return;}
-  try{await CampusAPI.createCalendarEvent({title:title,type:type,startDate:startDate,endDate:endDate});msg.style.color='#047857';msg.textContent='Event added.';document.getElementById('cal-title').value='';loadCalendar();}catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+  try{
+    if(calEditingId){ await CampusAPI.updateCalendarEvent(calEditingId,{title:title,type:type,startDate:startDate,endDate:endDate}); msg.style.color='#047857'; msg.textContent='Event updated.'; calEditingId=null; }
+    else { await CampusAPI.createCalendarEvent({title:title,type:type,startDate:startDate,endDate:endDate}); msg.style.color='#047857'; msg.textContent='Event added.'; }
+    document.getElementById('cal-title').value='';
+    var btn=document.querySelector('#page-calendar button.btn-fill'); if(btn) btn.textContent='Add Event';
+    loadCalendar();
+  }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
+var calEditingId=null;
+function editCalEvent(e){
+  if(typeof e === 'string' && e.startsWith('_')){
+    e = globalThis.__editCache && globalThis.__editCache[e];
+  }
+  if(!e){ console.error('Missing cached calendar event for key:', e); return; }
+  calEditingId=e.id;
+  document.getElementById('cal-title').value=e.title||'';
+  document.getElementById('cal-type').value=e.type||'event';
+  document.getElementById('cal-start').value=e.startDate||'';
+  document.getElementById('cal-end').value=e.endDate||e.startDate||'';
+  var btn=document.querySelector('#page-calendar button.btn-fill'); if(btn) btn.textContent='Update Event';
+  document.getElementById('cal-title').focus();
 }
 async function deleteCalEvent(id){
   if(!confirm('Delete event?'))return;
@@ -790,11 +1057,33 @@ async function deleteCalEvent(id){
   loadCalendar();
 }
 
-// Extended: Hostel Allocations
+function editCalEvent(e){
+  document.getElementById('cal-edit-title').textContent='Edit Calendar Event';
+  document.getElementById('cal-edit-id').value=e.id;
+  document.getElementById('cal-edit-title-f').value=e.title||'';
+  document.getElementById('cal-edit-type').value=e.type||'event';
+  document.getElementById('cal-edit-start').value=e.startDate||'';
+  document.getElementById('cal-edit-end').value=e.endDate||'';
+  document.getElementById('cal-edit-msg').textContent='';
+  document.getElementById('cal-edit-modal').classList.add('open');
+}
+async function submitEditCalendarEvent(){
+  var id=document.getElementById('cal-edit-id').value;
+  var title=document.getElementById('cal-edit-title-f').value.trim();
+  var type=document.getElementById('cal-edit-type').value;
+  var startDate=document.getElementById('cal-edit-start').value;
+  var endDate=document.getElementById('cal-edit-end').value;
+  var msg=document.getElementById('cal-edit-msg');
+  if(!title||!startDate){msg.style.color='#fca5a5';msg.textContent='Title and start date required.';return;}
+  try{
+    await CampusAPI.updateCalendarEvent(id,{title:title,type:type,startDate:startDate,endDate:endDate});
+    closeModal('cal-edit-modal');loadCalendar();
+  }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
 async function loadAllocations(){
   var pg=document.getElementById('page-allocations');
   if(!pg){pg=document.createElement('div');pg.className='page';pg.id='page-allocations';document.querySelector('.content').appendChild(pg);}
-  pg.innerHTML='<div class="page-title">Hostel Allocation Requests</div><div id="alloc-list"><div style="text-align:center;color:#475569">Loading...</div></div>';
+  pg.innerHTML='<div class="page-title">'+ta('alloc_req')+'</div><div id="alloc-list"><div style="text-align:center;color:#475569">Loading...</div></div>';
   try{
     var apps=await CampusAPI.listHostelApplications();
     document.getElementById('alloc-list').innerHTML=apps.length?'<div class="card" style="overflow-x:auto"><table><thead><tr><th>Student</th><th>Hostel</th><th>Status</th><th>Room</th><th>Actions</th></tr></thead><tbody>'+
@@ -802,7 +1091,7 @@ async function loadAllocations(){
         let badgeClass='b-red';
         if(a.status==='approved') badgeClass='b-green';
         else if(a.status==='pending') badgeClass='b-gold';
-        const actions=a.status==='pending' ? '<button class="btn-sm btn-green" onclick="allocate(\''+a.id+'\')">Allocate</button> <button class="btn-sm btn-red" onclick="rejectAlloc(\''+a.id+'\')">Reject</button>' : '<span style="color:#334155">Done</span>';
+        const actions='<button class="btn-sm btn-blue" onclick=\'editAlloc('+cacheForEdit(a)+')\'>Edit</button> '+(a.status==='pending' ? '<button class="btn-sm btn-green" onclick="allocate(\''+a.id+'\')">Allocate</button> <button class="btn-sm btn-red" onclick="rejectAlloc(\''+a.id+'\')">Reject</button>' : '<span style="color:#334155">Done</span>');
         return '<tr><td>'+(a.studentName||a.studentId)+'</td><td>'+a.hostelName+'</td><td><span class="badge '+badgeClass+'">'+a.status+'</span></td><td>'+(a.roomNumber||'—')+'</td><td>'+actions+'</td></tr>';
       }).join('')+
       '</tbody></table></div>':'<div class="card" style="color:#475569;font-size:.82rem">No hostel applications yet.</div>';
@@ -829,19 +1118,41 @@ async function rejectAlloc(id){
     loadAllocations();
   }
 }
+function editAlloc(a){
+  if(typeof a === 'string' && a.startsWith('_')){
+    a = globalThis.__editCache && globalThis.__editCache[a];
+  }
+  if(!a){ console.error('Missing cached allocation for key:', a); return; }
+  document.getElementById('alloc-edit-title').textContent='Edit Allocation';
+  document.getElementById('alloc-edit-id').value=a.id;
+  document.getElementById('alloc-edit-room').value=a.roomNumber||'';
+  document.getElementById('alloc-edit-status').value=a.status||'pending';
+  document.getElementById('alloc-edit-msg').textContent='';
+  document.getElementById('alloc-edit-modal').classList.add('open');
+}
+async function submitEditAlloc(){
+  var id=document.getElementById('alloc-edit-id').value;
+  var roomNumber=document.getElementById('alloc-edit-room').value.trim();
+  var status=document.getElementById('alloc-edit-status').value;
+  var msg=document.getElementById('alloc-edit-msg');
+  try{
+    await CampusAPI.allocateHostel(id,{roomNumber:roomNumber,status:status});
+    closeModal('alloc-edit-modal');loadAllocations();
+  }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
 
 // Extended: Fee Payments
 async function loadPayments(){
   var pg=document.getElementById('page-payments');
   if(!pg){pg=document.createElement('div');pg.className='page';pg.id='page-payments';document.querySelector('.content').appendChild(pg);}
-  pg.innerHTML='<div class="page-title">Fee Payment Confirmations</div><div id="payments-list"><div style="text-align:center;color:#475569">Loading...</div></div>';
+  pg.innerHTML='<div class="page-title">'+ta('payments_title')+'</div><div id="payments-list"><div style="text-align:center;color:#475569">Loading...</div></div>';
   try{
     var payments=await CampusAPI.listPayments();
     document.getElementById('payments-list').innerHTML=payments.length?'<div class="card" style="overflow-x:auto"><table><thead><tr><th>Student</th><th>Amount</th><th>Method</th><th>Status</th><th>Action</th></tr></thead><tbody>'+
       payments.map(function(p){
         const badgeClass=getPaymentStatusBadge(p.status);
         const statusLabel=getPaymentStatusLabel(p.status);
-        const actionMarkup=p.status==='pending_confirmation' ? '<button class="btn-sm btn-green" onclick="confirmPay(\''+p.id+'\')">Confirm</button>' : '<span style="color:#334155">Done</span>';
+        const actionMarkup='<button class="btn-sm btn-blue" onclick=\'editPay('+cacheForEdit(p)+')\'>Edit</button> '+(p.status==='pending_confirmation' ? '<button class="btn-sm btn-green" onclick="confirmPay(\''+p.id+'\')">Confirm</button>' : '<span style="color:#334155">Done</span>');
         return '<tr><td>'+p.studentId+'</td><td style="color:#047857;font-weight:600">'+p.amount+'</td><td>'+(p.method||'—')+'</td><td><span class="badge '+badgeClass+'">'+statusLabel+'</span></td><td>'+actionMarkup+'</td></tr>';
       }).join('')+
       '</tbody></table></div>':'<div class="card" style="color:#475569;font-size:.82rem">No payment submissions yet.</div>';
@@ -851,12 +1162,37 @@ async function confirmPay(id){
   if(!confirm('Confirm this payment?'))return;
   try{await CampusAPI.confirmPayment(id);}catch(e){alert(e.message);} finally { loadPayments(); }
 }
+function editPay(p){
+  if(typeof p === 'string' && p.startsWith('_')){
+    p = globalThis.__editCache && globalThis.__editCache[p];
+  }
+  if(!p){ console.error('Missing cached payment for key:', p); return; }
+  document.getElementById('pay-edit-title').textContent='Edit Payment';
+  document.getElementById('pay-edit-id').value=p.id;
+  document.getElementById('pay-edit-amount').value=p.amount!=null?p.amount:'';
+  document.getElementById('pay-edit-method').value=p.method||'';
+  document.getElementById('pay-edit-status').value=p.status||'pending_confirmation';
+  document.getElementById('pay-edit-msg').textContent='';
+  document.getElementById('pay-edit-modal').classList.add('open');
+}
+async function submitEditPay(){
+  var id=document.getElementById('pay-edit-id').value;
+  var amount=document.getElementById('pay-edit-amount').value;
+  var method=document.getElementById('pay-edit-method').value.trim();
+  var status=document.getElementById('pay-edit-status').value;
+  var msg=document.getElementById('pay-edit-msg');
+  if(amount===''){msg.style.color='#fca5a5';msg.textContent='Amount is required.';return;}
+  try{
+    await CampusAPI.updatePayment(id,{amount:Number(amount),method:method,status:status});
+    closeModal('pay-edit-modal');loadPayments();
+  }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
 
 // Extended: Bulk Import
 function renderBulkPage(){
     let pg=document.getElementById('page-bulk');
     if(!pg){pg=document.createElement('div');pg.className='page';pg.id='page-bulk';document.querySelector('.content').appendChild(pg);}
-    pg.innerHTML=`<div class="page-title">Bulk Account Import</div>
+    pg.innerHTML=`<div class="page-title">`+ta('bulk_title')+`</div>
       <div class="card">
         <div style="font-size:0.82rem;color:var(--t2);margin-bottom:1rem">
           Upload a CSV file with columns: <strong>name, email, role, [programme/studentID]</strong>

@@ -37,5 +37,33 @@
     "level": "Level 200",
     "department": null,
     "title": null
+  },
+  {
+    "id": "df300db6-90a8-40d8-95b6-f6d29d334449",
+    "createdAt": "2026-07-11T19:48:22.026Z",
+    "name": "papi",
+    "email": "solopappy76@gmail.com",
+    "password": "0541190485",
+    "role": "student",
+    "studentId": "0042",
+    "staffId": null,
+    "programme": "Btech computer engineering",
+    "level": "Level 200",
+    "department": null,
+    "title": null
+  },
+  {
+    "id": "3c5fe761-97d1-4d28-a2a9-99274fa100d9",
+    "createdAt": "2026-07-11T19:49:32.682Z",
+    "name": "solomon",
+    "email": "solomon@gmail.com",
+    "password": "0541190485",
+    "role": "lecturer",
+    "studentId": null,
+    "staffId": "0001",
+    "programme": null,
+    "level": null,
+    "department": "applied science",
+    "title": "Dr."
   }
 ]

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "9d88219a-030d-4fbc-9c70-e2c72db50c27",
+    "createdAt": "2026-07-11T20:57:00.901Z",
+    "courseCode": "CPT 301",
+    "date": "2026-07-11",
+    "lecturerId": "3c5fe761-97d1-4d28-a2a9-99274fa100d9",
+    "studentId": "test-1",
+    "studentName": "Test User",
+    "status": "present"
+  }
+]
