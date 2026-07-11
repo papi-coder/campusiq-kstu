@@ -1,21 +1,47 @@
 // public/shared/api.js
 // Thin fetch wrapper used by every CampusIQ page to talk to the backend API.
-// Auto-detects whether it's running locally (api on :3001) or deployed on Vercel
-// (api on same origin, since Vercel serves /api/* from the same domain).
+// Auto-detects whether it's running locally (scan ports 3001-3005) or deployed on Vercel
+// (same-origin /api/*), with file:// fallback to localhost.
 
 const CampusAPI = (() => {
-  const BASE = (() => {
-    const { protocol, hostname } = window.location;
-    // Local static file serving (e.g. opened directly or via a simple static server on 5500/8080)
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      // If a local API dev server is running on 3001, use it. Otherwise assume same-origin /api.
-      return `${protocol}//${hostname}:3001`;
+  let BASE = '';
+  const { protocol, hostname } = window.location;
+  const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
+  const isFile = protocol === 'file:';
+  const httpOrigin = () => {
+    if (isLocal) return `${protocol}//${hostname}`;
+    return 'http://localhost';
+  };
+
+  const candidates = [];
+  if (isLocal || isFile) {
+    const base = httpOrigin();
+    for (let p = 3001; p <= 3005; p++) candidates.push(`${base}:${p}`);
+  }
+  // Same-origin fallback (Vercel/production, or when static server proxies /api)
+  candidates.push(`${protocol}//${(isLocal ? hostname : (isFile ? 'localhost' : ''))}`);
+
+  // Probe health endpoint to find the live API server
+  (async () => {
+    for (const candidate of candidates) {
+      try {
+        const ctrl = new AbortController();
+        const tid = setTimeout(() => ctrl.abort(), 400);
+        const r = await fetch(candidate + '/api/health', { method: 'GET', signal: ctrl.signal });
+        clearTimeout(tid);
+        if (r.ok) { BASE = candidate; return; }
+      } catch (e) { /* try next */ }
     }
-    return ''; // same-origin /api/* on Vercel
+    BASE = candidates[candidates.length - 1];
   })();
 
   async function request(path, options = {}) {
-    const res = await fetch(BASE + path, {
+    // If BASE hasn't resolved yet (probe still in flight), give it a moment
+    if (!BASE && (isLocal || isFile)) {
+      await new Promise(resolve => setTimeout(resolve, 60));
+    }
+    const url = BASE + path;
+    const res = await fetch(url, {
       headers: { 'Content-Type': 'application/json' },
       ...options,
     });

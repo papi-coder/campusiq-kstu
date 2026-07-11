@@ -328,8 +328,8 @@ window.doLogin = async function () {
         <input type="file" id="ai-file" accept=".txt,.md,.csv,.json,.html,.log,image/*" style="display:none" onchange="addAiFiles(event)">
         <button class="btn-sm bs-red" onclick="clearPapiChat()" title="Clear chat">🗑</button>
         <button class="btn-p whitespace-nowrap text-orbitron text-072" id="ai-send-btn" onclick="askPapi()">SEND</button>
-     </div>
-   </div>
+    </div>
+  </div>
 </section>
 
 <!-- VIRTUAL CLASSROOM -->
@@ -658,7 +658,6 @@ window.doLogin = async function () {
   </div>
 </div>
 
-<script src="../shared/api.js"></script>
 <script src="./student-app.js"></script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../sw.js").catch(()=>{});}
 (function(){

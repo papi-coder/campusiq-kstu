@@ -131,11 +131,11 @@ let mapMarkers = {};
 const T = {
   en: {
     // Navigation
-    home:'Home', ai:'Papi AI', classroom:'Classroom', attendance:'Attendance',
+    home:'Home', ai:'Papi AI', attendance:'Attendance',
     results:'Results', register:'Register', fees:'Fees', hostels:'Hostels',
     tt:'Timetable', locator:'Locator', idcard:'ID Card', chat:'Chat', calendar:'Calendar',
     // Screen titles & section headings
-    timetable:'This Week', upcoming:'Upcoming Events', classroom_t:'Virtual Classroom',
+    timetable:'This Week', upcoming:'Upcoming Events',
     exams:'Exams', assignments:'Assignments', materials:'Course Materials',
     attendance_t:'Attendance', results_t:'Results & GPA', reg_t:'Course Registration',
     fees_t:'Fees & Finance', hostels_t:'Hostels & Accommodation', locator_t:'Live Campus Locator',
@@ -184,11 +184,11 @@ const T = {
   },
   tw: {
     // Navigation
-    home:'Fie', ai:'Papi AI', classroom:'Ɔkwankyerɛ Mu Asɔrekɔbea', attendance:'Wo-hɔ',
+    home:'Fie', ai:'Papi AI', attendance:'Wo-hɔ',
     results:'Nsonsonoe', register:'Kyerɛw Kɔɔs', fees:'Ka-sɛm', hostels:'Mpa-aban',
     tt:'Nnawotwe-ahoroɔ', locator:'Beae Nhwɛsoɔ', idcard:'Sukuuni Kaad', chat:'Kɔnta', calendar:'Kalɛnda',
     // Screen titles & section headings
-    timetable:'Nnawotwe Yi', upcoming:'Ahorow a Ɛreba', classroom_t:'Ɔkwankyerɛ Mu Asɔrekɔbea',
+    timetable:'Nnawotwe Yi', upcoming:'Ahorow a Ɛreba',
     exams:'Nhwɛsoɔ', assignments:'Adwuma', materials:'Kɔɔs Nhyehyɛe',
     attendance_t:'Wo-hɔ', results_t:'Nsonsonoe ne GPA', reg_t:'Kɔɔs Tɔn',
     fees_t:'Ka-sɛm ne Sika', hostels_t:'Mpa-aban ne Tenabea', locator_t:'Ɔkwan So Nhwɛsoɔ',
@@ -355,7 +355,7 @@ function showLogin(){
 const NAV = {
   student: [
     {id:'home',icon:'🏠',tkey:'home'},{id:'ai',icon:'🧠',tkey:'ai'},
-    {id:'classroom',icon:'🧑‍💻',tkey:'classroom'},{id:'attendance',icon:'✅',tkey:'attendance'},
+    {id:'attendance',icon:'✅',tkey:'attendance'},
     {id:'results',icon:'🏆',tkey:'results'},{id:'registration',icon:'📝',tkey:'register'},
     {id:'fees',icon:'💰',tkey:'fees'},{id:'hostels',icon:'🏠',tkey:'hostels'},
     {id:'timetable',icon:'📅',tkey:'tt'},{id:'locator',icon:'📍',tkey:'locator'},

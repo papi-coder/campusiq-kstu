@@ -65,5 +65,19 @@
     "level": null,
     "department": "applied science",
     "title": "Dr."
+  },
+  {
+    "id": "3f392a43-ed87-4f0e-b413-bb239ae2791a",
+    "createdAt": "2026-07-11T21:27:08.735Z",
+    "name": "david",
+    "email": "david@gmail.com",
+    "password": "0541190485",
+    "role": "hod",
+    "studentId": null,
+    "staffId": "0001",
+    "programme": null,
+    "level": null,
+    "department": "computer science",
+    "title": "Dr."
   }
 ]
