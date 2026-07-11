@@ -1,0 +1,38 @@
+[
+  {
+    "id": "41b40854-1d40-49b6-a36a-9f11dcf3d14d",
+    "createdAt": "2026-07-11T12:19:36.354Z",
+    "programme": "BTech Computer Technology",
+    "level": "Level 100",
+    "academicYear": "2025/2026",
+    "tuition": 4200,
+    "hostel": 800,
+    "examFee": 150,
+    "srcDues": 200,
+    "total": 5350
+  },
+  {
+    "id": "96e4a3be-d117-4c4c-973b-516f53018f16",
+    "createdAt": "2026-07-11T12:19:36.357Z",
+    "programme": "BTech Computer Technology",
+    "level": "Level 200",
+    "academicYear": "2025/2026",
+    "tuition": 4400,
+    "hostel": 800,
+    "examFee": 150,
+    "srcDues": 200,
+    "total": 5550
+  },
+  {
+    "id": "33082364-b767-41d9-9b59-c4c7d7306553",
+    "createdAt": "2026-07-11T12:19:36.361Z",
+    "programme": "BEng Electrical Engineering",
+    "level": "Level 100",
+    "academicYear": "2025/2026",
+    "tuition": 4600,
+    "hostel": 800,
+    "examFee": 180,
+    "srcDues": 200,
+    "total": 5780
+  }
+]

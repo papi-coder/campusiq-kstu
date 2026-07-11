@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusIQ Admin — KsTU</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--panel:#0d1117;--blue:#3b82f6;--cyan:#06b6d4;--gold:#f59e0b;--green:#10b981;--red:#ef4444;--t1:#f0f4ff;--t2:#94a3b8;--t3:#475569}
+html{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--t1)}
+.hidden{display:none}
+body{min-height:100vh;background:linear-gradient(135deg,#0a0a0f 0%,#0d1117 60%,#0a0f1a 100%)}
+#login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;background:rgba(0,0,0,0.96)}
+.login-box{background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;width:100%;max-width:380px}
+.login-box h1{font-family:'Orbitron',sans-serif;font-size:1.3rem;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:0.3rem}
+.login-box .sub{text-align:center;color:var(--t3);font-size:0.72rem;letter-spacing:0.15em;margin-bottom:1.5rem}
+input,select,textarea{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--t1);padding:0.6rem 0.9rem;border-radius:10px;font-family:inherit;font-size:0.85rem;outline:none;margin-bottom:0.75rem}
+input:focus,select:focus,textarea:focus{border-color:var(--blue)}
+button{cursor:pointer;font-family:inherit;border:none;border-radius:20px;font-weight:500;transition:opacity .15s}
+.btn-primary{background:linear-gradient(135deg,#b91c1c,#b45309);color:#fff;padding:.7rem;width:100%;font-size:.85rem}
+.btn-primary:hover{opacity:0.88}
+.err{color:#fca5a5;font-size:0.78rem;text-align:center;margin-top:0.5rem;min-height:1.1rem}
+.hint{margin-top:0.875rem;padding:0.6rem;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;font-size:0.7rem;color:var(--t3);text-align:center}
+.text-xs{font-size:.72rem}
+.text-muted{color:#94a3b8}
+.card-row{display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.78rem}
+.table-center{text-align:center;color:var(--t3)}
+.table-empty{text-align:center;color:var(--t3);padding:1.5rem;font-size:0.8rem}
+.badge-xs{font-size:.6rem;padding:.15rem .45rem}
+.text-center{text-align:center}
+.text-sm{font-size:.82rem}
+.text-blue{color:#60c8ff}
+.text-green{color:#047857}
+.text-gold{color:#fcd34d}
+.text-red{color:#fca5a5}
+.card-space{margin-bottom:.75rem}
+.topbar{height:50px;display:flex;align-items:center;padding:0 1rem;gap:0.75rem;background:rgba(10,10,15,0.95);border-bottom:1px solid rgba(255,255,255,0.07);position:sticky;top:0;z-index:50}
+.tb-logo{font-family:'Orbitron',sans-serif;font-size:0.9rem;font-weight:700;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.tb-r{margin-left:auto;display:flex;align-items:center;gap:0.75rem;font-size:0.72rem;color:var(--t3)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:blink 2s infinite}
+@keyframes blink{50%{opacity:0.3}}
+.logout{padding:0.25rem 0.7rem;border:1px solid #991b1b;background:#7f1d1d;color:#fff5f5;border-radius:20px;font-size:0.7rem}
+.layout{display:flex;min-height:calc(100vh - 50px)}
+.sidebar{width:190px;background:rgba(13,17,23,0.7);border-right:1px solid rgba(255,255,255,0.06);padding:0.75rem 0;flex-shrink:0}
+.sb-item{display:flex;align-items:center;gap:0.55rem;padding:0.5rem 0.875rem;cursor:pointer;font-size:0.78rem;color:var(--t2);border-left:2px solid transparent}
+.sb-item:hover{background:rgba(255,255,255,0.04)}
+.sb-item.active{background:#7f1d1d;color:#fff5f5;border-left-color:var(--red)}
+.sb-sec{font-size:0.6rem;color:var(--t3);text-transform:uppercase;letter-spacing:0.1em;padding:0.7rem 0.875rem 0.2rem}
+.content{flex:1;padding:1.25rem;overflow-x:hidden}
+.page{display:none;animation:fade .2s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.page-title{font-family:'Orbitron',sans-serif;font-size:1rem;margin-bottom:1rem}
+.card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem;margin-bottom:1rem}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.75rem}
+.stat{text-align:center}
+.stat .v{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:700}
+.stat .l{font-size:0.65rem;color:var(--t2);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px}
+table{width:100%;border-collapse:collapse;font-size:0.78rem}
+th{text-align:left;padding:0.5rem;color:var(--t2);font-size:0.65rem;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08)}
+td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
+.badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:20px;font-size:0.6rem;font-weight:600;text-transform:uppercase}
+.b-green{background:#0c5130;color:#f0fdf4}
+.b-red{background:#7f1d1d;color:#fff5f5}
+.b-gold{background:#7c4700;color:#fff8e7}
+.b-blue{background:#0b3d93;color:#f8fbff}
+.btn-wide{width:100%}
+.text-quiet{color:#475569}
+.btn-blue{background:#1e40af;border:1px solid #2563eb;color:#bfdbfe}
+.btn-green{background:#0b5b39;border:1px solid #0f766e;color:#f0fdf4}
+.btn-red{background:#7f1d1d;border:1px solid #991b1b;color:#fff5f5}
+.btn-fill{background:linear-gradient(135deg,#b91c1c,#b45309);color:#fff;padding:.5rem 1rem;font-size:.8rem}
+.row-between{display:flex;justify-content:space-between;align-items:center}
+.mb-0{margin-bottom:0}
+.mb-075{margin-bottom:.75rem}
+.mb-1{margin-bottom:1rem}
+.mt-075{margin-top:.75rem}
+.w-full{width:100%}
+.max-w-420{max-width:420px}
+.overflow-x-auto{overflow-x:auto}
+.section-heading-small{font-size:0.85rem;margin-bottom:0.75rem}
+.button-full{width:100%}
+.no-margin{margin:0}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal{background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:1.5rem;width:100%;max-width:460px;max-height:88vh;overflow-y:auto}
+.modal h2{font-family:'Orbitron',sans-serif;font-size:0.95rem;margin-bottom:1rem;display:flex;justify-content:space-between}
+.modal h2 button{background:none;color:var(--t2);font-size:1.1rem;border:none;cursor:pointer}
+.label{font-size:0.68rem;color:var(--t2);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:3px}
+.msg{font-size:0.78rem;min-height:1rem;margin-bottom:0.5rem;text-align:center}
+.cred-box{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:0.875rem;font-size:0.8rem;line-height:1.9}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+</style>
+<link rel="manifest" href="../manifest.json">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png" sizes="180x180">
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <h1>🛡 Admin Portal</h1>
+    <div class="sub">CAMPUSIQ · KSTU BACKEND</div>
+    <input id="a-user" aria-label="Username" placeholder="Username">
+    <input id="a-pass" type="password" aria-label="Password" placeholder="Password" onkeydown="if(event.key==='Enter')adminLogin()">
+    <button class="btn-primary" onclick="adminLogin()">Sign In</button>
+    <div class="err" id="a-err"></div>
+    <div class="hint">Default: <strong>admin</strong> / <strong>admin123</strong></div>
+  </div>
+</div>
+
+<div class="topbar hidden" id="topbar">
+  <span>🛡</span><span class="tb-logo">CampusIQ Admin</span>
+  <div class="tb-r"><span class="dot"></span> API Connected <button class="logout" onclick="logout()">Sign Out</button></div>
+</div>
+
+<div class="layout hidden" id="layout">
+  <div class="sidebar">
+    <div class="sb-sec">Overview</div>
+    <button type="button" class="sb-item active" onclick="go('dash',this)">📊 Dashboard</button>
+    <div class="sb-sec">Accounts</div>
+    <button type="button" class="sb-item" onclick="go('students',this)">🎓 Students</button>
+    <button type="button" class="sb-item" onclick="go('lecturers',this)">👨‍🏫 Lecturers</button>
+    <button type="button" class="sb-item" onclick="go('hods',this)">🏛 HODs</button>
+    <div class="sb-sec">Academic</div>
+    <button type="button" class="sb-item" onclick="go('timetable',this)">📅 Timetable</button>
+    <button type="button" class="sb-item" onclick="go('results',this)">🏆 Results & Grading</button>
+    <div class="sb-sec">Campus</div>
+    <button type="button" class="sb-item" onclick="go('hostels',this)">🏠 Hostels</button>
+    <button type="button" class="sb-item" onclick="go('fees',this)">💰 Fees & Finance</button>
+    <div class="sb-sec">System</div>
+    <button type="button" class="sb-item" onclick="go('settings',this)">⚙️ Settings</button>
+    <div class="sb-sec">Communications</div>
+    <button type="button" class="sb-item" onclick="go('notices',this)">📢 Notice Board</button>
+    <button type="button" class="sb-item" onclick="go('calendar',this)">📆 Academic Calendar</button>
+    <div class="sb-sec">Manage</div>
+    <button type="button" class="sb-item" onclick="go('allocations',this)">🏠 Hostel Allocations</button>
+    <button type="button" class="sb-item" onclick="go('payments',this)">💳 Fee Payments</button>
+    <button type="button" class="sb-item" onclick="go('bulk',this)">📂 Bulk Import</button>
+  </div>
+  <div class="content">
+
+    <div class="page active" id="page-dash">
+      <div class="page-title">Dashboard</div>
+      <div class="grid4 mb-1" id="dash-stats"></div>
+      <div class="grid2">
+        <div class="card">
+          <h3 class="section-heading-small">Quick Create</h3>
+          <button class="btn-fill button-full mb-075" onclick="openUserModal('student')">+ Add Student</button>
+          <button class="btn-fill button-full mb-075" onclick="openUserModal('lecturer')">+ Add Lecturer</button>
+          <button class="btn-fill button-full" onclick="openUserModal('hod')">+ Add HOD</button>
+        </div>
+        <div class="card">
+          <h3 class="section-heading-small">Recently Created</h3>
+          <div id="recent-users"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-students">
+      <div class="row-between mb-1">
+        <div class="page-title no-margin">Students</div>
+        <button class="btn-fill" onclick="openUserModal('student')">+ Add Student</button>
+      </div>
+      <div class="card overflow-x-auto">
+        <table><thead><tr><th>Name</th><th>Email</th><th>Programme</th><th>Level</th><th>Student ID</th><th>Actions</th></tr></thead>
+        <tbody id="students-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-lecturers">
+      <div class="row-between mb-1">
+        <div class="page-title no-margin">Lecturers</div>
+        <button class="btn-fill" onclick="openUserModal('lecturer')">+ Add Lecturer</button>
+      </div>
+      <div class="card overflow-x-auto">
+        <table><thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Staff ID</th><th>Actions</th></tr></thead>
+        <tbody id="lecturers-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-hods">
+      <div class="row-between mb-1">
+        <div class="page-title no-margin">HODs</div>
+        <button class="btn-fill" onclick="openUserModal('hod')">+ Add HOD</button>
+      </div>
+      <div class="card overflow-x-auto">
+        <table><thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Staff ID</th><th>Actions</th></tr></thead>
+        <tbody id="hods-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-timetable">
+      <div class="row-between mb-1">
+        <div class="page-title no-margin">University Timetable</div>
+        <button class="btn-fill" onclick="openTimetableModal()">+ Add Entry</button>
+      </div>
+      <div class="card overflow-x-auto">
+        <table><thead><tr><th>Day</th><th>Time</th><th>Course</th><th>Room</th><th>Lecturer</th><th>Actions</th></tr></thead>
+        <tbody id="timetable-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-results">
+      <div class="row-between mb-1">
+        <div class="page-title no-margin">Results & Grading</div>
+        <button class="btn-fill" onclick="openResultModal()">+ Add Result</button>
+      </div>
+      <div class="card overflow-x-auto">
+        <table><thead><tr><th>Student</th><th>Course</th><th>CA</th><th>Exam</th><th>Total</th><th>Grade</th><th>Actions</th></tr></thead>
+        <tbody id="results-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-hostels">
+      <div class="row-between mb-1">
+        <div class="page-title no-margin">Hostel Management</div>
+        <button class="btn-fill" onclick="openHostelModal()">+ Add Hostel</button>
+      </div>
+      <div class="card overflow-x-auto">
+        <table><thead><tr><th>Name</th><th>Type</th><th>Capacity</th><th>Occupied</th><th>Fee/Sem</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="hostels-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-fees">
+      <div class="row-between mb-1">
+        <div class="page-title no-margin">Fees & Finance</div>
+        <button class="btn-fill" onclick="openFeeModal()">+ Add Fee Structure</button>
+      </div>
+      <div class="card overflow-x-auto">
+        <table><thead><tr><th>Programme</th><th>Level</th><th>Year</th><th>Tuition</th><th>Hostel</th><th>Exam</th><th>SRC</th><th>Total</th><th>Actions</th></tr></thead>
+        <tbody id="fees-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-settings">
+      <div class="page-title">Settings</div>
+      <div class="card max-w-420">
+        <h3 class="section-heading-small">Change Admin Password</h3>
+        <input id="set-oldpw" type="password" aria-label="Current password" placeholder="Current password">
+        <input id="set-newpw" type="password" aria-label="New password" placeholder="New password (min 6 chars)">
+        <button class="btn-fill button-full" onclick="changeAdminPw()">Update Password</button>
+        <div class="msg" id="set-msg"></div>
+      </div>
+    </div>
+
+    <!-- Dynamic pages will be created here by JS -->
+  </div>
+</div>
+
+<!-- USER MODAL -->
+<div class="modal-bg" id="user-modal">
+  <div class="modal">
+    <h2><span id="um-title">Add Student</span><button onclick="closeModal('user-modal')">✕</button></h2>
+    <div id="um-form">
+      <label for="um-name" class="label">Full Name *</label><input id="um-name">
+      <label for="um-email" class="label">Email *</label><input id="um-email" type="email">
+      <label for="um-pass" class="label">Password *</label><input id="um-pass">
+      <div id="um-student-fields">
+        <label class="label" for="um-studentid">Student ID</label><input id="um-studentid" placeholder="KsTU/2024/0042">
+        <label class="label" for="um-programme">Programme</label><input id="um-programme" placeholder="BTech Computer Technology">
+        <label class="label" for="um-level">Level</label>
+        <select id="um-level"><option value="">Select…</option><option>Level 100</option><option>Level 200</option><option>Level 300</option><option>Level 400</option></select>
+      </div>
+      <div id="um-staff-fields" class="hidden">
+        <label class="label" for="um-title-field">Title</label>
+        <select id="um-title-field"><option>Dr.</option><option>Prof.</option><option>Mr.</option><option>Mrs.</option><option>Ms.</option><option>Engr.</option></select>
+        <label class="label" for="um-staffid">Staff ID</label><input id="um-staffid">
+        <label class="label" for="um-department">Department</label><input id="um-department">
+      </div>
+      <div class="msg" id="um-msg"></div>
+      <button class="btn-fill btn-wide" onclick="submitUser()">Create Account</button>
+    </div>
+    <div id="um-success" class="hidden">
+      <div class="cred-box">
+        ✅ <strong>Account created!</strong><br>
+        Name: <span id="cred-name"></span><br>
+        Email: <span id="cred-email"></span><br>
+        Password: <span id="cred-pw"></span><br>
+        <span class="text-muted text-xs">This account can log in immediately at the student/lecturer app.</span>
+      </div>
+      <button class="btn-fill btn-wide mt-075" onclick="closeModal('user-modal')">Done</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="hostel-modal">
+  <div class="modal">
+    <h2><span id="hm-title">Add Hostel</span><button onclick="closeModal('hostel-modal')">✕</button></h2>
+    <input type="hidden" id="hm-id">
+    <label for="hm-name" class="label">Hostel Name *</label><input id="hm-name" placeholder="e.g. Volta Hall (Block A)">
+    <label for="hm-type" class="label">Type</label>
+    <select id="hm-type"><option>Mixed</option><option>Male</option><option>Female</option></select>
+    <label for="hm-capacity" class="label">Capacity *</label><input id="hm-capacity" type="number">
+    <label for="hm-occupied" class="label">Currently Occupied</label><input id="hm-occupied" type="number" value="0">
+    <label for="hm-fee" class="label">Fee per Semester (GHS) *</label><input id="hm-fee" type="number">
+    <div class="msg" id="hm-msg"></div>
+    <button class="btn-fill btn-wide" onclick="submitHostel()">Save Hostel</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="fee-modal">
+  <div class="modal">
+    <h2><span id="fm-title">Add Fee Structure</span><button onclick="closeModal('fee-modal')">✕</button></h2>
+    <input type="hidden" id="fm-id">
+    <label for="fm-programme" class="label">Programme *</label><input id="fm-programme" placeholder="BTech Computer Technology">
+    <label for="fm-level" class="label">Level *</label>
+    <select id="fm-level"><option>Level 100</option><option>Level 200</option><option>Level 300</option><option>Level 400</option></select>
+    <label for="fm-year" class="label">Academic Year *</label><input id="fm-year" placeholder="2025/2026">
+    <label for="fm-tuition" class="label">Tuition (GHS) *</label><input id="fm-tuition" type="number">
+    <label for="fm-hostel" class="label">Hostel (GHS)</label><input id="fm-hostel" type="number" value="0">
+    <label for="fm-exam" class="label">Exam Fee (GHS)</label><input id="fm-exam" type="number" value="0">
+    <label for="fm-src" class="label">SRC Dues (GHS)</label><input id="fm-src" type="number" value="0">
+    <div class="msg" id="fm-msg"></div>
+    <button class="btn-fill btn-wide" onclick="submitFee()">Save Fee Structure</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="timetable-modal">
+  <div class="modal">
+    <h2><span id="tm-title">Add Timetable Entry</span><button onclick="closeModal('timetable-modal')">✕</button></h2>
+    <input type="hidden" id="tm-id">
+    <label for="tm-day" class="label">Day *</label>
+    <select id="tm-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
+    <label for="tm-time" class="label">Time *</label><input id="tm-time" placeholder="e.g. 7:30-9:30">
+    <label for="tm-course" class="label">Course Code *</label><input id="tm-course" placeholder="e.g. CPT 301">
+    <label for="tm-room" class="label">Room *</label><input id="tm-room" placeholder="e.g. Lab A-201">
+    <label for="tm-lecturer" class="label">Lecturer</label><input id="tm-lecturer" placeholder="e.g. Dr. Mensah K.">
+    <div class="msg" id="tm-msg"></div>
+    <button class="btn-fill btn-wide" onclick="submitTimetable()">Save Entry</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="result-modal">
+  <div class="modal">
+    <h2><span>Add Result</span><button onclick="closeModal('result-modal')">✕</button></h2>
+    <label for="rm-studentid" class="label">Student ID *</label><input id="rm-studentid" placeholder="KsTU/24/042">
+    <label for="rm-studentname" class="label">Student Name</label><input id="rm-studentname">
+    <label for="rm-course" class="label">Course Code *</label><input id="rm-course" placeholder="CPT 301">
+    <label for="rm-ca" class="label">CA Score (out of 40) *</label><input id="rm-ca" type="number">
+    <label for="rm-exam" class="label">Exam Score (out of 60) *</label><input id="rm-exam" type="number">
+    <div class="msg" id="rm-msg"></div>
+    <button class="btn-fill btn-wide" onclick="submitResult()">Save Result</button>
+  </div>
+</div>
+
+<script src="../shared/api.js"></script>
+<script>
+let currentRole='student';
+
+function getRoleBadgeClass(role){
+  if(role==='student') return 'b-blue';
+  if(role==='lecturer') return 'b-green';
+  return 'b-gold';
+}
+function getHostelBadgeClass(occupied, capacity){
+  return occupied >= capacity ? 'b-red' : 'b-green';
+}
+function getHostelStatusText(occupied, capacity){
+  return occupied >= capacity ? 'Full' : 'Available';
+}
+function getGradeBadgeClass(grade){
+  if(grade==='F') return 'b-red';
+  if(grade==='A') return 'b-green';
+  return 'b-blue';
+}
+function getPaymentStatusBadge(status){
+  if(status==='confirmed') return 'b-green';
+  if(status==='pending_confirmation') return 'b-gold';
+  return 'b-blue';
+}
+function getPaymentStatusLabel(status){
+  return status==='pending_confirmation'?'Pending':status;
+}
+function escapeForHtmlAttribute(value){
+  return String(value).replaceAll("'", "&#39;").replaceAll('"', '&quot;');
+}
+function getTemporaryPasswordSuffix(){
+  if(typeof window !== 'undefined' && window.crypto && typeof window.crypto.getRandomValues === 'function'){
+    const buffer = new Uint32Array(1);
+    window.crypto.getRandomValues(buffer);
+    return buffer[0] % 9000;
+  }
+  return 0;
+}
+function createTemporaryPassword(){
+  return 'KsTU@' + (1000 + getTemporaryPasswordSuffix());
+}
+
+function adminLogin(){
+  const username=document.getElementById('a-user').value.trim();
+  const password=document.getElementById('a-pass').value;
+  const err=document.getElementById('a-err');
+  CampusAPI.adminLogin(username,password).then(()=>{
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('topbar').style.display='flex';
+    document.getElementById('layout').style.display='flex';
+    loadDashboard();
+  }).catch(e=>{err.textContent=e.message;});
+}
+function logout(){location.reload();}
+
+const pageLoaders = {
+  dash: loadDashboard,
+  students: () => loadUsers('student', 'students-tbody'),
+  lecturers: () => loadUsers('lecturer', 'lecturers-tbody'),
+  hods: () => loadUsers('hod', 'hods-tbody'),
+  timetable: loadTimetable,
+  results: loadResults,
+  hostels: loadHostels,
+  fees: loadFees,
+  notices: loadNotices,
+  calendar: loadCalendar,
+  allocations: loadAllocations,
+  payments: loadPayments,
+  bulk: renderBulkPage
+};
+
+function go(page, el){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  let pg = document.getElementById('page-' + page);
+  if(!pg){
+    pg = document.createElement('div');
+    pg.className = 'page active';
+    pg.id = 'page-' + page;
+    document.querySelector('.content').appendChild(pg);
+  } else {
+    pg.classList.add('active');
+  }
+  document.querySelectorAll('.sb-item').forEach(s => s.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const loader = pageLoaders[page];
+  if(loader) loader();
+}
+
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+async function loadDashboard(){
+  try{
+    const [students,lecturers,hods]=await Promise.all([
+      CampusAPI.listUsers('student'),CampusAPI.listUsers('lecturer'),CampusAPI.listUsers('hod')
+    ]);
+    document.getElementById('dash-stats').innerHTML=`
+      <div class="card stat"><div class="v" style="color:#60c8ff">${students.length}</div><div class="l">Students</div></div>
+      <div class="card stat"><div class="v" style="color:#047857">${lecturers.length}</div><div class="l">Lecturers</div></div>
+      <div class="card stat"><div class="v" style="color:#fcd34d">${hods.length}</div><div class="l">HODs</div></div>
+      <div class="card stat"><div class="v" style="color:#c4b5fd">${students.length+lecturers.length+hods.length}</div><div class="l">Total Accounts</div></div>
+    `;
+    const all=[...students,...lecturers,...hods].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,8);
+    document.getElementById('recent-users').innerHTML=all.length?all.map(u=>`
+      <div class="card-row">
+        <span>${u.name}</span><span class="badge ${getRoleBadgeClass(u.role)}">${u.role}</span>
+      </div>`).join(''):'<div class="table-empty">No accounts created yet.</div>';
+  }catch(e){console.error(e);}
+}
+
+async function loadUsers(role,tbodyId){
+  const span=role==='student'?6:5;
+  const tbody=document.getElementById(tbodyId);
+  tbody.innerHTML='<tr><td colspan="'+span+'" style="text-align:center;color:#475569">Loading…</td></tr>';
+  try{
+    const users=await CampusAPI.listUsers(role);
+    if(!users.length){tbody.innerHTML='<tr><td colspan="'+span+'" class="table-empty">No '+role+'s yet.</td></tr>';return;}
+    if(role==='student'){
+      tbody.innerHTML=users.map(u=>'<tr><td>'+u.name+'</td><td>'+u.email+'</td><td>'+(u.programme||'—')+'</td><td>'+(u.level||'—')+'</td><td>'+(u.studentId||'—')+'</td><td><button class="btn-sm btn-red" onclick="deleteUser(\''+u.id+'\',\''+role+'\')">Delete</button></td></tr>').join('');
+    }else{
+      tbody.innerHTML=users.map(u=>'<tr><td>'+(u.title?u.title+' ':'')+u.name+'</td><td>'+u.email+'</td><td>'+(u.department||'—')+'</td><td>'+(u.staffId||'—')+'</td><td><button class="btn-sm btn-red" onclick="deleteUser(\''+u.id+'\',\''+role+'\')">Delete</button></td></tr>').join('');
+  }
+}catch(e){tbody.innerHTML='<tr><td colspan="6" style="color:#fca5a5">Error: '+e.message+'</td></tr>';}
+}
+async function deleteUser(id,role){
+  if(!confirm('Delete this account permanently?'))return;
+  try{await CampusAPI.deleteUser(id);
+    if(role==='student')loadUsers('student','students-tbody');
+    else if(role==='lecturer')loadUsers('lecturer','lecturers-tbody');
+    else loadUsers('hod','hods-tbody');
+    loadDashboard();
+  }catch(e){alert(e.message);}
+}
+
+function openUserModal(role){
+  currentRole=role;
+  document.getElementById('um-title').textContent='Add '+role.charAt(0).toUpperCase()+role.slice(1);
+  document.getElementById('um-student-fields').style.display=role==='student'?'block':'none';
+  document.getElementById('um-staff-fields').style.display=role!=='student'?'block':'none';
+  ['um-name','um-email','um-pass','um-studentid','um-programme','um-staffid','um-department'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  var levelEl=document.getElementById('um-level');if(levelEl)levelEl.selectedIndex=0;
+  var msgEl=document.getElementById('um-msg');if(msgEl)msgEl.textContent='';
+  document.getElementById('um-form').style.display='block';
+  document.getElementById('um-success').style.display='none';
+  document.getElementById('user-modal').classList.add('open');
+}
+async function submitUser(){
+  var name=document.getElementById('um-name').value.trim();
+  var email=document.getElementById('um-email').value.trim();
+  var password=document.getElementById('um-pass').value;
+  var msg=document.getElementById('um-msg');
+  if(!name||!email||!password){msg.style.color='#fca5a5';msg.textContent='Name, email, and password are required.';return;}
+  var payload={name:name,email:email,password:password,role:currentRole};
+  if(currentRole==='student'){
+    payload.studentId=document.getElementById('um-studentid').value.trim();
+    payload.programme=document.getElementById('um-programme').value.trim();
+    payload.level=document.getElementById('um-level').value;
+  }else{
+    payload.title=document.getElementById('um-title-field').value;
+    payload.staffId=document.getElementById('um-staffid').value.trim();
+    payload.department=document.getElementById('um-department').value.trim();
+  }
+  try{
+    await CampusAPI.createUser(payload);
+    document.getElementById('cred-name').textContent=name;
+    document.getElementById('cred-email').textContent=email;
+    document.getElementById('cred-pw').textContent=password;
+    document.getElementById('um-form').style.display='none';
+    document.getElementById('um-success').style.display='block';
+    loadDashboard();
+    if(currentRole==='student')loadUsers('student','students-tbody');
+    if(currentRole==='lecturer')loadUsers('lecturer','lecturers-tbody');
+    if(currentRole==='hod')loadUsers('hod','hods-tbody');
+  }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
+
+async function loadHostels(){
+  var tbody=document.getElementById('hostels-tbody');
+  tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#475569">Loading…</td></tr>';
+  try{
+    var rows=await CampusAPI.listHostels();
+    tbody.innerHTML=rows.length?rows.map(function(h){
+      const statusBadge=getHostelBadgeClass(h.occupied, h.capacity);
+      const statusText=getHostelStatusText(h.occupied, h.capacity);
+      const escapedHostel=escapeForHtmlAttribute(h);
+      return '<tr><td>'+h.name+'</td><td>'+h.type+'</td><td>'+h.capacity+'</td><td>'+h.occupied+'</td><td>GHS '+h.feePerSemester+'</td><td><span class="badge '+statusBadge+'">'+statusText+'</span></td><td><button class="btn-sm btn-blue" onclick=\'editHostel('+escapedHostel+')\'>Edit</button> <button class="btn-sm btn-red" onclick="deleteHostel(\''+h.id+'\')">Delete</button></td></tr>';
+    }).join(''):'<tr><td colspan="7" class="table-empty">No hostels yet.</td></tr>';
+  }catch(e){tbody.innerHTML='<tr><td colspan="7" style="color:#fca5a5">Error: '+e.message+'</td></tr>';}
+}
+function openHostelModal(){
+  document.getElementById('hm-title').textContent='Add Hostel';
+  document.getElementById('hm-id').value='';
+  document.getElementById('hm-name').value='';document.getElementById('hm-capacity').value='';
+  document.getElementById('hm-occupied').value='0';document.getElementById('hm-fee').value='';
+  document.getElementById('hm-msg').textContent='';
+  document.getElementById('hostel-modal').classList.add('open');
+}
+function editHostel(h){
+  document.getElementById('hm-title').textContent='Edit Hostel';
+  document.getElementById('hm-id').value=h.id;
+  document.getElementById('hm-name').value=h.name;
+  document.getElementById('hm-type').value=h.type;
+  document.getElementById('hm-capacity').value=h.capacity;
+  document.getElementById('hm-occupied').value=h.occupied;
+  document.getElementById('hm-fee').value=h.feePerSemester;
+  document.getElementById('hostel-modal').classList.add('open');
+}
+async function submitHostel(){
+  var id=document.getElementById('hm-id').value;
+  var name=document.getElementById('hm-name').value.trim();
+  var type=document.getElementById('hm-type').value;
+  var capacity=document.getElementById('hm-capacity').value;
+  var occupied=document.getElementById('hm-occupied').value;
+  var feePerSemester=document.getElementById('hm-fee').value;
+  var msg=document.getElementById('hm-msg');
+  if(!name||!capacity||!feePerSemester){msg.style.color='#fca5a5';msg.textContent='Name, capacity, and fee are required.';return;}
+  var status=Number(occupied)>=Number(capacity)?'full':'available';
+  try{
+    if(id) await CampusAPI.updateHostel(id,{name:name,type:type,capacity:Number(capacity),occupied:Number(occupied),feePerSemester:Number(feePerSemester),status:status});
+    else await CampusAPI.createHostel({name:name,type:type,capacity:Number(capacity),occupied:Number(occupied),feePerSemester:Number(feePerSemester),status:status});
+    closeModal('hostel-modal');loadHostels();
+  }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
+async function deleteHostel(id){
+  if(!confirm('Delete this hostel?'))return;
+  try{await CampusAPI.deleteHostel(id);loadHostels();}catch(e){alert(e.message);}
+}
+
+async function loadFees(){
+  var tbody=document.getElementById('fees-tbody');
+  tbody.innerHTML='<tr><td colspan="9" class="table-center">Loading…</td></tr>';
+  try{
+    var rows=await CampusAPI.listFeeStructures();
+    tbody.innerHTML=rows.length?rows.map(function(f){
+      const escapedFee=escapeForHtmlAttribute(f);
+      return '<tr><td>'+f.programme+'</td><td>'+f.level+'</td><td>'+f.academicYear+'</td><td>'+f.tuition+'</td><td>'+f.hostel+'</td><td>'+f.examFee+'</td><td>'+f.srcDues+'</td><td style="color:#047857;font-weight:600">GHS '+f.total+'</td><td><button class="btn-sm btn-blue" onclick=\'editFee('+escapedFee+')\'>Edit</button> <button class="btn-sm btn-red" onclick="deleteFee(\''+f.id+'\')">Delete</button></td></tr>';
+    }).join(''):'<tr><td colspan="9" class="table-empty">No fee structures yet.</td></tr>';
+  }catch(e){tbody.innerHTML='<tr><td colspan="9" class="text-red">Error: '+e.message+'</td></tr>';}
+}
+function openFeeModal(){
+  document.getElementById('fm-title').textContent='Add Fee Structure';
+  document.getElementById('fm-id').value='';
+  ['fm-programme','fm-year','fm-tuition'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('fm-hostel').value='0';document.getElementById('fm-exam').value='0';document.getElementById('fm-src').value='0';
+  document.getElementById('fm-msg').textContent='';
+  document.getElementById('fee-modal').classList.add('open');
+}
+function editFee(f){
+  document.getElementById('fm-title').textContent='Edit Fee Structure';
+  document.getElementById('fm-id').value=f.id;
+  document.getElementById('fm-programme').value=f.programme;
+  document.getElementById('fm-level').value=f.level;
+  document.getElementById('fm-year').value=f.academicYear;
+  document.getElementById('fm-tuition').value=f.tuition;
+  document.getElementById('fm-hostel').value=f.hostel;
+  document.getElementById('fm-exam').value=f.examFee;
+  document.getElementById('fm-src').value=f.srcDues;
+  document.getElementById('fee-modal').classList.add('open');
+}
+async function submitFee(){
+  var id=document.getElementById('fm-id').value;
+  var programme=document.getElementById('fm-programme').value.trim();
+  var level=document.getElementById('fm-level').value;
+  var academicYear=document.getElementById('fm-year').value.trim();
+  var tuition=document.getElementById('fm-tuition').value;
+  var hostel=document.getElementById('fm-hostel').value;
+  var examFee=document.getElementById('fm-exam').value;
+  var srcDues=document.getElementById('fm-src').value;
+  var msg=document.getElementById('fm-msg');
+  if(!programme||!academicYear||!tuition){msg.style.color='#fca5a5';msg.textContent='Programme, year, and tuition are required.';return;}
+  try{
+    var payload={programme:programme,level:level,academicYear:academicYear,tuition:Number(tuition),hostel:Number(hostel),examFee:Number(examFee),srcDues:Number(srcDues)};
+    if(id) await CampusAPI.updateFeeStructure(id,payload);
+    else await CampusAPI.createFeeStructure(payload);
+    closeModal('fee-modal');loadFees();
+  }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
+async function deleteFee(id){
+  if(!confirm('Delete this fee structure?'))return;
+  try{await CampusAPI.deleteFeeStructure(id);loadFees();}catch(e){alert(e.message);}
+}
+
+async function loadTimetable(){
+  var tbody=document.getElementById('timetable-tbody');
+  tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#475569">Loading…</td></tr>';
+  try{
+    var rows=await CampusAPI.listTimetable();
+    tbody.innerHTML=rows.length?rows.map(function(t){
+      const escapedTimetable=escapeForHtmlAttribute(t);
+      return '<tr><td>'+t.day+'</td><td>'+t.time+'</td><td>'+t.courseCode+'</td><td>'+t.room+'</td><td>'+(t.lecturer||'—')+'</td><td><button class="btn-sm btn-blue" onclick=\'editTimetable('+escapedTimetable+')\'>Edit</button> <button class="btn-sm btn-red" onclick="deleteTimetable(\''+t.id+'\')">Delete</button></td></tr>';
+    }).join(''):'<tr><td colspan="6" class="table-empty">No timetable entries yet.</td></tr>';
+  }catch(e){tbody.innerHTML='<tr><td colspan="6" style="color:#fca5a5">Error: '+e.message+'</td></tr>';} 
+}
+function openTimetableModal(){
+  document.getElementById('tm-title').textContent='Add Timetable Entry';
+  document.getElementById('tm-id').value='';
+  ['tm-time','tm-course','tm-room','tm-lecturer'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('tm-msg').textContent='';
+  document.getElementById('timetable-modal').classList.add('open');
+}
+function editTimetable(t){
+  document.getElementById('tm-title').textContent='Edit Entry';
+  document.getElementById('tm-id').value=t.id;
+  document.getElementById('tm-day').value=t.day;
+  document.getElementById('tm-time').value=t.time;
+  document.getElementById('tm-course').value=t.courseCode;
+  document.getElementById('tm-room').value=t.room;
+  document.getElementById('tm-lecturer').value=t.lecturer||'';
+  document.getElementById('timetable-modal').classList.add('open');
+}
+async function submitTimetable(){
+  var id=document.getElementById('tm-id').value;
+  var day=document.getElementById('tm-day').value;
+  var time=document.getElementById('tm-time').value.trim();
+  var courseCode=document.getElementById('tm-course').value.trim();
+  var room=document.getElementById('tm-room').value.trim();
+  var lecturer=document.getElementById('tm-lecturer').value.trim();
+  var msg=document.getElementById('tm-msg');
+  if(!time||!courseCode||!room){msg.style.color='#fca5a5';msg.textContent='Time, course, and room are required.';return;}
+  try{
+    if(id) await CampusAPI.updateTimetableEntry(id,{day:day,time:time,courseCode:courseCode,room:room,lecturer:lecturer});
+    else await CampusAPI.createTimetableEntry({day:day,time:time,courseCode:courseCode,room:room,lecturer:lecturer});
+    closeModal('timetable-modal');loadTimetable();
+  }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
+async function deleteTimetable(id){
+  if(!confirm('Delete this entry?'))return;
+  try{await CampusAPI.deleteTimetableEntry(id);loadTimetable();}catch(e){alert(e.message);}
+}
+
+async function loadResults(){
+  var tbody=document.getElementById('results-tbody');
+  tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#475569">Loading…</td></tr>';
+  try{
+    var rows=await CampusAPI.listResults();
+    tbody.innerHTML=rows.length?rows.map(function(r){
+      return '<tr><td>'+(r.studentName||r.studentId)+'</td><td>'+r.courseCode+'</td><td>'+r.caScore+'</td><td>'+r.examScore+'</td><td>'+r.total+'</td><td><span class="badge '+getGradeBadgeClass(r.grade)+'">'+r.grade+'</span></td><td><button class="btn-sm btn-red" onclick="deleteResult(\''+r.id+'\')">Delete</button></td></tr>';
+    }).join(''):'<tr><td colspan="7" class="table-empty">No results yet.</td></tr>';
+  }catch(e){tbody.innerHTML='<tr><td colspan="7" style="color:#fca5a5">Error: '+e.message+'</td></tr>';}
+}
+function openResultModal(){
+  ['rm-studentid','rm-studentname','rm-course','rm-ca','rm-exam'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('rm-msg').textContent='';
+  document.getElementById('result-modal').classList.add('open');
+}
+async function submitResult(){
+  var studentId=document.getElementById('rm-studentid').value.trim();
+  var studentName=document.getElementById('rm-studentname').value.trim();
+  var courseCode=document.getElementById('rm-course').value.trim();
+  var caScore=document.getElementById('rm-ca').value;
+  var examScore=document.getElementById('rm-exam').value;
+  var msg=document.getElementById('rm-msg');
+  if(!studentId||!courseCode||caScore===''||examScore===''){msg.style.color='#fca5a5';msg.textContent='All fields except name are required.';return;}
+  try{
+    await CampusAPI.createResult({studentId:studentId,studentName:studentName,courseCode:courseCode,caScore:Number(caScore),examScore:Number(examScore)});
+    closeModal('result-modal');loadResults();
+  }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
+async function deleteResult(id){
+  if(!confirm('Delete this result?'))return;
+  try{await CampusAPI.deleteResult(id);loadResults();}catch(e){alert(e.message);}
+}
+
+async function changeAdminPw(){
+  var oldPassword=document.getElementById('set-oldpw').value;
+  var newPassword=document.getElementById('set-newpw').value;
+  var msg=document.getElementById('set-msg');
+  try{
+    await CampusAPI.adminChangePassword('admin',oldPassword,newPassword);
+    msg.style.color='#047857';msg.textContent='Password updated successfully.';
+    document.getElementById('set-oldpw').value='';document.getElementById('set-newpw').value='';
+  }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
+
+// Extended: Notices
+async function loadNotices(){
+  var pg=document.getElementById('page-notices');
+  if(!pg){pg=document.createElement('div');pg.className='page';pg.id='page-notices';document.querySelector('.content').appendChild(pg);}
+  pg.innerHTML='<div class="page-title">Notice Board</div><div class="card" style="margin-bottom:1rem"><h3 style="font-size:.85rem;margin-bottom:.75rem">Post New Announcement</h3>'+
+    '<label for="n-title" class="label">Title *</label><input id="n-title" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none;margin-bottom:.65rem">'+
+    '<label for="n-cat" class="label">Category</label><select id="n-cat" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none;margin-bottom:.65rem"><option value="general">General</option><option value="exam">Exams</option><option value="fees">Fees</option><option value="event">Events</option><option value="urgent">Urgent</option></select>'+
+    '<label for="n-body" class="label">Message *</label><textarea id="n-body" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none;margin-bottom:.65rem;min-height:80px;resize:vertical"></textarea>'+
+    '<div class="msg" id="n-msg"></div><button class="btn-fill" style="width:100%" onclick="postNotice()">Post to All Users</button></div>'+
+    '<h3 style="font-size:.85rem;margin-bottom:.6rem">Posted Announcements</h3><div id="notices-list"><div style="text-align:center;color:#475569;padding:1rem">Loading...</div></div>';
+  try{
+    var notices=await CampusAPI.listNotices();
+    document.getElementById('notices-list').innerHTML=notices.length?notices.map(function(n){return '<div class="card" style="margin-bottom:.6rem;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.5rem"><div><div style="font-size:.85rem;font-weight:600">'+n.title+' <span class="badge b-blue" style="font-size:.6rem">'+(n.category||'general')+'</span></div><div style="font-size:.78rem;color:#94a3b8;margin-top:3px">'+n.body+'</div><div style="font-size:.68rem;color:#334155;margin-top:4px">'+new Date(n.createdAt).toLocaleString()+'</div></div><button class="btn-sm btn-red" onclick="deleteNotice(\''+n.id+'\')">Delete</button></div>';}).join(''):'<div style="color:#475569;font-size:.82rem">No notices posted yet.</div>';
+  }catch(e){console.warn(e)}
+}
+async function postNotice(){
+  var title=document.getElementById('n-title').value.trim();
+  var body=document.getElementById('n-body').value.trim();
+  var msg=document.getElementById('n-msg');
+  if(!title||!body){msg.style.color='#fca5a5';msg.textContent='Title and message required.';return;}
+  try{
+    await CampusAPI.postNoticeAdmin({title:title,body:body,category:document.getElementById('n-cat').value,adminName:'Admin'});
+    msg.style.color='#047857';msg.textContent='Notice posted!';
+    document.getElementById('n-title').value='';document.getElementById('n-body').value='';
+    loadNotices();
+  }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
+async function deleteNotice(id){
+  if(!confirm('Delete this notice?'))return;
+  try{ await CampusAPI.deleteNotice(id); }
+  catch(e){ alert('Could not delete notice: '+e.message); return; }
+  loadNotices();
+}
+
+// Extended: Calendar
+async function loadCalendar(){
+  var pg=document.getElementById('page-calendar');
+  if(!pg){pg=document.createElement('div');pg.className='page';pg.id='page-calendar';document.querySelector('.content').appendChild(pg);}
+  pg.innerHTML='<div class="page-title">Academic Calendar</div><div class="card" style="margin-bottom:1rem"><h3 style="font-size:.85rem;margin-bottom:.75rem">Add Calendar Event</h3>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">'+
+    '<div><label for="cal-title" class="label">Event Title *</label><input id="cal-title" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none"></div>'+
+    '<div><label for="cal-type" class="label">Type</label><select id="cal-type" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none"><option value="event">Event</option><option value="exam">Exam</option><option value="semester">Semester</option><option value="holiday">Holiday</option></select></div>'+
+    '<div><label for="cal-start" class="label">Start Date *</label><input id="cal-start" type="date" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none"></div>'+
+    '<div><label for="cal-end" class="label">End Date</label><input id="cal-end" type="date" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#f0f4ff;padding:.55rem .875rem;border-radius:10px;font-family:inherit;font-size:.82rem;outline:none"></div></div>'+
+    '<div class="msg" id="cal-msg"></div><button class="btn-fill" onclick="addCalendarEvent()">Add Event</button></div>'+
+    '<div id="cal-list"><div style="text-align:center;color:#475569;padding:1rem">Loading...</div></div>';
+  try{
+    var events=await CampusAPI.listCalendar();
+    var typeColors={semester:'b-blue',exam:'b-red',holiday:'b-green',event:'b-gold'};
+    document.getElementById('cal-list').innerHTML=events.length?'<div class="card" style="overflow-x:auto"><table><thead><tr><th>Event</th><th>Type</th><th>Start</th><th>End</th><th>Actions</th></tr></thead><tbody>'+
+      events.map(function(e){return '<tr><td>'+e.title+'</td><td><span class="badge '+(typeColors[e.type]||'b-blue')+'">'+e.type+'</span></td><td>'+e.startDate+'</td><td>'+(e.endDate||'—')+'</td><td><button class="btn-sm btn-red" onclick="deleteCalEvent(\''+e.id+'\')">Delete</button></td></tr>';}).join('')+
+      '</tbody></table></div>':'<div style="color:#475569;font-size:.82rem">No calendar events yet.</div>';
+  }catch(e){console.warn(e)}
+}
+async function addCalendarEvent(){
+  var title=document.getElementById('cal-title').value.trim();
+  var type=document.getElementById('cal-type').value;
+  var startDate=document.getElementById('cal-start').value;
+  var endDate=document.getElementById('cal-end').value;
+  var msg=document.getElementById('cal-msg');
+  if(!title||!startDate){msg.style.color='#fca5a5';msg.textContent='Title and start date required.';return;}
+  try{await CampusAPI.createCalendarEvent({title:title,type:type,startDate:startDate,endDate:endDate});msg.style.color='#047857';msg.textContent='Event added.';document.getElementById('cal-title').value='';loadCalendar();}catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
+async function deleteCalEvent(id){
+  if(!confirm('Delete event?'))return;
+  try{ await CampusAPI.deleteCalendarEvent(id); }
+  catch(e){ alert('Could not delete event: '+e.message); return; }
+  loadCalendar();
+}
+
+// Extended: Hostel Allocations
+async function loadAllocations(){
+  var pg=document.getElementById('page-allocations');
+  if(!pg){pg=document.createElement('div');pg.className='page';pg.id='page-allocations';document.querySelector('.content').appendChild(pg);}
+  pg.innerHTML='<div class="page-title">Hostel Allocation Requests</div><div id="alloc-list"><div style="text-align:center;color:#475569">Loading...</div></div>';
+  try{
+    var apps=await CampusAPI.listHostelApplications();
+    document.getElementById('alloc-list').innerHTML=apps.length?'<div class="card" style="overflow-x:auto"><table><thead><tr><th>Student</th><th>Hostel</th><th>Status</th><th>Room</th><th>Actions</th></tr></thead><tbody>'+
+      apps.map(function(a){
+        let badgeClass='b-red';
+        if(a.status==='approved') badgeClass='b-green';
+        else if(a.status==='pending') badgeClass='b-gold';
+        const actions=a.status==='pending' ? '<button class="btn-sm btn-green" onclick="allocate(\''+a.id+'\')">Allocate</button> <button class="btn-sm btn-red" onclick="rejectAlloc(\''+a.id+'\')">Reject</button>' : '<span style="color:#334155">Done</span>';
+        return '<tr><td>'+(a.studentName||a.studentId)+'</td><td>'+a.hostelName+'</td><td><span class="badge '+badgeClass+'">'+a.status+'</span></td><td>'+(a.roomNumber||'—')+'</td><td>'+actions+'</td></tr>';
+      }).join('')+
+      '</tbody></table></div>':'<div class="card" style="color:#475569;font-size:.82rem">No hostel applications yet.</div>';
+  }catch(e){console.warn(e)}
+}
+async function allocate(id){
+  var room=prompt('Enter room number:');
+  if(!room) return;
+  try{
+    await CampusAPI.allocateHostel(id,{roomNumber:room,status:'approved'});
+  }catch(e){
+    alert(e.message);
+  } finally {
+    loadAllocations();
+  }
+}
+async function rejectAlloc(id){
+  if(!confirm('Reject?')) return;
+  try{
+    await CampusAPI.allocateHostel(id,{status:'rejected'});
+  }catch(e){
+    alert(e.message);
+  } finally {
+    loadAllocations();
+  }
+}
+
+// Extended: Fee Payments
+async function loadPayments(){
+  var pg=document.getElementById('page-payments');
+  if(!pg){pg=document.createElement('div');pg.className='page';pg.id='page-payments';document.querySelector('.content').appendChild(pg);}
+  pg.innerHTML='<div class="page-title">Fee Payment Confirmations</div><div id="payments-list"><div style="text-align:center;color:#475569">Loading...</div></div>';
+  try{
+    var payments=await CampusAPI.listPayments();
+    document.getElementById('payments-list').innerHTML=payments.length?'<div class="card" style="overflow-x:auto"><table><thead><tr><th>Student</th><th>Amount</th><th>Method</th><th>Status</th><th>Action</th></tr></thead><tbody>'+
+      payments.map(function(p){
+        const badgeClass=getPaymentStatusBadge(p.status);
+        const statusLabel=getPaymentStatusLabel(p.status);
+        const actionMarkup=p.status==='pending_confirmation' ? '<button class="btn-sm btn-green" onclick="confirmPay(\''+p.id+'\')">Confirm</button>' : '<span style="color:#334155">Done</span>';
+        return '<tr><td>'+p.studentId+'</td><td style="color:#047857;font-weight:600">'+p.amount+'</td><td>'+(p.method||'—')+'</td><td><span class="badge '+badgeClass+'">'+statusLabel+'</span></td><td>'+actionMarkup+'</td></tr>';
+      }).join('')+
+      '</tbody></table></div>':'<div class="card" style="color:#475569;font-size:.82rem">No payment submissions yet.</div>';
+  }catch(e){console.warn(e)}
+}
+async function confirmPay(id){
+  if(!confirm('Confirm this payment?'))return;
+  try{await CampusAPI.confirmPayment(id);}catch(e){alert(e.message);} finally { loadPayments(); }
+}
+
+// Extended: Bulk Import
+function renderBulkPage(){
+    let pg=document.getElementById('page-bulk');
+    if(!pg){pg=document.createElement('div');pg.className='page';pg.id='page-bulk';document.querySelector('.content').appendChild(pg);}
+    pg.innerHTML=`<div class="page-title">Bulk Account Import</div>
+      <div class="card">
+        <div style="font-size:0.82rem;color:var(--t2);margin-bottom:1rem">
+          Upload a CSV file with columns: <strong>name, email, role, [programme/studentID]</strong>
+        </div>
+        <input type="file" id="bulk-file" accept=".csv" style="margin-bottom:1rem">
+        <button class="btn-fill" onclick="processBulkImport()">Process Import</button>
+          <div id="bulk-msg" style="margin-top:1rem;font-size:0.82rem"></div>
+       </div>`;
+  }
+
+// Parse a single CSV line, supporting quoted fields and escaped double-quotes.
+function parseCSVRow(line){
+  const out=[];
+  let cur='';
+  let inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    const next=line[i+1];
+    if(ch=='"'){
+      if(inQ && next=='"'){
+        cur+='"';
+        i++;
+        continue;
+      }
+      inQ=!inQ;
+      continue;
+    }
+    if(ch===',' && !inQ){
+      out.push(cur);
+      cur='';
+      continue;
+    }
+    cur+=ch;
+  }
+  out.push(cur);
+  return out;
+}
+
+function getBulkImportFieldMap(header, cols){
+  const rec={};
+  header.forEach((h,i)=>{ rec[h]=(cols[i]!==undefined?String(cols[i]).trim():''); });
+  return rec;
+}
+
+function buildBulkImportPayload(rec, role){
+  const payload={ name:rec.name, email:rec.email, role, password: rec.password || createTemporaryPassword() };
+  if(role==='student'){
+    payload.studentId=rec.studentid||'';
+    payload.programme=rec.programme||'';
+    payload.level=rec.level||'';
+    return payload;
+  }
+  if(role==='lecturer'||role==='hod'){
+    payload.title=rec.title||'';
+    payload.staffId=rec.staffid||'';
+    payload.department=rec.department||'';
+    return payload;
+  }
+  return null;
+}
+
+function getBulkImportStatusColor(failed, created){
+  if(failed && !created) return '#fca5a5';
+  if(failed) return '#fcd34d';
+  return '#047857';
+}
+
+function getBulkImportSummaryMessage(created, failed, errors){
+  let out='Import complete — '+created+' account(s) created, '+failed+' failed.';
+  if(errors.length) out+='\n'+errors.slice(0,6).join('\n')+(errors.length>6?' …':'');
+  return out;
+}
+
+function parseBulkImportDocument(text){
+  const lines=text.split(/\r?\n/).filter(l=>l.trim()!=='');
+  if(lines.length<2){ return { error:'CSV must have a header row and at least one data row.' }; }
+  const header=parseCSVRow(lines[0]).map(h=>h.trim().toLowerCase());
+  const required=['name','email','role'];
+  const missing=required.filter(c=>!header.includes(c));
+  if(missing.length){ return { error:'CSV is missing required column(s): '+missing.join(', ') }; }
+  return { header, rows: lines.slice(1).map(parseCSVRow) };
+}
+
+async function importBulkRows(rows, header){
+  let created=0;
+  let failed=0;
+  const errors=[];
+  for(const cols of rows){
+    const rec=getBulkImportFieldMap(header, cols);
+    if(!rec.name||!rec.email||!rec.role){
+      failed++;
+      errors.push('Skipped row (missing name/email/role)');
+      continue;
+    }
+    const role=rec.role.toLowerCase();
+    const payload=buildBulkImportPayload(rec, role);
+    if(!payload){
+      failed++;
+      errors.push(rec.email+': unknown role "'+role+'"');
+      continue;
+    }
+    try{ await CampusAPI.createUser(payload); created++; }
+    catch(e){ failed++; errors.push(rec.email+': '+e.message); }
+  }
+  return { created, failed, errors };
+}
+
+async function readBulkImportFile(fileInput){
+  if(!fileInput||!fileInput.files||!fileInput.files.length){
+    return { error:'Please choose a CSV file first.' };
+  }
+  try{
+    const text=await fileInput.files[0].text();
+    return { text };
+  } catch(e){
+    return { error:'Could not read file: '+e.message };
+  }
+}
+
+function showBulkImportMessage(msg, text, color){
+  msg.style.color=color;
+  msg.textContent=text;
+}
+
+async function processBulkImport(){
+  const fileInput=document.getElementById('bulk-file');
+  const msg=document.getElementById('bulk-msg');
+  msg.style.color='#94a3b8';
+  msg.textContent='Reading file…';
+  msg.style.whiteSpace='normal';
+  const input=await readBulkImportFile(fileInput);
+  if(input.error){
+    showBulkImportMessage(msg, input.error, '#fca5a5');
+    return;
+  }
+  const parsed=parseBulkImportDocument(input.text);
+  if(parsed.error){
+    showBulkImportMessage(msg, parsed.error, '#fca5a5');
+    return;
+  }
+  const result=await importBulkRows(parsed.rows, parsed.header);
+  const out=getBulkImportSummaryMessage(result.created, result.failed, result.errors);
+  showBulkImportMessage(msg, out, getBulkImportStatusColor(result.failed, result.created));
+  msg.style.whiteSpace='pre-line';
+  if(result.created) loadDashboard();
+}
+</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../sw.js").catch(()=>{});}</script>
+</body>
+</html>

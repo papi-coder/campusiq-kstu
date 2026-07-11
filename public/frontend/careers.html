@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="stylesheet" href="../shared/styles.css">
+  <title>CampusIQ — Career Hub | KsTU</title>
+  <link rel="manifest" href="../manifest.json">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png" sizes="180x180">
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--panel:#0d1117;--blue:#3b82f6;--cyan:#06b6d4;--purple:#8b5cf6;--gold:#f59e0b;--green:#10b981;--red:#ef4444;--t1:#f0f4ff;--t2:#94a3b8;--t3:#475569}
+html{color-scheme:dark;font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--t1)}
+body{min-height:100vh;background:linear-gradient(135deg,#0a0a0f 0%,#0d1117 60%,#0a0f1a 100%)}
+
+/* HIRING TICKER */
+#hiring-ticker{position:fixed;top:0;left:0;right:0;z-index:110;height:28px;overflow:hidden;background:linear-gradient(90deg,rgba(16,185,129,0.15),rgba(59,130,246,0.1));border-bottom:1px solid rgba(16,185,129,0.25);display:flex;align-items:center}
+#ticker-inner{display:inline-block;white-space:nowrap;animation:tickerRoll 40s linear infinite;font-size:0.71rem;color:#34d399;font-weight:500}
+@keyframes tickerRoll{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
+
+/* NAV */
+nav{position:fixed;top:28px;left:0;right:0;height:50px;display:flex;align-items:center;padding:0 1rem;gap:0.6rem;background:rgba(10,10,15,0.95);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.08);z-index:100}
+.nav-logo{font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.9rem;background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;flex-shrink:0;text-decoration:none}
+.nav-tabs{display:flex;gap:0.15rem;flex:1;overflow-x:auto;-ms-overflow-style:none}
+.ntab{padding:0.27rem 0.6rem;border-radius:20px;font-size:0.69rem;border:none;background:transparent;color:var(--t2);white-space:nowrap;cursor:pointer;font-family:inherit;transition:all .15s}
+.ntab:hover{color:var(--t1)}
+.ntab.active{background:#1d4ed8;color:#f8fbff}
+.back-btn{padding:0.27rem 0.7rem;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--t2);border-radius:20px;font-size:0.69rem;font-family:inherit;cursor:pointer;white-space:nowrap}
+.back-btn:hover{border-color:#3b82f6;color:#e0f2fe}
+
+/* SECTIONS */
+.section{display:none;padding:88px 1.25rem 2rem;max-width:1100px;margin:0 auto;animation:fadeIn .3s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS */
+.gc{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.1rem;transition:all .2s;margin-bottom:.875rem}
+.gc:hover{border-color:rgba(255,255,255,0.13)}
+.gc.blue{border-color:rgba(59,130,246,0.3);background:rgba(59,130,246,0.07)}
+.gc.green{border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.07)}
+.gc.gold{border-color:rgba(245,158,11,0.3);background:rgba(245,158,11,0.07)}
+.gc.purple{border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.07)}
+.gc.red{border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.07)}
+.gc.cyan{border-color:rgba(6,182,212,0.3);background:rgba(6,182,212,0.07)}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.875rem}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem}
+.sh{display:flex;align-items:center;gap:.6rem;margin-bottom:.875rem}
+.sh h2{font-family:'Orbitron',sans-serif;font-size:.92rem;font-weight:600;white-space:nowrap}
+.sh-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent)}
+.badge{display:inline-block;padding:.16rem .5rem;border-radius:20px;font-size:.62rem;font-weight:600;text-transform:uppercase}
+.bb{background:#0b3d93;color:#f8fbff;border:1px solid #1d4ed8}
+.bg{background:#0b5b39;color:#f0fdf4;border:1px solid #0f766e}
+.bgo{background:#7c4700;color:#fff8e7;border:1px solid #b45309}
+.br{background:#7f1d1d;color:#fff5f5;border:1px solid #991b1b}
+
+.bp{background:#4c1d95;color:#f5f3ff;border:1px solid #6d28d9}
+.bc{background:#0b6975;color:#ecfeff;border:1px solid #0f766e}
+
+/* BUTTONS */
+.btn{padding:.5rem 1.1rem;border-radius:20px;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:500;transition:all .2s;border:none}
+.btn-p{background:#1d4ed8;color:#fff}
+.btn-p:hover{opacity:.85;transform:translateY(-1px)}
+.btn-g{background:#0f766e;color:#f0fdf4}
+.btn-g:hover{opacity:.85}
+.btn-o{background:transparent;border:1px solid rgba(255,255,255,0.12);color:var(--t2)}
+.btn-o:hover{border-color:#3b82f6;color:#e0f2fe}
+.btn-r{background:#7f1d1d;border:1px solid #991b1b;color:#fff5f5}
+.btn-gold{background:linear-gradient(135deg,#f59e0b,#f97316);color:#1e3a5f}
+.btn-sm{padding:.22rem .55rem;font-size:.66rem;border-radius:14px;border:none;cursor:pointer;font-family:inherit}
+.bs-blue{background:#0b3d93;border:1px solid #1d4ed8;color:#f8fbff}
+.bs-green{background:#0b5b39;border:1px solid #0f766e;color:#f0fdf4}
+.bs-red{background:#7f1d1d;border:1px solid #991b1b;color:#fff5f5}
+.bs-gold{background:#7c4700;border:1px solid #b45309;color:#fff8e7}
+.bs-purple{background:#4c1d95;border:1px solid #6d28d9;color:#f5f3ff}
+
+/* INPUTS */
+.fi{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--t1);padding:.62rem .875rem;border-radius:10px;font-family:inherit;font-size:.83rem;outline:none;margin-bottom:.6rem}
+.fi:focus{border-color:#3b82f6}
+.fi::placeholder{color:#475569}
+textarea.fi{resize:vertical;min-height:70px}
+select.fi option{background:#0d1117}
+.label{font-size:.68rem;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px}
+
+/* PROGRESS */
+.prog-bar{height:8px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;transition:width 1s ease}
+
+/* MODALS */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal{background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:1.5rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;animation:fadeIn .25s ease}
+.modal h2{font-family:'Orbitron',sans-serif;font-size:.92rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}
+.modal-close{background:none;border:none;color:var(--t2);font-size:1.1rem;cursor:pointer}
+.msg{font-size:.78rem;min-height:1rem;text-align:center;margin-bottom:.4rem}
+
+/* JOB CARD */
+.job-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:1rem;transition:all .25s}
+.job-card:hover{border-color:rgba(59,130,246,0.35);transform:translateY(-2px)}
+.job-card.saved{border-color:rgba(245,158,11,0.4);background:rgba(245,158,11,0.05)}
+.job-card.applied{border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.05)}
+
+/* DEADLINE REMINDER BANNER */
+.deadline-banner{background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(245,158,11,0.1));border:1px solid rgba(239,68,68,0.3);border-radius:14px;padding:.875rem 1rem;margin-bottom:1rem;display:none}
+
+/* COUNTDOWN TIMER */
+
+/* COUNTDOWN TIMER */
+.countdown-box{background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:.75rem;text-align:center;margin-bottom:1rem}
+.countdown-digits{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:700}
+
+/* REFERRAL BOX */
+.referral-box{background:linear-gradient(135deg,rgba(139,92,246,0.15),rgba(59,130,246,0.08));border:1px solid rgba(139,92,246,0.3);border-radius:12px;padding:.875rem;margin-bottom:1rem;display:none}
+.referral-box.open{display:block}
+
+/* SEARCH */
+.search-wrap{position:relative}
+.search-icon{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:#475569;pointer-events:none}
+.search-box{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--t1);padding:.65rem 1rem .65rem 2.5rem;border-radius:24px;font-family:inherit;font-size:.84rem;outline:none;width:100%}
+.search-box:focus{border-color:#3b82f6}
+
+/* FILTER CHIP */
+.fchip{padding:.3rem .7rem;border-radius:20px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:var(--t2);cursor:pointer;font-size:.73rem;font-family:inherit;transition:all .2s;white-space:nowrap}
+.fchip:hover{border-color:rgba(59,130,246,0.4);color:#60c8ff}
+.fchip.active{background:#1d4ed8;color:#f8fbff;border-color:#60a5fa}
+
+/* HEATMAP TABLE */
+.hm-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.hm-table th{padding:.45rem .6rem;text-align:left;color:var(--t2);font-size:.62rem;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08)}
+.hm-table td{padding:.5rem .6rem;border-bottom:1px solid rgba(255,255,255,0.04)}
+.hm-bar{height:10px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden}
+.hm-fill{height:100%;border-radius:5px}
+
+/* ALUMNI CARD */
+.alumni-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:1rem;transition:all .2s}
+.alumni-card:hover{border-color:rgba(59,130,246,0.3)}
+
+/* CV PREVIEW */
+#cv-preview{background:#fff;color:#111;border-radius:12px;padding:1.75rem;font-family:Georgia,serif}
+#cv-preview h1{font-size:1.4rem;margin-bottom:.25rem;color:#1e3a5f}
+#cv-preview h3{font-size:.9rem;border-bottom:1px solid #ddd;padding-bottom:3px;margin:1rem 0 .4rem;letter-spacing:.05em;color:#1e3a5f}
+#cv-preview p{font-size:.82rem;line-height:1.65;margin:.2rem 0;color:#333}
+#cv-preview .cv-skill{display:inline-block;background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:20px;font-size:.68rem;margin:2px}
+
+/* PORTFOLIO PROJECT CARD */
+.pf-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:.875rem;margin-bottom:.6rem}
+
+/* NOTIF */
+.notif{position:fixed;bottom:1.5rem;right:1.5rem;background:rgba(13,17,23,0.98);border:1px solid rgba(16,185,129,0.4);border-radius:12px;padding:.75rem 1.25rem;font-size:.82rem;z-index:500;animation:slideUp .3s ease;max-width:320px;line-height:1.5;display:none}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+th{text-align:left;padding:.45rem;color:var(--t2);font-size:.62rem;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08)}
+td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
+</style>
+</head>
+<body>
+
+<!-- HIRING TICKER -->
+<div id="hiring-ticker"><span id="ticker-inner">🔥 Loading live job opportunities…</span></div>
+
+<nav>
+  <a class="nav-logo" href="index.html">⬡ CampusIQ</a>
+  <div class="nav-tabs hide-scrollbar">
+    <button class="ntab active" id="t0" onclick="show('jobs',0)">💼 Jobs</button>
+    <button class="ntab" id="t1" onclick="show('skills',1)">🎯 Skill Gap</button>
+    <button class="ntab" id="t2" onclick="show('cv',2)">📄 CV Builder</button>
+    <button class="ntab" id="t3" onclick="show('alumni',3)">🎓 Alumni</button>
+    <button class="ntab" id="t4" onclick="show('salary',4)">📊 Salary Map</button>
+    <button class="ntab" id="t5" onclick="show('portfolio',5)">🗂 Portfolio</button>
+    <button class="ntab" id="t6" onclick="show('my-apps',6)">📋 Applications</button>
+  </div>
+  <div class="u-ai-center u-fs-0 u-d-flex">
+    <span class="u-fs-072 u-c-t3" id="nav-user"></span>
+    <button class="back-btn" onclick="window.location.href='index.html'">← Back</button>
+  </div>
+</nav>
+
+<main class="u-pos-rel">
+
+<!-- ===== JOBS ===== -->
+<div class="section active" id="sec-jobs">
+  <!-- Deadline reminder banner -->
+  <div class="deadline-banner" id="deadline-banner">
+    <div class="u-ai-flex-start u-d-flex">
+      <span class="u-fs-130 u-fs-0">⏰</span>
+      <div class="u-fs-1 u-fw-600"><div>Deadline Reminders</div><div id="deadline-list"></div></div>
+    </div>
+  </div>
+
+  <div class="u-jc-space u-mb-1 u-ai-center u-fw-wrap u-d-flex">
+    <div class="sh u-no-margin"><h2>Jobs & Internships in Ghana</h2><div class="sh-line"></div><span class="badge bg" id="jobs-count">20 opportunities</span></div>
+  </div>
+  <div class="g4 u-mb-1" id="jobs-stats"></div>
+  <div class="u-ai-center u-mb-1 u-fw-wrap u-d-flex">
+    <div class="search-wrap u-minw-200 u-fs-1">
+      <span class="search-icon">🔍</span>
+       <label for="job-search" class="sr-only">Search jobs</label>
+      <input class="search-box" id="job-search" placeholder="Search jobs, companies, skills…" oninput="renderJobs()">
+    </div>
+    <select class="fi u-w-140 u-no-margin" id="job-type" onchange="renderJobs()" aria-label="Select">
+      <option value="">All Types</option>
+      <option value="internship">Internship</option>
+      <option value="fulltime">Full-time</option>
+      <option value="graduate">Graduate</option>
+    </select>
+    <select class="fi u-w-140 u-no-margin" id="job-sector" onchange="renderJobs()" aria-label="Select">
+      <option value="">All Sectors</option>
+      <option value="tech">Technology</option>
+      <option value="finance">Finance</option>
+      <option value="telecom">Telecoms</option>
+      <option value="energy">Energy</option>
+      <option value="health">Healthcare</option>
+    </select>
+  </div>
+  <div class="u-mb-1 u-fw-wrap u-d-flex">
+    <button class="fchip active" onclick="setFilter('all',this)">All</button>
+    <button class="fchip" onclick="setFilter('saved',this)">🔖 Saved</button>
+    <button class="fchip" onclick="setFilter('applied',this)">✓ Applied</button>
+    <button class="fchip" onclick="setFilter('matched',this)">⚡ Best Match (85%+)</button>
+    <button class="fchip" onclick="setFilter('kumasi',this)">📍 Kumasi</button>
+    <button class="fchip" onclick="setFilter('remote',this)">🌐 Remote</button>
+  </div>
+  <div class="g2" id="jobs-grid"></div>
+</div>
+
+<!-- ===== SKILL GAP ANALYZER ===== -->
+<div class="section" id="sec-skills">
+  <div class="sh"><h2>🎯 Skill Gap Analyzer</h2><div class="sh-line"></div><span class="badge bp">Papi-Powered</span></div>
+  <p class="u-mb-1 u-c-t2 u-lh-17">Select any job to see exactly which skills you already have from your registered KsTU courses — and which ones you're missing, with course recommendations to close the gap.</p>
+  <div class="gc gold u-mb-1">
+    <label class="label" for="sg-select">Select a Job to Analyse</label>
+    <select class="fi u-no-margin" id="sg-select" onchange="runSkillGap()" aria-label="Select">
+      <option value="">Choose a job or internship…</option>
+    </select>
+  </div>
+  <div id="sg-result"></div>
+</div>
+
+<!-- ===== CV BUILDER ===== -->
+<div class="section" id="sec-cv">
+  <div class="sh"><h2>📄 AI CV Builder</h2><div class="sh-line"></div><span class="badge bg">Auto-fills from your profile</span></div>
+  <p class="u-mb-1 u-c-t2 u-lh-17">Your CV is generated from your actual registered courses, detected skills, and portfolio projects. Target a specific job to tailor the keywords.</p>
+  <div class="g2 u-mb-1">
+    <div class="gc">
+      <div class="sh"><h2>Your Details</h2><div class="sh-line"></div></div>
+      <label class="label" for="cv-name">Full Name</label><input class="fi" id="cv-name">
+      <label class="label" for="cv-email">Email</label><input class="fi" id="cv-email">
+      <label class="label" for="cv-phone">Phone</label><input class="fi" id="cv-phone" placeholder="+233 XX XXX XXXX">
+      <label class="label" for="cv-target">Target Role (tailors keywords)</label><input class="fi" id="cv-target" placeholder="e.g. Software Engineering Intern">
+      <label class="label" for="cv-extra-skills">Additional Skills (comma-separated)</label><input class="fi" id="cv-extra-skills" placeholder="e.g. Public Speaking, AutoCAD">
+      <label class="label" for="cv-summary">Professional Summary (optional — auto-generated if blank)</label>
+      <textarea class="fi" id="cv-summary" rows="3" placeholder="Leave blank to auto-generate from your profile…"></textarea>
+      <button class="btn btn-p u-fs-100" onclick="generateCV()">🪄 Generate CV from My Profile</button>
+    </div>
+    <div class="gc">
+      <div class="sh"><h2>Pulled from Your Profile</h2><div class="sh-line"></div></div>
+      <div id="cv-data-preview" class="u-c-t2 u-lh-19"></div>
+    </div>
+  </div>
+  <div id="cv-output" class="u-hide">
+    <div class="sh"><h2>Generated CV</h2><div class="sh-line"></div></div>
+    <div id="cv-preview"></div>
+    <div class="u-d-flex">
+      <button class="btn btn-p u-fs-1" onclick="downloadCV()">📥 Download CV (HTML)</button>
+      <button class="btn btn-o u-fs-1" onclick="document.getElementById('cv-output').style.display='none'">Edit Details</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ALUMNI NETWORK ===== -->
+<div class="section" id="sec-alumni">
+  <div class="sh"><h2>🎓 Alumni Network — Ask a Graduate</h2><div class="sh-line"></div><span class="badge bg" id="alumni-online-count">24 alumni online</span></div>
+  <p class="u-mb-1 u-c-t2 u-lh-17">Connect with KsTU graduates now working at top Ghanaian companies. Ask real questions about their job, their career path, and how to get there.</p>
+  <div class="u-mb-1 u-fw-wrap u-d-flex">
+    <button class="fchip active" onclick="filterAlumni('all',this)">All Faculties</button>
+    <button class="fchip" onclick="filterAlumni('sci',this)">🔬 Applied Sciences</button>
+    <button class="fchip" onclick="filterAlumni('eng',this)">⚙️ Engineering</button>
+    <button class="fchip" onclick="filterAlumni('biz',this)">💼 Business</button>
+    <button class="fchip" onclick="filterAlumni('arts',this)">🎨 Creative Arts</button>
+    <button class="fchip" onclick="filterAlumni('health',this)">🏥 Health Sciences</button>
+  </div>
+  <div class="g3" id="alumni-grid"></div>
+  <div class="sh u-mt-1"><h2>My Questions</h2><div class="sh-line"></div></div>
+  <div id="my-questions-list"></div>
+</div>
+
+<!-- ===== SALARY HEATMAP ===== -->
+<div class="section" id="sec-salary">
+  <div class="sh"><h2>📊 Salary & Demand Heatmap</h2><div class="sh-line"></div><span class="badge bp">Live Market Data</span></div>
+  <p class="u-mb-1 u-c-t2 u-lh-17">See which KsTU courses lead to the highest-paying and most in-demand roles in Ghana right now.</p>
+  <div class="gc u-mb-1 u-overflow-x-auto">
+    <table class="hm-table u-minw-140" id="heatmap-table"><thead><tr><th>Course</th><th>Programme</th><th>Min (GHS)</th><th>Max (GHS)</th><th>Demand</th><th>Open Jobs</th></tr></thead><tbody></tbody></table>
+  </div>
+  <div class="g2">
+    <div class="gc blue"><div class="sh"><h2>Top 5 Highest Paying</h2><div class="sh-line"></div></div><div id="top-paying"></div></div>
+    <div class="gc green"><div class="sh"><h2>Top 5 Most In-Demand</h2><div class="sh-line"></div></div><div id="top-demand"></div></div>
+  </div>
+</div>
+
+<!-- ===== PORTFOLIO PIPELINE ===== -->
+<div class="section" id="sec-portfolio">
+  <div class="sh"><h2>🗂 Portfolio Pipeline</h2><div class="sh-line"></div><span class="badge bg">Shareable Public Link</span></div>
+  <p class="u-mb-1 u-c-t2 u-lh-17">Turn your course group projects into a professional portfolio you can share directly with employers.</p>
+  <div class="g2 u-mb-1">
+    <div class="gc">
+      <div class="sh"><h2>Add a Project</h2><div class="sh-line"></div></div>
+      <label class="label" for="pf-title">Project Title *</label><input class="fi" id="pf-title" placeholder="e.g. Smart Campus Navigation App">
+      <label class="label" for="pf-course">Related KsTU Course</label>
+      <select class="fi" id="pf-course" aria-label="Select">
+        <option value="">Select course…</option>
+        <option>CPT 301 — Data Structures</option><option>CPT 305 — AI & ML</option>
+        <option>DSC 201 — Statistics</option><option>MAT 201 — Calculus II</option>
+        <option>EEE 301 — Power Systems</option><option>FIN 201 — Banking</option>
+        <option>MKT 301 — Digital Marketing</option><option>CPT 201 — OOP Java</option>
+      </select>
+      <label class="label" for="pf-desc">Description *</label><textarea class="fi" id="pf-desc" rows="3" placeholder="What did you build? What problem does it solve? What did you learn?"></textarea>
+      <label class="label" for="pf-skills">Skills Demonstrated (comma-separated)</label><input class="fi" id="pf-skills" placeholder="e.g. Python, React, Team Leadership">
+      <label class="label" for="pf-link">Project Link (GitHub, demo, Google Doc…)</label><input class="fi" id="pf-link" placeholder="https://github.com/yourname/project">
+      <div class="msg" id="pf-msg"></div>
+      <button class="btn btn-p u-fs-100" onclick="addProject()">+ Add to Portfolio</button>
+    </div>
+    <div class="gc gold">
+      <div class="sh"><h2>Your Public Portfolio Link</h2><div class="sh-line"></div></div>
+      <div class="u-c-t2 u-lh-17">Share this link with employers — it shows all your projects, skills, and education in one clean page.</div>
+      <div class="u-bg-black-25 u-ai-center u-b-075 u-d-flex">
+        <span class="u-fs-1" id="pf-public-link">Loading…</span>
+        <button class="btn-sm bs-blue" onclick="copyPortfolioLink()">Copy</button>
+      </div>
+      <button class="btn btn-p u-fs-100" onclick="previewPortfolio()">👁 Preview Public Portfolio</button>
+    </div>
+  </div>
+  <div class="sh"><h2>My Projects</h2><div class="sh-line"></div><span class="badge bb" id="pf-count">0 projects</span></div>
+  <div class="g3" id="portfolio-grid"></div>
+</div>
+
+<!-- ===== MY APPLICATIONS ===== -->
+<div class="section" id="sec-my-apps">
+  <div class="sh"><h2>My Applications</h2><div class="sh-line"></div></div>
+  <div class="g4 u-mb-1">
+    <div class="gc blue u-text-center"><div id="stat-applied">0</div><div>Applied</div></div>
+    <div class="gc gold u-text-center"><div id="stat-saved">0</div><div>Saved</div></div>
+    <div class="gc purple u-text-center"><div id="stat-referrals">0</div><div>Referrals</div></div>
+    <div class="gc green u-text-center"><div id="stat-shortlisted">0</div><div>Shortlisted</div></div>
+  </div>
+  <div class="sh"><h2>Applied Jobs</h2><div class="sh-line"></div></div>
+  <div id="applied-list"></div>
+  <div class="sh u-mt-1"><h2>Saved Jobs</h2><div class="sh-line"></div></div>
+  <div id="saved-list"></div>
+  <div class="sh u-mt-1"><h2>My Referral Codes</h2><div class="sh-line"></div></div>
+  <div id="referrals-list"></div>
+</div>
+
+</main>
+
+<!-- JOB DETAIL MODAL -->
+<div class="modal-bg" id="job-modal">
+  <div class="modal u-mw-640">
+    <div class="u-mb-1 u-fw-wrap u-d-flex">
+      <div class="u-w-48 u-h-48 u-ai-center u-b-075 u-fs-140 u-fs-0 u-d-flex" id="jm-logo"></div>
+      <div>
+        <div class="u-fw-700 u-fs-100" id="jm-role"></div>
+        <div class="u-c-t2 u-mt-3" id="jm-company"></div>
+        <div class="u-fw-wrap u-d-flex" id="jm-badges"></div>
+      </div>
+      <button class="modal-close u-ml-auto" onclick="closeModal('job-modal')">✕</button>
+    </div>
+    <div class="g2 u-mb-1">
+      <div class="gc u-p-65"><div class="u-fs-062 u-c-t2 u-text-uppercase u-mb-025">Pay</div><div class="u-fs-088 u-fw-600 u-color-green" id="jm-pay"></div></div>
+      <div class="gc u-p-65"><div class="u-fs-062 u-c-t2 u-text-uppercase u-mb-025">Location</div><div class="u-fs-088 u-fw-600" id="jm-loc"></div></div>
+    </div>
+    <!-- Deadline countdown -->
+    <div class="countdown-box" id="jm-countdown"></div>
+    <!-- Referral box -->
+    <div class="referral-box" id="jm-referral">
+      <div class="u-ai-flex-start u-d-flex">
+        <span class="u-fs-130 u-fs-0">🤝</span>
+        <div class="u-fs-1">
+          <div class="u-fw-600">Get Referred — Skip the Queue</div>
+          <div class="u-c-t2 u-lh-16" id="jm-referral-text"></div>
+          <button class="btn-sm bs-purple" id="jm-referral-btn" onclick="requestReferral()">Request Referral Code</button>
+        </div>
+      </div>
+    </div>
+    <div class="gc blue u-mb-1">
+      <div class="u-text-uppercase u-color-blue">About this Role</div>
+      <div class="u-lh-17" id="jm-desc"></div>
+    </div>
+    <div class="u-mb-1">
+      <div class="u-text-uppercase u-c-t2">Responsibilities</div>
+      <div id="jm-resp"></div>
+    </div>
+    <div class="u-mb-1">
+      <div class="u-text-uppercase u-c-t2">Requirements</div>
+      <div id="jm-req"></div>
+    </div>
+    <div class="u-mb-1">
+      <div class="u-text-uppercase u-c-t2">Skills & Courses</div>
+      <div id="jm-skills"></div>
+    </div>
+    <!-- Apply form -->
+    <div id="jm-apply-section">
+      <div class="sh"><h2>Apply Now</h2><div class="sh-line"></div></div>
+      <label class="label" for="ap-name">Full Name *</label><input class="fi" id="ap-name">
+      <label class="label" for="ap-email">Email *</label><input class="fi" id="ap-email" type="email">
+      <label class="label" for="ap-phone">Phone</label><input class="fi" id="ap-phone" placeholder="+233 XX XXX XXXX">
+      <label class="label" for="ap-prog">KsTU Programme & Level</label><input class="fi" id="ap-prog">
+      <label class="label" for="ap-cover">Cover Letter / Why You're a Good Fit *</label>
+      <textarea class="fi" id="ap-cover" rows="4" placeholder="Tell them why you're the right person for this role…"></textarea>
+      <label class="label" for="ap-portfolio">Portfolio / LinkedIn (optional)</label><input class="fi" id="ap-portfolio" placeholder="https://linkedin.com/in/yourname">
+      <label class="label" for="ap-referral">Referral Code (optional)</label><input class="fi" id="ap-referral" placeholder="Auto-fills if you requested a referral">
+      <div class="msg" id="ap-msg"></div>
+    </div>
+    <div id="jm-applied-confirm" class="gc green u-p-875 u-text-center u-hide">
+      <div class="u-fs-150">🎉</div>
+      <div class="u-fw-600">Application Submitted!</div>
+      <div class="u-c-t2" id="jm-applied-msg">Your application has been sent to the employer.</div>
+    </div>
+    <div class="u-fw-wrap u-d-flex" id="jm-footer"></div>
+  </div>
+</div>
+
+<!-- ALUMNI QUESTION MODAL -->
+<div class="modal-bg" id="alumni-modal">
+  <div class="modal">
+    <h2>Ask <span id="am-name"></span> <button class="modal-close" onclick="closeModal('alumni-modal')">✕</button></h2>
+    <div class="gc blue u-mb-1" id="am-profile"></div>
+    <label class="label" for="am-question">Your Question *</label>
+    <textarea class="fi" id="am-question" rows="4" placeholder="e.g. How did you get your first job at this company? What skills should I focus on? What does a typical day look like?"></textarea>
+    <div class="msg" id="am-msg"></div>
+    <button class="btn btn-p u-fs-100" onclick="sendAlumniQuestion()">Send Question</button>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script src="../shared/api.js"></script>
+<script>
+// USER
+const params = new URLSearchParams(location.search);
+const urlUser = params.get('u');
+function getUsers(){try{return JSON.parse(localStorage.getItem('campusiq_users')||'[]')}catch{return[] /* safe: localStorage parse errors */}}
+let me = null;
+if(urlUser) me = getUsers().find(u=>u.email===urlUser)||null;
+if(!me){ const le=localStorage.getItem('campusiq_last_user'); if(le) me=getUsers().find(u=>u.email===le)||null; }
+const myKey = me ? (me.studentId||me.id||me.email) : 'guest';
+if(me) document.getElementById('nav-user').textContent = me.name?.split(' ')[0]||'';
+
+function getJobTypeBadgeClass(type){
+  if(type==='internship') return 'bg';
+  if(type==='graduate') return 'bp';
+  return 'bb';
+}
+function getStatusBadgeMarkup(status){
+  if(status==='applied') return '<span class="badge bg badge-sm">✓ Applied</span>';
+  if(status==='saved') return '<span class="badge bgo badge-sm">🔖 Saved</span>';
+  return '';
+}
+function getMatchDisplay(match){
+  if(match>=90) return { color:'#d1fae5', background:'linear-gradient(90deg,#10b981,#06b6d4)' };
+  if(match>=75) return { color:'#fef3c7', background:'linear-gradient(90deg,#f59e0b,#fcd34d)' };
+  return { color:'#fee2e2', background:'linear-gradient(90deg,#ef4444,#f97316)' };
+}
+function getMatchBadgeClass(match){
+  if(match>=70) return 'bg';
+  if(match>=40) return 'bgo';
+  return 'br';
+}
+function getDeadlineText(daysLeft){
+  if(daysLeft<=0) return 'Closed';
+  return daysLeft+'d left';
+}
+function getDaysLeftColor(daysLeft){
+  return daysLeft<=3 ? '#fca5a5' : '#fcd34d';
+}
+function createReferralCode(company){
+  const prefix=company.replace(/[^A-Z]/gi,'').slice(0,4).toUpperCase();
+  const bytes=new Uint16Array(1);
+  if(window.crypto && typeof window.crypto.getRandomValues==='function'){
+    window.crypto.getRandomValues(bytes);
+  } else {
+    bytes[0]=Date.now() % 9000 + 1000;
+  }
+  return 'REF-'+prefix+'-'+String(bytes[0] % 9000 + 1000).padStart(4,'0');
+}
+function getJobTypeLabel(type){
+  if(type==='internship') return 'Internship';
+  if(type==='graduate') return 'Graduate';
+  return 'Full-time';
+}
+function buildPortfolioProjectMarkup(portfolio){
+  if(!portfolio.length) return '';
+  const pieces=portfolio.map(function(project){
+    const courseText=project.courseCode ? ' ('+project.courseCode+')' : '';
+    const linkText=project.link ? ` <a href="${project.link}" class="course-link">→ View</a>` : '';
+    return `<p><strong>${project.title}</strong>${courseText}<br>${project.desc}${linkText}</p>`;
+  });
+  return '<h3>PROJECTS</h3>' + pieces.join('');
+}
+function buildJobCard(job, status, daysLeft){
+  const matchDisplay=getMatchDisplay(job.match);
+  const statusMarkup=getStatusBadgeMarkup(status);
+  const typeBadgeClass=getJobTypeBadgeClass(job.type);
+  const typeLabel=getJobTypeLabel(job.type);
+  const saveActionLabel=status==='saved' ? '🔖 Saved' : '🔖 Save';
+  const saveTitle=status==='saved' ? 'Remove save' : 'Save job';
+  return `<div class="job-card ${status !== 'none' ? status : ''}">
+    <div class="job-card-header">
+      <div class="job-logo">${job.logo}</div>
+      <div class="job-card-body">
+        <div class="text-lg fw-600 mb-2">${job.role}</div>
+        <div class="text-sm text-t2">${job.company}</div>
+        <div class="text-075 text-t3">📍 ${job.location}</div>
+      </div>
+      <div class="job-card-meta">
+        <span class="badge ${typeBadgeClass} badge-sm">${typeLabel}</span>
+        ${statusMarkup}
+      </div>
+    </div>
+    <div class="mb-65">
+      <div class="match-row"><span class="text-t2">Match</span><span style="color:${matchDisplay.color};font-weight:600">${job.match}%</span></div>
+      <div class="prog-bar prog-bar-sm"><div class="prog-fill" style="width:${job.match}%;background:${matchDisplay.background}"></div></div>
+    </div>
+    <div class="pay-row">
+      <span class="text-lg fw-600 text-green">${job.pay}</span>
+      <span class="text-075" style="color:${getDaysLeftColor(daysLeft)}">⏰ ${getDeadlineText(daysLeft)}</span>
+    </div>
+    <div class="tags-row">${job.tags.slice(0,3).map(t=>`<span class="job-tag">${t}</span>`).join('')}</div>
+    <div class="card-actions">
+       <button class="btn btn-p flex-2 text-072 p-45" onclick="openJob('${job.id}')">View & Apply</button>
+       <button class="btn btn-o text-lg p-55" onclick="toggleSave('${job.id}')" title="${saveTitle}">${saveActionLabel}</button>
+      ${REFERRAL_POOL[job.company] && job.match >= 85 ? `<button class="btn-sm bs-purple p-55 text-075" onclick="openJob('${job.id}')" title="Referral available">🤝</button>` : ''}
+    </div>
+  </div>`;
+}
+
+// SECTION NAV
+function show(id, idx){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  document.querySelectorAll('.ntab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  if(id==='jobs'){renderJobs();checkDeadlines();}
+  if(id==='skills')initSkillGap();
+  if(id==='cv')initCV();
+  if(id==='alumni')renderAlumni();
+  if(id==='salary')renderHeatmap();
+  if(id==='portfolio')loadPortfolio();
+  if(id==='my-apps')renderMyApps();
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+// =====================================================================
+// JOBS DATA
+// =====================================================================
+const JOBS=[
+  {id:'j01',company:'Vodafone Ghana',logo:'📡',role:'Software Engineering Intern',type:'internship',sector:'telecom',location:'Accra',pay:'GHS 1,200/mo',deadlineStr:'2026-08-15',match:97,courses:['CPT 301','CPT 201','CPT 305'],tags:['Python','React','REST APIs','Git'],desc:'Join Vodafone Ghana\'s technology team building customer-facing apps used by millions of Ghanaians.',responsibilities:['Build React and Node.js web applications','Write and test REST APIs','Participate in agile sprint planning','Collaborate with UX team on new features'],requirements:['Level 300+ in Computer Technology or related','Basic JavaScript or Python','Understanding of web development fundamentals'],about:'Vodafone Ghana serves 8M+ customers. Their tech team builds digital products for mobile money, e-health, and enterprise.',website:'https://www.vodafone.com.gh'},
+  {id:'j02',company:'MTN Ghana',logo:'🟡',role:'Data Analytics Intern',type:'internship',sector:'telecom',location:'Accra',pay:'GHS 1,000/mo',deadlineStr:'2026-08-20',match:92,courses:['DSC 201','CPT 305','MAT 201'],tags:['SQL','Python','Power BI','Excel'],desc:'Analyse large datasets from MTN\'s mobile network and financial services to generate strategic insights.',responsibilities:['Query datasets using SQL and Python','Build Power BI dashboards for management','Identify trends in customer behaviour','Present findings to senior team'],requirements:['Level 200+ in Data Science, Statistics or Computer Technology','Proficiency in SQL and Excel','Strong analytical mindset'],about:'MTN Ghana has 26M+ subscribers and leads in mobile money (MoMo) and digital financial services.',website:'https://www.mtn.com.gh'},
+  {id:'j03',company:'Hubtel',logo:'🛍',role:'Junior Software Developer',type:'fulltime',sector:'tech',location:'Accra',pay:'GHS 3,500–5,000/mo',deadlineStr:'2026-09-01',match:94,courses:['CPT 201','CPT 301','CPT 305'],tags:['Java','Python','APIs','Mobile Dev'],desc:'Build Ghana\'s leading payment and commerce platform used by thousands of Ghanaian businesses.',responsibilities:['Develop backend APIs and microservices','Work on Hubtel mobile app features','Collaborate on payment system integrations','Write unit tests and documentation'],requirements:['Degree or final year in Computer Technology','Proficiency in Java, Python or Kotlin','Understanding of REST APIs and databases'],about:'Hubtel is Ghana\'s most-used payments platform, processing billions of cedis in annual transactions.',website:'https://www.hubtel.com'},
+  {id:'j04',company:'Rancard Solutions',logo:'📱',role:'AI/ML Engineer Intern',type:'internship',sector:'tech',location:'Accra / Remote',pay:'GHS 1,500/mo',deadlineStr:'2026-08-25',match:91,courses:['CPT 305','DSC 201','CPT 301'],tags:['Python','TensorFlow','NLP','Machine Learning'],desc:'Work on real ML models that impact millions of African users across agriculture, health, and mobile.',responsibilities:['Train and evaluate ML models','Work on NLP pipelines for Ghanaian languages','Integrate models into production via APIs','Write technical documentation'],requirements:['Level 300+ in AI, Computer Technology or Data Science','Strong Python skills (NumPy, Pandas, scikit-learn)','Passion for applying AI to African problems'],about:'Rancard builds AI-powered digital products for African markets.',website:'https://www.rancard.com'},
+  {id:'j05',company:'GRIDCo',logo:'⚡',role:'Electrical Engineering Intern',type:'internship',sector:'energy',location:'Kumasi / Tema',pay:'GHS 850/mo',deadlineStr:'2026-08-08',match:93,courses:['EEE 301'],tags:['Power Systems','AutoCAD','MATLAB','Electrical'],desc:'Work with Ghana\'s national electricity transmission system. Gain real experience with Ghana\'s power grid.',responsibilities:['Assist with inspection and maintenance of transmission equipment','Use AutoCAD for electrical drawings','Support power system analysis using MATLAB','Site visits to substations in Ashanti Region'],requirements:['Level 200+ in Electrical Engineering','Understanding of power systems fundamentals','Willing to travel to sites'],about:'GRIDCo operates Ghana\'s national electricity transmission system.',website:'https://www.gridcogh.com'},
+  {id:'j06',company:'Stanbic Bank Ghana',logo:'🏦',role:'IT Graduate Trainee',type:'graduate',sector:'finance',location:'Accra',pay:'GHS 2,800/mo',deadlineStr:'2026-08-18',match:88,courses:['CPT 201','CPT 101','FIN 201'],tags:['Banking Tech','IT Support','Networking','Security'],desc:'12-month rotational IT Graduate Trainee Programme across core banking technology and cybersecurity.',responsibilities:['Rotate across IT infrastructure, cybersecurity, application teams','Support core banking system upgrades','Assist with IT helpdesk and user support','Digital transformation projects'],requirements:['Degree or final year in Computer Technology, IT or Engineering','Understanding of networking','Professional attitude'],about:'Stanbic Bank Ghana is part of Standard Bank Group — Africa\'s largest bank.',website:'https://www.stanbicbank.com.gh'},
+  {id:'j07',company:'mPharma',logo:'💊',role:'Data Analyst Intern',type:'internship',sector:'health',location:'Accra',pay:'GHS 1,100/mo',deadlineStr:'2026-08-30',match:83,courses:['DSC 201','MAT 201','CPT 101'],tags:['SQL','Excel','Tableau','Python'],desc:'Analyse pharmaceutical supply chain and patient data to improve medicine availability across Africa.',responsibilities:['Analyse sales and inventory data','Build operations reports and dashboards','Identify cost-saving opportunities','Support research team with data collection'],requirements:['Level 200+ in Data Science, Statistics, Health Sciences or Business','Strong Excel and SQL','Interest in healthcare'],about:'mPharma operates in 9 African countries managing 300+ pharmacies.',website:'https://www.mpharma.com'},
+  {id:'j08',company:'Andela',logo:'🌐',role:'Junior Software Engineer (Remote)',type:'fulltime',sector:'tech',location:'Remote (Ghana)',pay:'USD 800–1,200/mo',deadlineStr:'2026-09-15',match:89,courses:['CPT 201','CPT 301','CPT 305'],tags:['JavaScript','React','Node.js','Remote Work'],desc:'Work remotely on international software products while remaining in Ghana.',responsibilities:['Work on international products as part of a global team','Write clean, well-documented code','Participate in daily standups','Collaborate across time zones'],requirements:['Strong JavaScript skills (React or Node.js)','Portfolio or GitHub with real projects','Excellent written English'],about:'Andela connects African engineers with top international tech companies.',website:'https://www.andela.com'},
+  {id:'j09',company:'ECG Ghana',logo:'🔌',role:'Graduate Electrical Engineer',type:'graduate',sector:'energy',location:'Kumasi',pay:'GHS 2,500/mo',deadlineStr:'2026-09-10',match:90,courses:['EEE 301'],tags:['Power Distribution','AutoCAD','Project Management','Field Engineering'],desc:'Manage power distribution networks and infrastructure projects across Kumasi and surrounding areas.',responsibilities:['Manage maintenance of 11kV/33kV distribution networks','Oversee transformer installations','Coordinate electrification projects','Investigate and resolve power outages'],requirements:['BSc/BTech in Electrical Engineering (completed or final year)','Strong understanding of power distribution','Valid driver\'s licence'],about:'ECG distributes power to 4M+ customers across southern Ghana.',website:'https://www.ecgonline.info'},
+  {id:'j10',company:'GCB Bank',logo:'🇬🇭',role:'Business Analyst Intern',type:'internship',sector:'finance',location:'Kumasi',pay:'GHS 900/mo',deadlineStr:'2026-08-12',match:79,courses:['FIN 201','DSC 201'],tags:['Excel','PowerPoint','Banking','Business Analysis'],desc:'Contribute to process improvement and strategic projects at Ghana\'s largest domestic bank.',responsibilities:['Analyse bank operations and identify improvements','Prepare reports and presentations','Support market research and competitor analysis','Assist with customer segment analysis'],requirements:['Level 200+ in Banking & Finance, Business or related','Strong Excel and PowerPoint','Analytical thinking'],about:'GCB Bank has 180+ branches serving 3.5M+ customers nationwide.',website:'https://www.gcbbank.com.gh'},
+  {id:'j11',company:'Melcom Ghana',logo:'🛒',role:'Digital Marketing Intern',type:'internship',sector:'tech',location:'Kumasi',pay:'GHS 800/mo',deadlineStr:'2026-08-20',match:82,courses:['MKT 301'],tags:['Social Media','Content Creation','Google Ads','Photography'],desc:'Manage social media content, run digital campaigns, and grow Melcom\'s online presence.',responsibilities:['Create content for Facebook, Instagram, TikTok','Manage Google Ads campaigns','Analyse social media performance','Support in-store photography'],requirements:['Level 200+ in Marketing or Communications','Active social media content creation skills','Creative eye and attention to detail'],about:'Melcom Ghana is the country\'s largest retail chain with 45+ stores nationwide.',website:'https://www.melcom.com'},
+  {id:'j12',company:'KATH',logo:'🏥',role:'Medical Lab Technology Attachment',type:'internship',sector:'health',location:'Kumasi',pay:'GHS 750/mo',deadlineStr:'2026-08-05',match:95,courses:['MLT 301'],tags:['Haematology','Blood Banking','Lab QC','Clinical'],desc:'Clinical attachment at Ghana\'s second-largest public hospital. Comprehensive lab experience across departments.',responsibilities:['Perform haematological investigations including FBC and differentials','Assist with blood banking — typing, crossmatching','Conduct clinical chemistry tests under supervision','Learn QC procedures'],requirements:['Final year or completed MLT or related','Attention to detail','Willing to work shifts'],about:'KATH is Ghana\'s second-largest hospital, serving as referral centre for 4 regions.',website:'https://www.kathhsp.org'},
+];
+
+// ALUMNI DATA
+const ALUMNI=[
+  {id:'a1',name:'Kwabena Owusu',faculty:'sci',gradYear:2021,prog:'BTech Computer Technology',role:'Senior Software Engineer',company:'Vodafone Ghana',avatar:'👨🏿‍💻',bio:'Started as a Vodafone intern after KsTU, now leading a team of 5 building fintech products. Happy to help current students land their first tech role.',available:true,answered:34},
+  {id:'a2',name:'Adwoa Sarpong',faculty:'sci',gradYear:2019,prog:'BSc Data Science',role:'Data Analytics Lead',company:'MTN Ghana',avatar:'👩🏾‍💼',bio:'Went from analysing KsTU lab data to leading MTN\'s mobile money analytics. The journey was real — ask me anything!',available:true,answered:51},
+  {id:'a3',name:'Yaw Antwi',faculty:'sci',gradYear:2022,prog:'BTech Computer Technology',role:'Backend Engineer',company:'Hubtel',avatar:'👨🏾‍💻',bio:'Graduated last year and already shipping production code at Hubtel. Ask me about the transition from school to work!',available:true,answered:18},
+  {id:'a4',name:'Efua Mensah',faculty:'sci',gradYear:2020,prog:'BTech Artificial Intelligence',role:'ML Engineer',company:'Rancard Solutions',avatar:'👩🏿‍💻',bio:'Built my first ML model in CPT 305 — now I train models serving millions of African users.',available:true,answered:42},
+  {id:'a5',name:'Kojo Asante',faculty:'eng',gradYear:2018,prog:'BEng Electrical Engineering',role:'Power Systems Engineer',company:'GRIDCo',avatar:'👨🏿‍🔧',bio:'Working on Ghana\'s national grid. KsTU\'s practical engineering training prepared me well. Ask me about the energy sector.',available:true,answered:27},
+  {id:'a6',name:'Abena Frimpong',faculty:'biz',gradYear:2020,prog:'BSc Banking & Finance',role:'IT Business Analyst',company:'Stanbic Bank Ghana',avatar:'👩🏾‍💼',bio:'I combine finance with tech to bridge business and IT teams at Stanbic. Unique role — happy to explain how I got here.',available:false,answered:22},
+  {id:'a7',name:'Kwame Darko',faculty:'sci',gradYear:2021,prog:'BTech Computer Technology',role:'Full Stack Engineer',company:'Andela',avatar:'👨🏾‍💻',bio:'Now working remotely for international clients through Andela — proof KsTU grads can compete globally. DM me!',available:true,answered:39},
+  {id:'a8',name:'Akosua Boateng',faculty:'health',gradYear:2017,prog:'BSc Medical Lab Technology',role:'Senior Lab Technologist',company:'KATH',avatar:'👩🏿‍⚕️',bio:'Now supervising the haematology unit at KATH. Happy to mentor MLT students on clinical placements.',available:true,answered:15},
+  {id:'a9',name:'Ama Asantewaa',faculty:'arts',gradYear:2019,prog:'BTech Fashion Design & Technology',role:'Lead Fashion Designer',company:'Kente House Ghana',avatar:'👩🏾‍🎨',bio:'Turned my final year Kente collection project into a career designing for international clients.',available:true,answered:11},
+  {id:'a10',name:'Nana Yeboah',faculty:'biz',gradYear:2018,prog:'BSc Marketing',role:'Brand Manager',company:'Melcom Ghana',avatar:'👨🏾‍💼',bio:'Marketing at Ghana\'s biggest retail chain. Ask me about brand strategy in the Ghanaian market.',available:true,answered:19},
+];
+
+// REFERRAL POOL
+const REFERRAL_POOL={
+  'Vodafone Ghana':{alumni:'Kwabena Owusu',role:'Senior Software Engineer',alumniId:'a1'},
+  'MTN Ghana':{alumni:'Adwoa Sarpong',role:'Data Analytics Lead',alumniId:'a2'},
+  'Hubtel':{alumni:'Yaw Antwi',role:'Backend Engineer',alumniId:'a3'},
+  'Rancard Solutions':{alumni:'Efua Mensah',role:'ML Engineer',alumniId:'a4'},
+  'GRIDCo':{alumni:'Kojo Asante',role:'Power Systems Engineer',alumniId:'a5'},
+  'Stanbic Bank Ghana':{alumni:'Abena Frimpong',role:'IT Business Analyst',alumniId:'a6'},
+  'Andela':{alumni:'Kwame Darko',role:'Full Stack Engineer',alumniId:'a7'},
+  'KATH':{alumni:'Akosua Boateng',role:'Senior Lab Technologist',alumniId:'a8'},
+};
+
+// COURSE SKILLS MAP
+const COURSE_SKILLS={
+  'CPT 101':['Computer Fundamentals','Operating Systems','Basic Programming','MS Office'],
+  'CPT 201':['Java','OOP Design','Inheritance & Polymorphism','Data Types','File I/O'],
+  'CPT 301':['Data Structures','Algorithms','Big O Analysis','Sorting','Searching','Problem Solving'],
+  'CPT 305':['Python','Machine Learning','Neural Networks','TensorFlow','NLP','scikit-learn','Data Preprocessing'],
+  'DSC 201':['Statistics','R Programming','Python (Data)','Hypothesis Testing','Regression Analysis','Pandas','NumPy'],
+  'MAT 201':['Calculus','Mathematical Modelling','Quantitative Analysis','Differential Equations'],
+  'EEE 301':['Power Systems','MATLAB','AutoCAD','Circuit Analysis','Load Flow','Fault Analysis'],
+  'FIN 201':['Financial Analysis','Credit Analysis','Banking Regulations','Excel','Business Finance'],
+  'MKT 301':['SEO','Social Media Marketing','Google Analytics','Content Strategy','Google Ads','Digital Campaigns'],
+  'MLT 301':['Haematology','Blood Banking','Lab QC','Clinical Chemistry','Microscopy'],
+};
+
+// MARKET DATA for heatmap
+const MARKET_DATA=[
+  {code:'CPT 305',name:'AI & Machine Learning',min:4000,max:10000,demand:95,openJobs:4},
+  {code:'CPT 301',name:'Data Structures & Algorithms',min:3000,max:8000,demand:90,openJobs:4},
+  {code:'CPT 201',name:'OOP (Java)',min:3000,max:8000,demand:85,openJobs:4},
+  {code:'EEE 301',name:'Power Systems Engineering',min:2500,max:6500,demand:80,openJobs:2},
+  {code:'DSC 201',name:'Statistics for Data Science',min:2500,max:6000,demand:78,openJobs:4},
+  {code:'FIN 201',name:'Commercial Banking & Finance',min:2500,max:6000,demand:72,openJobs:2},
+  {code:'MKT 301',name:'Digital Marketing',min:2000,max:5500,demand:68,openJobs:1},
+  {code:'MAT 201',name:'Calculus II',min:2500,max:5500,demand:60,openJobs:3},
+  {code:'MLT 301',name:'Haematology & Blood Banking',min:2000,max:5000,demand:58,openJobs:2},
+  {code:'CPT 101',name:'Introduction to Computing',min:1800,max:4000,demand:45,openJobs:2},
+  {code:'FDT 201',name:'Garment Construction',min:1800,max:4500,demand:42,openJobs:2},
+];
+
+// STORAGE
+function getJobData(){try{return JSON.parse(localStorage.getItem('ciq_jobs_'+myKey)||'{}')}catch{return{}}}
+function saveJobData(d){localStorage.setItem('ciq_jobs_'+myKey,JSON.stringify(d))}
+function getMyRegistrations(){try{return JSON.parse(localStorage.getItem('ciq_regs_'+myKey)||'[]')}catch{return[] /* safe: localStorage parse errors */}}
+
+// TICKER
+function buildTicker(){
+  const items = JOBS.map(j=>`🔥 <strong>${j.company}</strong> is hiring: ${j.role} (${j.location}) — ${j.pay}`);
+  const txt = items.join('&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;');
+  document.getElementById('ticker-inner').innerHTML = txt + '&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;' + txt;
+}
+
+// FILTER CHIPS
+let jobFilter='all';
+function setFilter(f,btn){
+  jobFilter=f;
+  document.querySelectorAll('.fchip').forEach(c=>{if(c.closest('#sec-jobs'))c.classList.remove('active')});
+  if(btn)btn.classList.add('active');
+  renderJobs();
+}
+let alumniFilter='all';
+function filterAlumni(f,btn){
+  alumniFilter=f;
+  document.querySelectorAll('#sec-alumni .fchip').forEach(c=>c.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderAlumni();
+}
+
+// =====================================================================
+// JOBS
+// =====================================================================
+function renderJobs(){
+  const search=(document.getElementById('job-search')?.value||'').toLowerCase();
+  const type=document.getElementById('job-type')?.value||'';
+  const sector=document.getElementById('job-sector')?.value||'';
+  const jd=getJobData();
+  const filtered=JOBS.filter(job => matchesJobFilters(job, jd, search, type, sector));
+  document.getElementById('jobs-count').textContent=filtered.length+' opportunit'+(filtered.length===1?'y':'ies');
+  document.getElementById('jobs-stats').innerHTML=`
+    <div class="gc blue text-center"><div class="stat-value text-140 text-blue">${JOBS.length}</div><div class="stat-label">Live Roles</div></div>
+    <div class="gc green text-center"><div class="stat-value text-140 text-green">${JOBS.filter(j=>j.type==='internship').length}</div><div class="stat-label">Internships</div></div>
+    <div class="gc gold text-center"><div class="stat-value text-140 text-gold">${new Set(JOBS.map(j=>j.company)).size}</div><div class="stat-label">Companies</div></div>
+    <div class="gc purple text-center"><div class="stat-value text-140 text-purple">GHS 2.4k</div><div class="stat-label">Avg Intern Pay</div></div>
+  `;
+  const grid=document.getElementById('jobs-grid');
+  grid.innerHTML=filtered.map(job => {
+    const status=jd[job.id]||'none';
+    const deadline=new Date(job.deadlineStr);
+    const daysLeft=Math.ceil((deadline-Date.now())/(864e5));
+    return buildJobCard(job, status, daysLeft);
+  }).join('');
+}
+function matchesJobFilters(job, jd, search, type, sector){
+  const matchesSearch=!search || job.role.toLowerCase().includes(search) || job.company.toLowerCase().includes(search) || job.tags.some(tag => tag.toLowerCase().includes(search));
+  const matchesType=!type || job.type===type;
+  const matchesSector=!sector || job.sector===sector;
+  const jobState=jd[job.id]||'none';
+  const matchesFilter=jobFilter==='all' || (jobFilter==='saved' && jobState==='saved') || (jobFilter==='applied' && jobState==='applied') || (jobFilter==='matched' && job.match>=85) || (jobFilter==='kumasi' && job.location.toLowerCase().includes('kumasi')) || (jobFilter==='remote' && job.location.toLowerCase().includes('remote'));
+  return matchesSearch && matchesType && matchesSector && matchesFilter;
+}
+
+function toggleSave(id){
+  const d=getJobData();
+  if(d[id]==='saved'){delete d[id];showNotif('Removed from saved jobs');}
+  else if(d[id]==='applied'){showNotif('Already applied');return;}
+  else{d[id]='saved';showNotif('🔖 Job saved for later');}
+  saveJobData(d);renderJobs();
+}
+
+// DEADLINE REMINDERS
+function checkDeadlines(){
+  const jd=getJobData();
+  const saved=JOBS.filter(j=>jd[j.id]==='saved');
+  const urgent=saved.map(j=>({...j,daysLeft:Math.ceil((new Date(j.deadlineStr)-Date.now())/864e5)})).filter(j=>j.daysLeft>=0&&j.daysLeft<=7).sort((a,b)=>a.daysLeft-b.daysLeft);
+  const banner=document.getElementById('deadline-banner');
+  if(!urgent.length){banner.style.display='none';return;}
+  banner.style.display='block';
+  document.getElementById('deadline-list').innerHTML=urgent.map(j=>`<div class="text-base text-t2 mb-4">Saved job <strong class="text-gold">${j.role}</strong> at ${j.company} closes in <strong style="color:${j.daysLeft<=2?'#ef4444':'#fcd34d'}">${j.daysLeft} day${j.daysLeft!==1?'s':''}</strong> — <a href="#" onclick="openJob('${j.id}');return false" class="course-link">apply now →</a></div>`).join('');
+}
+
+// JOB MODAL + COUNTDOWN
+let countdownInterval=null;
+let activeJob=null;
+function openJob(id){
+  const j=JOBS.find(x=>x.id===id);if(!j)return;
+  activeJob=j;
+  const jd=getJobData();const st=jd[j.id]||'none';
+  const typeLabels={internship:'Internship',fulltime:'Full-time',graduate:'Graduate'};
+  document.getElementById('jm-logo').textContent=j.logo;
+  document.getElementById('jm-role').textContent=j.role;
+  document.getElementById('jm-company').textContent=j.company+' · '+j.location;
+  const badgeClass=getJobTypeBadgeClass(j.type);
+  document.getElementById('jm-badges').innerHTML=`<span class="badge ${badgeClass}">${typeLabels[j.type]||j.type}</span><span class="badge bp">${j.match}% Match</span>`;
+  document.getElementById('jm-pay').textContent=j.pay;
+  document.getElementById('jm-loc').textContent=j.location;
+  document.getElementById('jm-desc').textContent=j.desc;
+  document.getElementById('jm-resp').innerHTML=j.responsibilities.map(r=>`<div class="req-item"><span class="tick">→</span><span>${r}</span></div>`).join('');
+  document.getElementById('jm-req').innerHTML=j.requirements.map(r=>`<div class="req-item"><span class="check">✓</span><span>${r}</span></div>`).join('');
+  document.getElementById('jm-skills').innerHTML=j.tags.map(t=>`<span class="skill-tag">${t}</span>`).join('')+(j.courses?.length?`<div class="course-hint">Related KsTU courses: ${j.courses.join(', ')}</div>`:'');
+  const ref=REFERRAL_POOL[j.company];
+  const refBox=document.getElementById('jm-referral');
+  if(ref&&j.match>=85){refBox.classList.add('open');document.getElementById('jm-referral-text').innerHTML=`<strong class="text-purple">${ref.alumni}</strong> (${ref.role} at ${j.company}) can refer your application directly. Referred applicants are reviewed first.`;}
+  else refBox.style.display='none';
+  // Countdown
+  startCountdown(j);
+  // Pre-fill form
+  if(me){document.getElementById('ap-name').value=me.name||'';document.getElementById('ap-email').value=me.email||'';document.getElementById('ap-prog').value=(me.programme||'')+(me.level?' · '+me.level:'');}
+  // Show/hide form vs confirmation
+  const applied=st==='applied';
+  document.getElementById('jm-apply-section').style.display=applied?'none':'block';
+  document.getElementById('jm-applied-confirm').style.display=applied?'block':'none';
+  document.getElementById('ap-referral').value='';
+  document.getElementById('ap-msg').textContent='';
+  // Footer
+  document.getElementById('jm-footer').innerHTML=`
+    <button class="btn btn-o flex-1" onclick="closeModal('job-modal')">Close</button>
+    ${applied?'<span class="badge bg" style="padding:.5rem 1rem;font-size:.78rem;display:flex;align-items:center">✓ Applied</span>':`<button class="btn btn-g flex-2" onclick="submitApplication()">Submit Application</button>`}
+    <button class="btn btn-o text-lg" style="padding:.5rem .75rem" onclick="toggleSave('${j.id}')">${st==='saved'?'🔖 Saved':'🔖 Save'}</button>
+  `;
+  document.getElementById('job-modal').classList.add('open');
+}
+function startCountdown(j){
+  const box=document.getElementById('jm-countdown');
+  if(countdownInterval){clearInterval(countdownInterval);countdownInterval=null;}
+  const dl=new Date(j.deadlineStr);
+  function update(){
+    const diff=dl-Date.now();
+    if(diff<=0){box.innerHTML='<div class="text-red fw-600 text-lg">⛔ Deadline has passed</div>';clearInterval(countdownInterval);return;}
+    const days=Math.floor(diff/864e5),hrs=Math.floor((diff%864e5)/3600000),mins=Math.floor((diff%3600000)/60000);
+    const urgent=days<=3;
+    box.innerHTML=`<div class="countdown-label">⏰ Application Closes</div>
+      <div class="flex justify-center gap-2">
+        <div><div class="countdown-digits" style="color:${urgent?'#ef4444':'#fcd34d'}">${days}</div><div class="text-060 text-t2 uppercase">days</div></div>
+        <div><div class="countdown-digits" style="color:${urgent?'#ef4444':'#fcd34d'}">${hrs}</div><div class="text-060 text-t2 uppercase">hrs</div></div>
+        <div><div class="countdown-digits" style="color:${urgent?'#ef4444':'#fcd34d'}">${mins}</div><div class="text-060 text-t2 uppercase">min</div></div>
+      </div>
+      ${urgent?'<div class="countdown-urgent">⚠ Closing soon — apply now!</div>':''}`;
+  }
+  update();countdownInterval=setInterval(update,60000);
+}
+
+async function requestReferral(){
+  if(!activeJob)return;
+  const ref=REFERRAL_POOL[activeJob.company];if(!ref)return;
+  const code=createReferralCode(activeJob.company);
+  try {
+    await CampusAPI.createReferral({userId:myKey,jobId:activeJob.id,company:activeJob.company,alumniName:ref.alumni,code});
+    document.getElementById('ap-referral').value=code;
+    document.getElementById('jm-referral-btn').textContent='✓ Referral Code: '+code;
+    document.getElementById('jm-referral-btn').disabled=true;
+    showNotif('✅ Referral from '+ref.alumni+'! Code auto-added to your application.');
+  } catch(e){ showNotif('Error: '+e.message); }
+}
+
+function submitApplication(){
+  const name=document.getElementById('ap-name').value.trim(),email=document.getElementById('ap-email').value.trim(),cover=document.getElementById('ap-cover').value.trim(),refCode=document.getElementById('ap-referral').value.trim(),msg=document.getElementById('ap-msg');
+  if(!name||!email||!cover){msg.style.color='#fca5a5';msg.textContent='Name, email, and cover letter are required.';return;}
+  if(!email.includes('@')){msg.style.color='#fca5a5';msg.textContent='Please enter a valid email address.';return;}
+  const d=getJobData();d[activeJob.id]='applied';saveJobData(d);
+  document.getElementById('jm-apply-section').style.display='none';
+  document.getElementById('jm-applied-confirm').style.display='block';
+  document.getElementById('jm-applied-msg').textContent=refCode?'Your application was submitted with a referral code — referred applications are reviewed first! Good luck!':'Your application has been sent to the employer. Good luck!';
+  document.getElementById('jm-footer').innerHTML=`<button class="btn btn-o flex-1" onclick="closeModal('job-modal')">Close</button><span class="badge bg" style="padding:.5rem 1rem;font-size:.78rem;display:flex;align-items:center">✓ Applied${refCode?' · Referred':''}</span>`;
+  showNotif(refCode?'🎉 Application + referral sent to '+activeJob.company+'!':'🎉 Application submitted to '+activeJob.company+'!');
+  renderJobs();renderMyApps();
+}
+
+// =====================================================================
+// SKILL GAP ANALYZER
+// =====================================================================
+function getMySkills(){
+  // Pull from localStorage registrations (linked from course registration in main app)
+  const regs=getMyRegistrations();
+  const codes=regs.map(r=>r.courseCode?.split(' — ')[0].trim()).filter(Boolean);
+  const skills=new Set();
+  codes.forEach(c=>{(COURSE_SKILLS[c]||[]).forEach(s=>skills.add(s));});
+  return{skills:[...skills],codes};
+}
+function initSkillGap(){
+  const sel=document.getElementById('sg-select');
+  if(sel.children.length<=1){JOBS.forEach(j=>{const o=document.createElement('option');o.value=j.id;o.textContent=j.role+' — '+j.company;sel.appendChild(o);});}
+}
+function runSkillGap(){
+  const jobId=document.getElementById('sg-select').value;
+  const result=document.getElementById('sg-result');
+  if(!jobId){result.innerHTML='';return;}
+  const j=JOBS.find(x=>x.id===jobId);if(!j){result.innerHTML='';return;}
+  const{skills:mySkills,codes}=getMySkills();
+  const required=j.tags||[];
+  const have=required.filter(s=>mySkills.some(ms=>ms.toLowerCase().includes(s.toLowerCase())||s.toLowerCase().includes(ms.toLowerCase())));
+  const missing=required.filter(s=>!have.includes(s));
+  const pct=required.length?Math.round((have.length/required.length)*100):0;
+  // Course suggestions
+  const suggestions=[];
+  missing.forEach(skill=>{
+    Object.entries(COURSE_SKILLS).forEach(([code,skillList])=>{
+      if(skillList.some(s=>s.toLowerCase().includes(skill.toLowerCase())||skill.toLowerCase().includes(s.toLowerCase()))){
+        if(!codes.includes(code)&&!suggestions.some(s=>s.code===code)) suggestions.push({code,skill});
+      }
+    });
+  });
+  const matchBadgeClass=getMatchBadgeClass(pct);
+  const matchDisplay=getMatchDisplay(pct);
+  result.innerHTML=`
+    <div class="gc mb-1">
+      <div class="sh"><h2>${j.role} at ${j.company}</h2><div class="sh-line"></div><span class="badge ${matchBadgeClass}">${pct}% Match</span></div>
+      <div class="prog-bar prog-bar-sm mb-1"><div class="prog-fill" style="width:${pct}%;background:${matchDisplay.background}"></div></div>
+      <div class="g2 gap-75">
+        <div>
+           <div class="section-title">✓ Skills You Have (${have.length}/${required.length})</div>
+           ${have.length?have.map(s=>`<div class="list-item"><span style="color:#34d399;font-size:.9rem">✓</span><span>${s}</span></div>`).join(''):'<div class="text-sm text-t3">No matching skills found from your enrolled courses yet.</div>'}
+        </div>
+        <div>
+           <div class="missing-title">✗ Skills You're Missing (${missing.length})</div>
+           ${missing.length?missing.map(s=>`<div class="list-item"><span style="color:#fca5a5;font-size:.9rem">✗</span><span>${s}</span></div>`).join(''):'<div class="text-sm text-green">🎉 You have all required skills for this role!</div>'}
+        </div>
+      </div>
+    </div>
+    ${suggestions.length?`<div class="gc blue">
+      <div class="sh"><h2>📚 KsTU Courses to Close the Gap</h2><div class="sh-line"></div></div>
+       ${suggestions.map(s=>`<div class="skill-chips"><div><strong class="text-blue">${s.code}</strong> teaches <em class="text-t2">${s.skill}</em></div>        <a href="index.html" class="btn-sm bs-blue course-link">Register Course</a></div>`).join('')}
+    </div>`:''}
+    ${!codes.length?'<div class="gc gold text-base">💡 Register for courses in the main app to see your real skill match score improve!</div>':''}
+  `;
+}
+
+// =====================================================================
+// CV BUILDER
+// =====================================================================
+function initCV(){
+  if(me){document.getElementById('cv-name').value=me.name||'';document.getElementById('cv-email').value=me.email||'';}
+  const{skills,codes}=getMySkills();
+  const portfolio=JSON.parse(localStorage.getItem('ciq_portfolio_'+myKey)||'[]');
+  document.getElementById('cv-data-preview').innerHTML=`
+    <div class="profile-row"><strong class="profile-label">Programme:</strong> ${me?.programme||'Not set in your profile'}</div>
+    <div class="profile-row"><strong class="profile-label">Level:</strong> ${me?.level||'—'}</div>
+    <div class="profile-row"><strong class="profile-label">Student ID:</strong> ${me?.studentId||'—'}</div>
+    <div class="profile-row"><strong class="profile-label">Registered Courses (${codes.length}):</strong><br><span class="profile-value">${codes.length?codes.join(', '):'None yet — register for courses in the main app'}</span></div>
+    <div class="profile-row"><strong class="profile-label">Auto-detected Skills (${skills.length}):</strong><br><span class="profile-value">${skills.length?skills.join(', '):'Register for courses to auto-detect skills'}</span></div>
+    <div class="profile-row"><strong class="profile-label">Portfolio Projects (${portfolio.length}):</strong><br><span class="profile-value">${portfolio.length?portfolio.map(p=>p.title).join(', '):'Add projects in the Portfolio tab'}</span></div>
+  `;
+}
+function generateCV(){
+  const name=document.getElementById('cv-name').value.trim()||'Your Name';
+  const email=document.getElementById('cv-email').value.trim();
+  const phone=document.getElementById('cv-phone').value.trim();
+  const target=document.getElementById('cv-target').value.trim();
+  const extraSkills=(document.getElementById('cv-extra-skills').value||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const{skills,codes}=getMySkills();
+  const allSkills=[...new Set([...skills,...extraSkills])];
+  const portfolio=JSON.parse(localStorage.getItem('ciq_portfolio_'+myKey)||'[]');
+  let summary=document.getElementById('cv-summary').value.trim();
+  if(!summary) summary=`${me?.programme||'KsTU student'} with hands-on experience in ${allSkills.slice(0,4).join(', ')||'core technical skills'}.${target?' Seeking a '+target+' role to apply academic knowledge in a professional setting.':' Motivated and eager to contribute to a dynamic team.'}`;
+  document.getElementById('cv-preview').innerHTML=`
+    <div class="cv-header">
+      <h1 class="cv-name">${name.toUpperCase()}</h1>
+      <p class="cv-contact">${email}${phone?' · '+phone:''} · Kumasi, Ghana</p>
+    </div>
+    <h3>PROFESSIONAL SUMMARY</h3>
+    <p>${summary}</p>
+    <h3>EDUCATION</h3>
+    <p><strong>${me?.programme||'Programme'} — Kumasi Technical University (KsTU)</strong></p>
+    <p>${me?.level||'Level'} · Expected Graduation: 2027 · Student ID: ${me?.studentId||'—'}</p>
+    <h3>RELEVANT COURSEWORK</h3>
+    <p>${codes.length?codes.join(' · '):'Register for courses in the CampusIQ app to populate this section'}</p>
+    <h3>TECHNICAL SKILLS</h3>
+    <p>${allSkills.map(s=>`<span class="cv-skill">${s}</span>`).join(' ')}</p>
+    ${buildPortfolioProjectMarkup(portfolio)}
+    <p class="text-t3 text-065 text-center mt-8" style="border-top:1px solid #eee;padding-top:.75rem">Generated by CampusIQ — Powered by Papi · Kumasi Technical University 2026</p>
+  `;
+  document.getElementById('cv-output').style.display='block';
+  document.getElementById('cv-output').scrollIntoView({behavior:'smooth'});
+  showNotif('✅ CV generated from your real CampusIQ profile!');
+}
+function downloadCV(){
+  const html=document.getElementById('cv-preview').innerHTML;
+  const name=document.getElementById('cv-name').value.trim()||'CV';
+  const full=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${name} — CV</title><style>body{font-family:Georgia,serif;max-width:700px;margin:2rem auto;padding:1rem;color:#0f172a}h1{font-size:1.5rem;margin:0}h3{font-size:.9rem;border-bottom:1px solid #ccc;padding-bottom:3px;margin:1rem 0 .4rem;letter-spacing:.05em;color:#1e3a5f}p{font-size:.82rem;line-height:1.65;margin:.2rem 0;color:#333}.cv-skill{display:inline-block;background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:20px;font-size:.68rem;margin:2px}</style></head><body>${html}</body></html>`;
+  const blob=new Blob([full],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=name.replace(/\s+/g,'_')+'_CV.html';
+  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+  showNotif('📥 CV downloaded! Open the file and print to PDF.');
+}
+
+// =====================================================================
+// ALUMNI NETWORK
+// =====================================================================
+let activeAlumni=null;
+function renderAlumni(){
+  const filtered=alumniFilter==='all'?ALUMNI:ALUMNI.filter(a=>a.faculty===alumniFilter);
+  document.getElementById('alumni-grid').innerHTML=filtered.map(a=>`<div class="alumni-card">
+    <div class="alumni-header">
+      <div class="alumni-avatar">${a.avatar}</div>
+      <div><div class="alumni-name">${a.name}</div><div class="alumni-role">${a.role}</div><div class="alumni-company">${a.company}</div></div>
+    </div>
+    <div class="alumni-meta">KsTU '${String(a.gradYear).slice(2)} · ${a.prog}</div>
+    <div class="alumni-bio">${a.bio}</div>
+    <div class="alumni-stats">
+      <span class="text-t3 text-xs">💬 ${a.answered} answered</span>
+      <span class="badge ${a.available?'bg':'br'}">${a.available?'● Available':'Busy'}</span>
+    </div>
+    <button class="btn ${a.available?'btn-p':'btn-o'} w-full text-075" ${!a.available?'disabled':''} onclick="openAlumniModal('${a.id}')">${a.available?'💬 Ask a Question':'Currently Unavailable'}</button>
+  </div>`).join('');
+  loadMyQuestions();
+}
+function openAlumniModal(id){
+  const a=ALUMNI.find(x=>x.id===id);if(!a)return;
+  activeAlumni=a;
+  document.getElementById('am-name').textContent=a.name;
+  document.getElementById('am-profile').innerHTML=`<strong>${a.role}</strong> at ${a.company}<br><span class="text-075 text-t2">${a.bio}</span>`;
+  document.getElementById('am-question').value='';
+  document.getElementById('am-msg').textContent='';
+  document.getElementById('alumni-modal').classList.add('open');
+}
+async function sendAlumniQuestion(){
+  const question=document.getElementById('am-question').value.trim();
+  const msg=document.getElementById('am-msg');
+  if(!question){msg.style.color='#fca5a5';msg.textContent='Please type your question.';return;}
+  try {
+    await CampusAPI.askAlumniQuestion({alumniId:activeAlumni.id,alumniName:activeAlumni.name,question,askedBy:myKey,askedByName:me?.name||'Student'});
+    closeModal('alumni-modal');
+    showNotif('✅ Question sent to '+activeAlumni.name+'! They typically respond within 2 days.');
+    loadMyQuestions();
+  } catch(e){ msg.style.color='#fca5a5';msg.textContent=e.message; }
+}
+async function loadMyQuestions(){
+  try {
+    const qs=await CampusAPI.getAlumniQuestions(myKey);
+    const el=document.getElementById('my-questions-list');
+    if(!el)return;
+    el.innerHTML=qs.length?qs.map(q=>`<div class="gc mb-5">
+      <div class="question-meta">To: ${q.alumniName}</div>
+      <div class="question-quote">"${q.question}"</div>
+      <span class="badge ${q.status==='answered'?'bg':'bgo'}">${q.status}</span>
+      ${q.answer?`<div class="answer-text">Answer: ${q.answer}</div>`:''}
+    </div>`).join(''):'<div class="text-t3 text-sm">No questions sent yet.</div>';
+  } catch(e){console.warn(e)}
+}
+
+// =====================================================================
+// SALARY HEATMAP
+// =====================================================================
+function getHeatColor(heat){
+  if(heat>=80) return '#10b981';
+  if(heat>=60) return '#f59e0b';
+  return '#ef4444';
+}
+function renderHeatmap(){
+  const sorted=[...MARKET_DATA].sort((a,b)=>b.demand-a.demand);
+  document.querySelector('#heatmap-table tbody').innerHTML=sorted.map(m=>{
+      const heat=m.demand;
+      const hc=getHeatColor(heat);
+    return`<tr>
+      <td><strong class="heatmap-code">${m.code}</strong></td>
+      <td class="text-072 text-t2">${m.name}</td>
+      <td class="heatmap-amount">${m.min.toLocaleString()}</td>
+      <td class="heatmap-amount-bold">${m.max.toLocaleString()}</td>
+      <td><div class="flex items-center gap-1"><div class="hm-bar" style="flex:1"><div class="hm-fill" style="width:${heat}%;background:${hc}"></div></div><span class="text-072" style="color:${hc};font-weight:600;width:35px">${heat}%</span></div></td>
+       <td><span class="badge bb">${m.openJobs}</span></td>
+     </tr>`;
+    }).join('');
+  }
+
+// =====================================================================
+// PORTFOLIO PIPELINE
+// =====================================================================
+function getPortfolio(){try{return JSON.parse(localStorage.getItem('ciq_portfolio_'+myKey)||'[]')}catch{return[]}}
+function savePortfolio(p){localStorage.setItem('ciq_portfolio_'+myKey,JSON.stringify(p))}
+function getPortfolioLink(){
+  const slug=(me?.name||'student').toLowerCase().replace(/[^a-z0-9]+/g,'-');
+  return location.origin+'/portfolio/'+slug+'-'+(me?.studentId||myKey).replace(/[^a-z0-9]/gi,'-').toLowerCase();
+}
+function loadPortfolio(){
+  document.getElementById('pf-public-link').textContent=getPortfolioLink();
+  renderPortfolioGrid();
+}
+function addProject(){
+  const title=document.getElementById('pf-title').value.trim(),course=document.getElementById('pf-course').value,desc=document.getElementById('pf-desc').value.trim(),skills=(document.getElementById('pf-skills').value||'').split(',').map(s=>s.trim()).filter(Boolean),link=document.getElementById('pf-link').value.trim(),msg=document.getElementById('pf-msg');
+  if(!title||!desc){msg.style.color='#fca5a5';msg.textContent='Project title and description are required.';return;}
+  const items=getPortfolio();
+  items.push({id:'pf_'+Date.now(),title,courseCode:course,desc,skills,link,date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})});
+  savePortfolio(items);
+  ['pf-title','pf-desc','pf-skills','pf-link'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pf-course').selectedIndex=0;
+  msg.style.color='#34d399';msg.textContent='✅ Project added to your portfolio!';
+  renderPortfolioGrid();
+  showNotif('🗂 Project added to your portfolio!');
+}
+function renderPortfolioGrid(){
+  const items=getPortfolio();
+  document.getElementById('pf-count').textContent=items.length+' project'+(items.length!==1?'s':'');
+  document.getElementById('portfolio-grid').innerHTML=items.length?items.map(p=>`<div class="pf-card">
+    <div class="portfolio-link">${p.title}</div>
+    ${p.courseCode?`<span class="badge bb status-badge-sm" style="display:inline-block">${p.courseCode}</span>`:''}
+    <div class="portfolio-desc">${p.desc}</div>
+    <div class="flex gap-25 flex-wrap mb-5">${(p.skills||[]).map(s=>`<span class="portfolio-skill">${s}</span>`).join('')}</div>
+    <div class="flex justify-between items-center">
+      <span class="portfolio-date">${p.date}</span>
+      <div class="flex gap-3">
+        ${p.link?`        <a href="${p.link}" target="_blank" class="btn-sm bs-blue course-link">🔗 View</a>`:''}
+        <button class="btn-sm bs-red" onclick="removeProject('${p.id}')">Remove</button>
+      </div>
+    </div>
+  </div>`).join(''):'<div style="grid-column:1/-1;color:var(--t3);font-size:.85rem;padding:2rem;text-align:center">No projects yet. Add your first project above!</div>';
+}
+function removeProject(id){
+  savePortfolio(getPortfolio().filter(p=>p.id!==id));
+  renderPortfolioGrid();
+  showNotif('Project removed from portfolio');
+}
+function copyPortfolioLink(){
+  const link=getPortfolioLink();
+  navigator.clipboard?.writeText(link).then(()=>showNotif('🔗 Portfolio link copied!')).catch(()=>showNotif('Link: '+link));
+}
+function buildPortfolioSkillMarkup(skills){
+  if(!skills.length) return 'Register for courses in CampusIQ to populate this section';
+  return skills.map(skill => `<span class="skill">${skill}</span>`).join(' ');
+}
+function buildPortfolioPreviewProjectMarkup(items){
+  if(!items.length) return '<p class="text-t3">No projects added yet.</p>';
+  return items.map(function(project){
+    const courseMarkup=project.courseCode ? `<span class="text-075 text-blue">${project.courseCode}</span>` : '';
+    const skillMarkup=(project.skills||[]).map(skill => `<span class="skill">${skill}</span>`).join(' ');
+    const linkMarkup=project.link ? `<p><a href="${project.link}" target="_blank" class="course-link">View Project →</a></p>` : '';
+    return `<div class="proj"><h3 class="mb-2">${project.title}</h3>${courseMarkup}
+    <p class="text-080 my-4">${project.desc}</p>
+    <p>${skillMarkup}</p>
+    ${linkMarkup}</div>`;
+  }).join('');
+}
+function previewPortfolio(){
+  const items=getPortfolio();
+  const{skills}=getMySkills();
+  const w=window.open('','_blank');
+  if(!w){showNotif('⚠ Popup blocked — please allow popups for this site.');return;}
+  const skillMarkup=buildPortfolioSkillMarkup(skills);
+  const projectMarkup=buildPortfolioPreviewProjectMarkup(items);
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${me?.name||'Student'} — Portfolio</title>
+  <style>body{font-family:Arial,sans-serif;max-width:720px;margin:2rem auto;padding:1rem;background:#f8fafc;color:#1e293b}h1{color:#1e3a8a;margin-bottom:.25rem}h2{font-size:1rem;border-bottom:2px solid #3b82f6;padding-bottom:4px;margin:1.5rem 0 .75rem;color:#1e3a8a}.proj{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:1.25rem;margin-bottom:1rem;box-shadow:0 1px 3px rgba(0,0,0,0.05)}.skill{display:inline-block;background:#dbeafe;color:#1e40af;padding:2px 10px;border-radius:20px;font-size:.72rem;margin:2px}a{color:#3b82f6}</style>
+  </head><body>
+  <h1>${me?.name||'KsTU Student'}</h1>
+  <p><strong>${me?.programme||'KsTU Student'}</strong> · ${me?.level||''} · Kumasi Technical University<br>
+  <a href="mailto:${me?.email||''}">${me?.email||''}</a> · Student ID: ${me?.studentId||'—'}</p>
+  <h2>Skills</h2><p>${skillMarkup}</p>
+  <h2>Projects (${items.length})</h2>
+  ${projectMarkup}
+  <p class="text-t3 text-072 mt-8" style="border-top:1px solid #e2e8f0;padding-top:.75rem">Generated by CampusIQ — Powered by Papi · KsTU 2026</p>
+  </body></html>`);
+  w.document.close();
+}
+
+// =====================================================================
+// MY APPLICATIONS
+// =====================================================================
+async function renderMyApps(){
+  const jd=getJobData();
+  const applied=JOBS.filter(j=>jd[j.id]==='applied');
+  const saved=JOBS.filter(j=>jd[j.id]==='saved');
+  document.getElementById('stat-applied').textContent=applied.length;
+  document.getElementById('stat-saved').textContent=saved.length;
+  document.getElementById('stat-shortlisted').textContent=Math.floor(applied.length*.3);
+  try {
+    const refs=await CampusAPI.getReferrals(myKey);
+    document.getElementById('stat-referrals').textContent=refs.length;
+    document.getElementById('referrals-list').innerHTML=refs.length?refs.map(r=>`<div class="gc purple mb-5 ref-row">
+      <div><div class="ref-company">${r.company}</div><div class="ref-detail">Via: ${r.alumniName}</div></div>
+      <div class="text-right"><code class="ref-code-box">${r.code}</code><div class="badge bp status-badge-sm">${r.status}</div></div>
+    </div>`).join(''):'<div class="text-t3 text-sm">No referral codes yet. Request referrals from high-match jobs.</div>';
+  } catch(e){console.warn(e)}
+  document.getElementById('applied-list').innerHTML=applied.length?applied.map(j=>`<div class="applied-row">
+    <div class="applied-logo">${j.logo}</div>
+    <div class="applied-info"><div class="applied-title">${j.role}</div><div class="applied-sub">${j.company} · ${j.pay}</div></div>
+    <div class="flex gap-3 flex-shrink-0"><span class="badge bg">✓ Applied</span><button class="btn-sm bs-blue" onclick="openJob('${j.id}')">View</button></div>
+  </div>`).join(''):'<div class="text-t3 text-sm empty-state">No applications yet. <button class="btn-sm bs-blue" onclick="show(\'jobs\',0)">Browse Jobs →</button></div>';
+  document.getElementById('saved-list').innerHTML=saved.length?saved.map(j=>{
+    const dl=new Date(j.deadlineStr);
+    const daysLeft=Math.ceil((dl-Date.now())/864e5);
+    return`<div class="saved-row">
+      <div class="saved-logo">${j.logo}</div>
+      <div class="applied-info"><div class="applied-title">${j.role}</div><div class="applied-sub">${j.company} · ${j.pay}</div><div class="text-075" style="color:${daysLeft<=3?'#fca5a5':'#fcd34d'}">⏰ ${daysLeft<=0?'Deadline passed':daysLeft+' days left'}</div></div>
+      <div class="footer-actions"><button class="btn-sm bs-green" onclick="openJob('${j.id}')">Apply Now</button><button class="btn-sm bs-red" onclick="toggleSave('${j.id}');renderMyApps()">Remove</button></div>
+    </div>`;
+  }).join(''):'<div style="color:var(--t3);font-size:.8rem">No saved jobs. Click 🔖 on any job to save it.</div>';
+}
+
+// =====================================================================
+// NOTIFICATIONS
+// =====================================================================
+let notifTimer=null;
+function showNotif(msg,dur=3200){
+  const n=document.getElementById('notif');
+  n.textContent=msg;n.style.display='block';
+  if(notifTimer)clearTimeout(notifTimer);
+  notifTimer=setTimeout(()=>n.style.display='none',dur);
+}
+
+// INIT
+const tabParam=params.get('tab');
+buildTicker();
+renderJobs();
+checkDeadlines();
+if(tabParam){
+  const map={skills:1,cv:2,alumni:3,salary:4,portfolio:5,apps:6};
+  if(map[tabParam]!=null) show(tabParam,map[tabParam]);
+}
+// Init skill gap dropdown
+initSkillGap();
+// Init CV preview
+initCV();
+</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../sw.js").catch(()=>{});}</script>
+</body>
+</html>

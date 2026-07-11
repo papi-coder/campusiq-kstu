@@ -1,0 +1,32 @@
+[
+  {
+    "id": "e247f9e1-4c63-4984-b7d7-6912c7a724a5",
+    "createdAt": "2026-07-11T12:19:36.341Z",
+    "name": "Volta Hall (Block A)",
+    "type": "Mixed",
+    "capacity": 320,
+    "occupied": 262,
+    "feePerSemester": 800,
+    "status": "available"
+  },
+  {
+    "id": "159fe0a0-10a5-4286-8991-3d18aab7e46a",
+    "createdAt": "2026-07-11T12:19:36.344Z",
+    "name": "Pra Hall (Block B)",
+    "type": "Male",
+    "capacity": 280,
+    "occupied": 280,
+    "feePerSemester": 950,
+    "status": "full"
+  },
+  {
+    "id": "1f2bb5f8-c635-4c33-ae07-03fc6eb269f3",
+    "createdAt": "2026-07-11T12:19:36.350Z",
+    "name": "Komfo Hall (Block C)",
+    "type": "Female",
+    "capacity": 300,
+    "occupied": 213,
+    "feePerSemester": 650,
+    "status": "available"
+  }
+]

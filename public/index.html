@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusIQ — KsTU | Powered by Papi</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@400;500;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0a0a0f;color:#f0f4ff;display:flex;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;padding:1.5rem}
+.wrap{text-align:center;max-width:580px;width:100%}
+.logo{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,7vw,3.5rem);font-weight:900;background:linear-gradient(135deg,#3b82f6,#06b6d4,#8b5cf6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.25rem}
+.sub{font-size:.75rem;color:#64748b;letter-spacing:.22em;text-transform:uppercase;margin-bottom:2.5rem}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:1rem}
+a{text-decoration:none}
+.card{border-radius:16px;padding:1.5rem 1rem;transition:transform .2s,opacity .2s;cursor:pointer;display:block}
+.card:hover{transform:translateY(-3px);opacity:.92}
+.c1{background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(6,182,212,0.15));border:1px solid rgba(59,130,246,0.35)}
+.c2{background:linear-gradient(135deg,rgba(239,68,68,0.18),rgba(245,158,11,0.15));border:1px solid rgba(239,68,68,0.35)}
+.c3{background:linear-gradient(135deg,rgba(16,185,129,0.18),rgba(6,182,212,0.12));border:1px solid rgba(16,185,129,0.35)}
+.c4{background:linear-gradient(135deg,rgba(139,92,246,0.18),rgba(59,130,246,0.12));border:1px solid rgba(139,92,246,0.35)}
+.card-icon{font-size:2rem;margin-bottom:.5rem}
+.card-title{font-family:'Orbitron',sans-serif;font-size:.82rem;font-weight:700;margin-bottom:.2rem;color:#f0f4ff}
+.card-sub{font-size:.68rem;color:#94a3b8}
+.papi{font-size:.62rem;color:#64748b;letter-spacing:.2em;margin-top:1.5rem}
+.install-btn{margin-top:1rem;padding:.4rem 1rem;border:1px solid rgba(96,165,250,0.7);background:#1d4ed8;color:#ffffff;border-radius:20px;font-size:.72rem;font-family:inherit;cursor:pointer;display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">⬡ CampusIQ</div>
+  <div class="sub">Kumasi Technical University · Powered by Papi</div>
+  <div class="cards">
+    <a href="frontend/index.html" class="card c1">
+      <div class="card-icon">🎓</div>
+      <div class="card-title">Student Portal</div>
+      <div class="card-sub">Students · Lecturers · HODs</div>
+    </a>
+    <a href="backend/admin.html" class="card c2">
+      <div class="card-icon">🛡</div>
+      <div class="card-title">Admin Backend</div>
+      <div class="card-sub">Accounts · Fees · Results · Notices</div>
+    </a>
+    <a href="frontend/careers.html" class="card c3">
+      <div class="card-icon">💼</div>
+      <div class="card-title">Career Hub</div>
+      <div class="card-sub">Jobs · Skills · CV · Alumni · Salary Map</div>
+    </a>
+    <button class="card c4" onclick="installPWA()">
+      <div class="card-icon">📱</div>
+      <div class="card-title">Install App</div>
+      <div class="card-sub">Add to home screen · Works offline</div>
+    </button>
+  </div>
+  <button class="install-btn" id="install-btn" onclick="installPWA()">📱 Install CampusIQ App</button>
+  <div class="papi">POWERED BY PAPI · KSTU 2026</div>
+</div>
+<script>
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); deferredPrompt = e;
+  document.getElementById('install-btn').style.display = 'block';
+});
+function installPWA(){
+  if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null;}); }
+  else { alert('To install: tap the browser menu → "Add to Home Screen"'); }
+}
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW registration failed:',e));
+</script>
+</body>
+</html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="stylesheet" href="../shared/styles.css">
+ <title>CampusIQ — KsTU</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png" sizes="180x180">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--panel:#0d1117;--blue:#3b82f6;--cyan:#06b6d4;--purple:#8b5cf6;
+  --gold:#f59e0b;--green:#10b981;--red:#ef4444;--pink:#ec4899;
+  --t1:#f8fafc;--t2:#dbeafe;--t3:#cbd5e1;
+  --card-bg:rgba(255,255,255,0.08);--card-border:rgba(255,255,255,0.14);
+}
+body.light{--bg:#f0f4ff;--panel:#fff;--t1:#0f172a;--t2:#334155;--t3:#64748b;--card-bg:rgba(0,0,0,0.03);--card-border:rgba(0,0,0,0.1)}
+html{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--t1);transition:background .3s,color .3s}
+body{min-height:100vh}
+
+/* LOGIN */
+#login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;padding:1rem;background:radial-gradient(ellipse at 50% 40%,rgba(59,130,246,0.08),transparent 70%)}
+.login-box{background:#0f172a;border:1px solid rgba(255,255,255,0.14);border-radius:22px;padding:2rem;width:100%;max-width:400px;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.logo-txt{font-family:'Orbitron',sans-serif;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);font-size:1.5rem;font-weight:900;background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-align:center}
+.logo-sub{text-align:center;color:#f8fafc;font-size:0.68rem;letter-spacing:0.18em;margin:3px 0 1.5rem}
+.role-tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1.25rem}
+.role-tab{padding:0.6rem 0.4rem;border-radius:10px;border:1px solid rgba(255,255,255,0.18);background:#111827;color:#dbeafe;cursor:pointer;font-size:0.75rem;text-align:center;font-family:inherit}
+.role-tab.active{background:#1d4ed8;border-color:#60a5fa;color:#ffffff}
+.fi{width:100%;background:#0f172a;border:1px solid rgba(255,255,255,0.22);color:#f8fafc;padding:0.65rem 0.9rem;border-radius:10px;font-family:inherit;font-size:0.85rem;margin-bottom:0.75rem;outline:none}
+.fi:focus{border-color:#60a5fa}
+.btn-login{width:100%;padding:0.7rem;background:#2563eb;color:#f8fafc;font-size:0.85rem;font-weight:700;border:none;border-radius:20px;cursor:pointer;font-family:inherit}
+.login-err{color:#fecaca;font-size:0.78rem;text-align:center;margin-top:0.4rem;min-height:1rem}
+.notice{margin-top:1rem;padding:0.65rem;background:#0f172a;border:1px solid rgba(59,130,246,0.45);border-radius:10px;font-size:0.72rem;color:#f8fafc;text-align:center;line-height:1.6}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;height:52px;display:flex;align-items:center;padding:0 0.875rem;gap:0.6rem;background:rgba(10,10,15,0.94);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.08);z-index:100}
+body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
+.nav-logo{font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.9rem;background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0}
+.ntabs{display:flex;gap:0.15rem;flex:1;overflow-x:auto;-ms-overflow-style:none}
+.ntab{padding:0.28rem 0.6rem;border-radius:20px;font-size:0.68rem;border:none;background:transparent;color:var(--t2);white-space:nowrap;cursor:pointer;font-family:inherit}
+.ntab.active{background:#2563eb;color:#ffffff}
+.nav-r{display:flex;align-items:center;gap:0.4rem;flex-shrink:0}
+.av{width:28px;height:28px;border-radius:50%;background:#1d4ed8;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:#ffffff}
+.bell-btn{position:relative;background:none;border:none;color:var(--t2);font-size:1.1rem;cursor:pointer;padding:0 3px}
+.notif-badge{position:absolute;top:-2px;right:-2px;background:#dc2626;color:#ffffff;font-size:0.55rem;width:14px;height:14px;border-radius:50%;display:none;align-items:center;justify-content:center;font-weight:700}
+.notif-badge.show{display:flex}
+.lang-btn,.theme-btn{background:none;border:1px solid rgba(255,255,255,0.18);color:var(--t2);border-radius:20px;padding:0.2rem 0.5rem;font-size:0.65rem;cursor:pointer;font-family:inherit}
+.logout{padding:0.2rem 0.55rem;border:1px solid rgba(239,68,68,0.35);background:#7f1d1d;color:#ffffff;border-radius:20px;font-size:0.65rem;cursor:pointer;font-family:inherit}
+
+/* NOTICES TICKER */
+#notice-ticker{background:#111827;border-bottom:1px solid rgba(59,130,246,0.35);padding:0.35rem 1rem;font-size:0.71rem;color:#f8fafc;font-weight:700;overflow:hidden;white-space:nowrap;position:fixed;top:52px;left:0;right:0;z-index:90}
+#notice-ticker-inner{display:inline-block;animation:tickScroll 30s linear infinite}
+@keyframes tickScroll{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
+
+/* NOTIFICATIONS PANEL */
+.notif-panel{position:fixed;top:52px;right:0;width:320px;max-height:420px;background:var(--panel);border:1px solid var(--card-border);border-radius:0 0 16px 16px;z-index:200;overflow-y:auto;display:none;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.notif-panel.open{display:block}
+.np-item{padding:0.75rem 1rem;border-bottom:1px solid var(--card-border);font-size:0.8rem;cursor:pointer;transition:background .15s}
+.np-item:hover{background:rgba(255,255,255,0.03)}
+.np-item.unread{border-left:3px solid #3b82f6}
+.np-item-title{font-weight:600;margin-bottom:2px}
+.np-item-msg{color:var(--t2);font-size:0.72rem}
+
+/* MAIN */
+main{padding:88px 1rem 2rem;max-width:1050px;margin:0 auto}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS */
+.gc{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1rem;margin-bottom:0.875rem;transition:border-color .2s}
+.gc.blue{border-color:rgba(59,130,246,0.3);background:rgba(59,130,246,0.07)}
+.gc.green{border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.07)}
+.gc.gold{border-color:rgba(245,158,11,0.3);background:rgba(245,158,11,0.07)}
+.gc.purple{border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.07)}
+.gc.red{border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.07)}
+.gc.cyan{border-color:rgba(6,182,212,0.3);background:rgba(6,182,212,0.07)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0.875rem}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.75rem}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.7rem}
+.sh{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.875rem}
+.sh h2{font-family:'Orbitron',sans-serif;font-size:0.88rem;white-space:nowrap}
+.sh-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent)}
+.stat-v{font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:700}
+.badge{display:inline-block;padding:0.16rem 0.5rem;border-radius:20px;font-size:0.62rem;font-weight:600;text-transform:uppercase}
+.b-blue{background:#2563eb;color:#ffffff}
+.b-green{background:#047857;color:#ffffff}
+.b-gold{background:#f59e0b;color:#111827}
+.b-red{background:#b91c1c;color:#ffffff}
+.b-purple{background:#6d28d9;color:#ffffff}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:0.78rem}
+th{text-align:left;padding:0.45rem;color:var(--t2);font-size:0.62rem;text-transform:uppercase;border-bottom:1px solid var(--card-border)}
+td{padding:0.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
+body.light td{border-bottom-color:rgba(0,0,0,0.05)}
+.calendar-date-chip{min-width:90px;text-align:center;background:rgba(255,255,255,0.05);border-radius:10px;padding:0.4rem}
+.calendar-date-value{font-family:'Orbitron',sans-serif;font-size:0.8rem;color:#60c8ff}
+.calendar-date-range{font-size:0.65rem;color:var(--t3)}
+.calendar-event-body{flex:1}
+.calendar-event-title{font-size:0.85rem}
+.calendar-event-meta{margin-top:2px}
+.calendar-empty{color:#475569;font-size:0.8rem;padding:1rem}
+.exam-option-label{display:block;margin:0.25rem 0}
+.result-score{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:700}
+.submission-response{max-width:180px}
+
+/* BUTTONS */
+button,a{cursor:pointer;font-family:inherit}
+.btn-p{background:#2563eb;color:#ffffff;padding:0.5rem 1.1rem;font-size:0.8rem;border:none;border-radius:20px}
+.btn-g{background:#047857;color:#ffffff;padding:0.5rem 1.1rem;font-size:0.8rem;border:none;border-radius:20px}
+.btn-o{background:transparent;border:1px solid rgba(255,255,255,0.12);color:var(--t2);padding:0.45rem 1rem;font-size:0.78rem;border-radius:20px}
+.btn-r{background:#991b1b;border:1px solid rgba(239,68,68,0.45);color:#ffffff;padding:0.45rem 1rem;font-size:0.78rem;border-radius:20px}
+.btn-sm{padding:0.22rem 0.55rem;font-size:0.66rem;border-radius:14px;border:none}
+.bs-blue{background:#1d4ed8;border:1px solid rgba(59,130,246,0.45);color:#ffffff}
+.bs-green{background:#047857;border:1px solid rgba(16,185,129,0.45);color:#ffffff}
+.bs-red{background:#991b1b;border:1px solid rgba(239,68,68,0.45);color:#ffffff}
+.bs-gold{background:#b45309;border:1px solid rgba(245,158,11,0.45);color:#ffffff}
+
+/* INPUTS */
+.fi2{width:100%;background:var(--card-bg);border:1px solid var(--card-border);color:var(--t1);padding:0.6rem 0.875rem;border-radius:10px;font-family:inherit;font-size:0.83rem;outline:none;margin-bottom:0.6rem}
+.fi2:focus{border-color:#3b82f6}
+textarea.fi2{resize:vertical;min-height:70px}
+select.fi2 option{background:#0d1117}
+.label{font-size:0.68rem;color:var(--t2);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:3px}
+
+/* MODALS */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:300;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal{background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:1.5rem;width:100%;max-width:540px;max-height:90vh;overflow-y:auto}
+.modal h2{font-family:'Orbitron',sans-serif;font-size:0.92rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}
+.modal-close{background:none;border:none;color:var(--t2);font-size:1.1rem}
+.msg{font-size:0.78rem;min-height:1rem;margin-bottom:0.4rem;text-align:center}
+
+/* EXAM TIMER */
+#exam-timer-bar{display:none;position:fixed;top:52px;left:0;right:0;z-index:150;background:#7f1d1d;border-bottom:2px solid rgba(239,68,68,0.65);padding:0.4rem 1rem;text-align:center;font-family:'Orbitron',sans-serif;font-size:0.85rem;color:#ffffff}
+
+/* GPA RING */
+.gpa-ring{position:relative;display:inline-flex;align-items:center;justify-content:center}
+
+/* ID CARD */
+.id-card{background:linear-gradient(135deg,#1e3a5f,#0d1b2e);border:1px solid #3b82f6;border-radius:16px;padding:1.5rem;max-width:320px;margin:0 auto;color:#fff;text-align:center;position:relative;overflow:hidden}
+.id-card::before{content:'KsTU';position:absolute;right:-20px;top:10px;font-family:'Orbitron',sans-serif;font-size:4rem;color:rgba(59,130,246,0.08);transform:rotate(10deg)}
+
+/* MAP */
+#map-container{height:400px;border-radius:14px;overflow:hidden;border:1px solid rgba(6,182,212,0.3)}
+
+/* CHAT */
+.chat-msgs{height:280px;overflow-y:auto;padding:0.75rem;display:flex;flex-direction:column;gap:0.5rem}
+.chat-msg{max-width:78%;padding:0.6rem 0.875rem;border-radius:12px;font-size:0.8rem;line-height:1.55}
+.chat-msg.me{align-self:flex-end;background:rgba(59,130,246,0.25);border:1px solid rgba(59,130,246,0.3)}
+.chat-msg.other{align-self:flex-start;background:var(--card-bg);border:1px solid var(--card-border)}
+.chat-msg .sender{font-size:0.65rem;color:var(--t2);margin-bottom:2px}
+
+/* PROGRESS */
+.prog-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;transition:width 1s ease}
+
+/* QR PLACEHOLDER */
+.qr-box{width:120px;height:120px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto;color:#000;font-size:0.65rem;text-align:center;padding:0.5rem}
+
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+</style>
+</head>
+<body>
+<script>
+window.loginRole = 'student';
+window.selRole = function (r, btn) {
+  window.loginRole = r;
+  document.querySelectorAll('.role-tab').forEach(function (tab) {
+    tab.classList.remove('active');
+  });
+  if (btn && btn.classList) btn.classList.add('active');
+};
+window.doLogin = async function () {
+  if (typeof CampusAPI?.login !== 'function') {
+    const msg = document.getElementById('l-err');
+    if (msg) msg.textContent = 'The CampusIQ API is still loading. Please try again in a moment.';
+    return;
+  }
+  const email = document.getElementById('l-email').value.trim();
+  const pass = document.getElementById('l-pass').value;
+  const loginMessage = document.getElementById('l-err');
+  try {
+    const user = await CampusAPI.login(email, pass, window.loginRole || 'student');
+    window.currentUser = user;
+    if (window.launchApp) { window.launchApp(); }
+  } catch (err) {
+    if (loginMessage) loginMessage.textContent = err.message || 'Login failed';
+  }
+};
+</script>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="logo-txt">⬡ CampusIQ</div>
+    <div class="logo-sub">KUMASI TECHNICAL UNIVERSITY</div>
+    <div class="role-tabs">
+      <button class="role-tab active" onclick="window.selRole('student',this)">🎓 Student</button>
+      <button class="role-tab" onclick="window.selRole('lecturer',this)">👨‍🏫 Lecturer</button>
+      <button class="role-tab" onclick="window.selRole('hod',this)">🏛 HOD</button>
+    </div>
+     <label for="l-email" class="sr-only">Email address</label>
+    <input class="fi" id="l-email" type="email" placeholder="Email address">
+     <label for="l-pass" class="sr-only">Password</label>
+    <input class="fi" id="l-pass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-login" onclick="window.doLogin()">Sign In to CampusIQ</button>
+    <div class="login-err" id="l-err"></div>
+    <div class="notice">🔐 Accounts are created by the KsTU Admin. Contact your department if you need login details.</div>
+  </div>
+</div>
+
+<div id="exam-timer-bar">⏱ <span id="exam-timer-txt">30:00</span> remaining — <span id="exam-timer-course"></span></div>
+
+<nav id="nav" class="hidden">
+  <span class="nav-logo">⬡ CampusIQ</span>
+  <div class="ntabs hide-scrollbar" id="ntabs"></div>
+  <div class="nav-r">
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">☀️</button>
+    <button class="lang-btn" onclick="toggleLang()" id="lang-btn">🇬🇭 TW</button>
+    <button class="bell-btn" onclick="toggleNotifPanel()">🔔<span class="notif-badge" id="notif-badge"></span></button>
+    <div class="av" id="nav-av"></div>
+    <button class="logout" onclick="logout()">Sign out</button>
+  </div>
+</nav>
+
+<div id="notice-ticker" class="hidden"><span id="notice-ticker-inner">Loading announcements…</span></div>
+<div class="notif-panel" id="notif-panel">
+  <div class="flex justify-between items-center fw-600 text-sm border-b px-1 py-05">
+    Notifications <button onclick="markAllRead()" class="bs-blue text-070">Mark all read</button>
+  </div>
+  <div id="notif-list"><div class="p-1 text-center text-quiet text-sm">No notifications yet</div></div>
+</div>
+
+<main id="main" class="hidden">
+
+<!-- HOME -->
+<section class="screen" id="screen-home">
+     <div class="gc mb-75">
+       <div id="home-greet" class="text-orbitron text-xl"></div>
+       <div id="home-sub" class="text-base text-t2 mt-3"></div>
+     </div>
+     <div id="notice-board" class="hidden mb-1"></div>
+     <div class="grid4 mb-1" id="home-stats"></div>
+  <div class="grid2">
+    <div class="gc"><div class="sh"><h2 id="t-timetable">This Week</h2><div class="sh-line"></div></div><table><thead><tr><th>Day</th><th>Time</th><th>Course</th><th>Room</th></tr></thead><tbody id="home-tt"></tbody></table></div>
+    <div class="gc"><div class="sh"><h2 id="t-upcoming">Upcoming</h2><div class="sh-line"></div></div><div id="home-upcoming"></div></div>
+  </div>
+</section>
+
+<!-- AI TUTOR — PAPI -->
+<section class="screen" id="screen-ai">
+  <div class="sh"><h2>🧠 Papi AI Tutor</h2><div class="sh-line"></div><span class="badge b-green" id="ai-status">● Online</span></div>
+   <div class="gc p-0">
+     <div class="p-1 border-b bg-blue-grad rounded-t-lg">
+       <div class="text-orbitron text-088 fw-700 mb-3">Papi — Your KsTU AI Tutor</div>
+       <div class="text-072 text-t2">Ask anything about your courses, exams, career, or campus life</div>
+     </div>
+     <div id="ai-msgs" class="h-360 overflow-y-auto p-1 flex flex-col gap-65">
+       <div class="ai-msg-ai">👋 Hello! I'm <strong>Papi</strong>, your KsTU AI tutor. Ask me anything — course concepts, exam prep, career advice, or anything about campus life at KsTU. What would you like to learn today?</div>
+    </div>
+     <div class="p-4 border-t flex gap-05 flex-wrap">
+      <button class="btn-sm bs-blue" onclick="askPapi('Explain Big O notation simply')">Big O notation</button>
+      <button class="btn-sm bs-blue" onclick="askPapi('Help me with calculus integration step by step')">Calculus help</button>
+      <button class="btn-sm bs-blue" onclick="askPapi('Create a 2-week study plan for my exams')">Study plan</button>
+      <button class="btn-sm bs-blue" onclick="askPapi('What are the best tech careers in Ghana?')">Career advice</button>
+      <button class="btn-sm bs-blue" onclick="askPapi('Explain machine learning algorithms simply')">ML basics</button>
+    </div>
+    <div class="border-t flex gap-05 flex-wrap p-75">
+       <label for="ai-input" class="sr-only">Ask Papi</label>
+       <input class="fi2 m-0 flex-1" id="ai-input" placeholder="Ask Papi anything about your KsTU courses, exams, career…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();askPapi()}">
+       <button class="btn-p whitespace-nowrap text-orbitron text-072" id="ai-send-btn" onclick="askPapi()">SEND</button>
+    </div>
+  </div>
+</section>
+
+<!-- VIRTUAL CLASSROOM -->
+<section class="screen" id="screen-classroom">
+  <div class="sh"><h2 id="t-classroom">Virtual Classroom</h2><div class="sh-line"></div><span class="badge b-blue" id="vc-badge"></span></div>
+  <div id="lec-classroom-tools" class="hidden mb-1 flex gap-05 flex-wrap">
+    <button class="btn-p" onclick="openExamModal()">+ Post Exam</button>
+    <button class="btn-g" onclick="openAssignmentModal()">+ Post Assignment</button>
+    <button class="btn-o" onclick="openMaterialModal()">+ Add Material</button>
+  </div>
+  <div class="grid2 mb-1">
+    <div>
+      <div class="sh"><h2 id="t-exams">Exams</h2><div class="sh-line"></div></div>
+      <div id="exams-grid"></div>
+    </div>
+    <div>
+      <div class="sh"><h2 id="t-assignments">Assignments</h2><div class="sh-line"></div></div>
+      <div id="assignments-list"></div>
+    </div>
+  </div>
+  <div class="sh"><h2 id="t-materials">Course Materials</h2><div class="sh-line"></div></div>
+  <div id="materials-list"></div>
+</section>
+
+<!-- ATTENDANCE -->
+<section class="screen" id="screen-attendance">
+  <div class="sh"><h2 id="t-attendance">Attendance</h2><div class="sh-line"></div></div>
+  <div id="att-student-view" class="hidden">
+    <div class="grid4 mb-1" id="att-stats"></div>
+    <div class="gc"><div class="sh"><h2>History</h2><div class="sh-line"></div></div><table><thead><tr><th>Date</th><th>Course</th><th>Status</th></tr></thead><tbody id="att-history"></tbody></table></div>
+  </div>
+  <div id="att-lecturer-view" class="hidden">
+    <div class="gc mb-1">
+      <div class="sh"><h2>Take Attendance</h2><div class="sh-line"></div></div>
+      <div class="grid2">
+        <div><label class="label" for="att-course">Course Code</label><input class="fi2" id="att-course" placeholder="CPT 301"></div>
+        <div><label class="label" for="att-date">Date</label><input class="fi2" type="date" id="att-date"></div>
+      </div>
+      <label class="label" for="att-students">Student Names (comma-separated)</label>
+      <textarea class="fi2" id="att-students" rows="2" placeholder="Kwame Owusu, Abena Mensah, Kofi Asante…"></textarea>
+      <div class="flex gap-05 items-center flex-wrap">
+        <button class="btn-p" onclick="buildAttForm()">Load Students</button>
+        <button class="btn-g" onclick="generateAttQR()">📱 Generate QR Code</button>
+      </div>
+      <div id="att-qr-box" class="hidden mt-1 text-center">
+         <div class="text-base text-t2 mb-05">Students scan this QR to mark themselves present:</div>
+        <div class="qr-box" id="att-qr-content"></div>
+         <div class="text-075 text-t3 mt-4" id="att-qr-code"></div>
+      </div>
+      <div id="att-form-rows" class="mt-1"></div>
+      <button class="btn-g hidden mt-75" id="att-submit-btn" onclick="submitAttendance()">✅ Submit Attendance</button>
+      <div class="msg" id="att-msg"></div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS & GPA -->
+<section class="screen" id="screen-results">
+  <div class="sh"><h2 id="t-results">Results & GPA</h2><div class="sh-line"></div></div>
+  <div id="results-student-view" class="hidden">
+    <div class="grid2 mb-1">
+      <div class="gc">
+        <div class="sh"><h2>GPA Overview</h2><div class="sh-line"></div></div>
+         <div class="flex items-center gap-2 flex-wrap">
+          <div class="gpa-ring">
+            <svg width="110" height="110">
+              <circle cx="55" cy="55" r="46" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="7"/>
+              <circle cx="55" cy="55" r="46" fill="none" stroke="url(#gr)" stroke-width="7"
+                stroke-dasharray="289" stroke-dashoffset="289" id="gpa-ring-circle"
+                stroke-linecap="round" transform="rotate(-90 55 55)"/>
+              <defs><lineargradient id="gr" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#06b6d4"/>
+              </lineargradient></defs>
+            </svg>
+            <div class="absolute text-center">
+              <div class="text-orbitron text-2xl fw-700 text-green" id="gpa-value">—</div>
+              <div class="text-060 text-t2 uppercase">GPA</div>
+            </div>
+          </div>
+          <div class="flex-1 min-w-120">
+            <div class="mb-05 text-base">Cumulative GPA: <strong class="text-green" id="cgpa-val">—</strong></div>
+            <div class="mb-05 text-base">Projected GPA: <strong class="text-blue" id="pgpa-val">—</strong></div>
+            <div class="text-base">Total Credits: <strong class="text-gold" id="credits-val">—</strong></div>
+          </div>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="sh"><h2>Grade Breakdown</h2><div class="sh-line"></div></div>
+        <div id="grade-breakdown"></div>
+      </div>
+    </div>
+    <div class="gc"><table><thead><tr><th>Course</th><th>CA</th><th>Exam</th><th>Total</th><th>Grade</th></tr></thead><tbody id="results-tbody"></tbody></table></div>
+  </div>
+  <div id="results-lec-view" class="hidden">
+    <div class="gc"><table><thead><tr><th>Student</th><th>Course</th><th>CA</th><th>Exam</th><th>Total</th><th>Grade</th></tr></thead><tbody id="results-lec-tbody"></tbody></table></div>
+  </div>
+</section>
+
+<!-- TIMETABLE -->
+<section class="screen" id="screen-timetable">
+  <div class="sh"><h2 id="t-tt">Timetable</h2><div class="sh-line"></div></div>
+  <div class="gc"><table><thead><tr><th>Day</th><th>Time</th><th>Course</th><th>Room</th><th>Lecturer</th></tr></thead><tbody id="tt-tbody"></tbody></table></div>
+</section>
+
+<!-- COURSE REGISTRATION -->
+<section class="screen" id="screen-registration">
+  <div class="sh"><h2>Course Registration</h2><div class="sh-line"></div></div>
+  <div class="gc gold mb-1 text-base"><strong>Semester:</strong> 2025/2026 Sem 2 — Registration is open until August 5, 2026.</div>
+  <div class="grid2">
+    <div>
+      <div class="sh"><h2>Available Courses</h2><div class="sh-line"></div></div>
+      <div id="avail-courses-list"></div>
+    </div>
+    <div>
+      <div class="sh"><h2>My Registered Courses</h2><div class="sh-line"></div></div>
+      <div id="my-reg-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEES & PAYMENTS -->
+<section class="screen" id="screen-fees">
+  <div class="sh"><h2>Fees & Finance</h2><div class="sh-line"></div></div>
+  <div id="fee-summary" class="gc blue mb-1"></div>
+  <div class="grid2">
+    <div>
+      <div class="sh"><h2>Payment History</h2><div class="sh-line"></div></div>
+      <div id="payment-history"></div>
+    </div>
+    <div class="gc">
+      <div class="sh"><h2>Submit Payment Receipt</h2><div class="sh-line"></div></div>
+      <label class="label" for="pay-amount">Amount Paid (GHS)</label><input class="fi2" id="pay-amount" type="number" placeholder="e.g. 2000">
+      <label class="label" for="pay-method">Payment Method</label>
+      <select class="fi2" id="pay-method"><option>Mobile Money (MTN)</option><option>Mobile Money (Vodafone)</option><option>Bank Transfer</option><option>Cash (Bursary)</option></select>
+      <label class="label" for="pay-ref">Transaction Reference / Receipt No.</label><input class="fi2" id="pay-ref" placeholder="e.g. GHT20261234567">
+      <label class="label" for="pay-note">Note (optional)</label><input class="fi2" id="pay-note" placeholder="e.g. First instalment">
+      <div class="msg" id="pay-msg"></div>
+      <button class="btn-p w-full" onclick="submitPaymentReceipt()">📤 Submit Receipt for Confirmation</button>
+    </div>
+  </div>
+</section>
+
+<!-- HOSTELS -->
+<section class="screen" id="screen-hostels">
+  <div class="sh"><h2>Hostels & Accommodation</h2><div class="sh-line"></div></div>
+  <div id="hostel-app-status" class="mb-1"></div>
+  <div class="grid2" id="hostels-grid"></div>
+</section>
+
+<!-- CAMPUS LOCATOR (Google Maps) -->
+<section class="screen" id="screen-locator">
+  <div class="sh"><h2>📍 Live Campus Locator</h2><div class="sh-line"></div><span class="badge b-green" id="loc-live-badge">0 online</span></div>
+  <div class="gc gold mb-1 text-base lh-17">
+    🔒 <strong>Privacy:</strong> Location sharing is <strong>opt-in only</strong>. Your location is only visible to others while you are actively sharing. No data is stored after you stop.
+  </div>
+  <div class="grid2 mb-1">
+     <div class="gc">
+      <div class="sh"><h2>My Location Controls</h2><div class="sh-line"></div></div>
+       <div class="flex justify-between items-center mb-75">
+         <div><div class="text-base fw-500">Share My Location</div><div class="text-072 text-t2" id="loc-share-status">Currently not sharing</div></div>
+         <button class="btn-g" id="loc-toggle-btn" onclick="toggleLocationSharing()">Enable Sharing</button>
+       </div>
+       <div class="text-075 text-t2 mb-75">Building: <strong id="loc-my-building">—</strong></div>
+       <div id="loc-online-list" class="h-200 overflow-y-auto"></div>
+    </div>
+    <div class="gc">
+      <div class="sh"><h2>Busy Areas</h2><div class="sh-line"></div></div>
+      <div id="loc-busy-areas"></div>
+    </div>
+  </div>
+  <div id="map-container"><div class="map-placeholder"><div>🗺 Map loading…</div><div class="map-placeholder-sub">Enable location sharing to see the live campus map</div></div></div>
+</section>
+
+<!-- STUDENT ID CARD -->
+<section class="screen" id="screen-idcard">
+  <div class="sh"><h2>Student ID Card</h2><div class="sh-line"></div></div>
+  <div id="id-card-wrap" class="mb-1">
+    <div class="id-card" id="id-card-display">
+      <div class="text-right text-062 uppercase text-blue mb-1">KUMASI TECHNICAL UNIVERSITY</div>
+      <div class="w-70 h-70 rounded-full bg-blue-grad m-auto flex items-center justify-center text-3xl fw-700 border-blue border-thick" id="id-avatar"></div>
+      <div class="text-orbitron text-lg fw-700 mb-3" id="id-name"></div>
+      <div class="text-072 mb-75 text-t3" id="id-programme"></div>
+      <div class="flex justify-between text-070 mb-875">
+        <div><div class="id-card-label">Student ID</div><div class="id-card-value" id="id-studentid"></div></div>
+        <div><div class="id-card-label">Level</div><div class="id-card-value" id="id-level"></div></div>
+        <div><div class="id-card-label">Year</div><div class="id-card-value">2026</div></div>
+      </div>
+      <div class="w-80 h-80 m-auto bg-white rounded-sm flex items-center justify-content-center text-center p-4 id-qr-text" id="id-qr">
+        <div class="mt-75 text-060 text-center id-card-powered">Powered by CampusIQ · Papi</div>
+      </div>
+    </div>
+  </div>
+  <div class="flex gap-05 justify-center">
+    <button class="btn-p" onclick="printIDCard()">🖨 Print ID Card</button>
+  </div>
+</section>
+
+<!-- COURSE CHAT -->
+<section class="screen" id="screen-chat">
+  <div class="sh"><h2>Course Chat</h2><div class="sh-line"></div></div>
+  <div class="gc mb-1">
+    <label class="label" for="chat-course-select">Select Course</label>
+     <select class="fi2 m-0" id="chat-course-select" onchange="loadChat()">
+      <option value="">Choose a course…</option>
+      <option>CPT 301</option><option>CPT 305</option><option>MAT 201</option>
+      <option>DSC 201</option><option>EEE 301</option><option>FIN 201</option>
+    </select>
+  </div>
+  <div class="gc p-0 hidden" id="chat-box">
+    <div class="p-75 px-1 border-b text-sm fw-600" id="chat-course-label"></div>
+    <div class="chat-msgs" id="chat-msgs"></div>
+    <div class="flex gap-05 p-75 border-t">
+      <label for="chat-input" class="sr-only">Type a message</label>
+      <input class="fi2 m-0 flex-1" id="chat-input" placeholder="Type a message…" onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="btn-p" onclick="sendChat()">Send</button>
+    </div>
+  </div>
+</section>
+
+<!-- CALENDAR -->
+<section class="screen" id="screen-calendar">
+  <div class="sh"><h2>Academic Calendar</h2><div class="sh-line"></div></div>
+  <div id="calendar-list"></div>
+</section>
+
+</main>
+
+<!-- EXAM MODAL CREATE -->
+<div class="modal-bg" id="exam-modal">
+  <div class="modal">
+    <h2>Post New Exam <button class="modal-close" onclick="closeM('exam-modal')">✕</button></h2>
+    <label class="label" for="ex-title">Title *</label><input class="fi2" id="ex-title">
+    <label class="label" for="ex-course">Course Code *</label><input class="fi2" id="ex-course">
+    <label class="label" for="ex-dur">Duration (minutes)</label><input class="fi2" type="number" id="ex-dur" value="30">
+    <div id="ex-qblocks"></div>
+     <button class="btn-o w-full mb-75" onclick="addQBlock()">+ Add Question</button>
+    <div class="msg" id="ex-msg"></div>
+     <button class="btn-p w-full" onclick="submitExam()">Publish Exam</button>
+  </div>
+</div>
+
+<!-- TAKE EXAM MODAL -->
+<div class="modal-bg" id="take-modal">
+  <div class="modal">
+    <h2><span id="te-title">Exam</span> <button class="modal-close" onclick="cancelExam()">✕</button></h2>
+    <div id="te-questions"></div>
+    <div class="msg" id="te-msg"></div>
+     <button class="btn-p w-full" onclick="submitExamAnswers()">Submit Answers</button>
+  </div>
+</div>
+
+<!-- EXAM RESULT MODAL -->
+<div class="modal-bg" id="exam-result-modal">
+  <div class="modal">
+    <h2>Your Result <button class="modal-close" onclick="closeM('exam-result-modal')">✕</button></h2>
+    <div id="er-content"></div>
+  </div>
+</div>
+
+<!-- SUBMISSIONS MODAL -->
+<div class="modal-bg" id="subs-modal">
+  <div class="modal">
+    <h2><span id="subs-title">Submissions</span><button class="modal-close" onclick="closeM('subs-modal')">✕</button></h2>
+    <div id="subs-content"></div>
+  </div>
+</div>
+
+<!-- ASSIGNMENT MODAL -->
+<div class="modal-bg" id="assign-modal">
+  <div class="modal">
+    <h2>Post Assignment <button class="modal-close" onclick="closeM('assign-modal')">✕</button></h2>
+    <label class="label" for="asgn-title">Title *</label><input class="fi2" id="asgn-title">
+    <label class="label" for="asgn-course">Course Code *</label><input class="fi2" id="asgn-course">
+    <label class="label" for="asgn-desc">Description</label><textarea class="fi2" id="asgn-desc"></textarea>
+    <label class="label" for="asgn-deadline">Deadline *</label><input class="fi2" type="datetime-local" id="asgn-deadline">
+    <label class="label" for="asgn-score">Max Score</label><input class="fi2" type="number" id="asgn-score" value="100">
+    <div class="msg" id="asgn-msg"></div>
+     <button class="btn-p w-full" onclick="submitAssignment()">Post Assignment</button>
+  </div>
+</div>
+
+<!-- MATERIAL MODAL -->
+<div class="modal-bg" id="material-modal">
+  <div class="modal">
+    <h2>Add Course Material <button class="modal-close" onclick="closeM('material-modal')">✕</button></h2>
+    <label class="label" for="mat-course">Course Code *</label><input class="fi2" id="mat-course">
+    <label class="label" for="mat-title">Title *</label><input class="fi2" id="mat-title">
+    <label class="label" for="mat-type">Type</label>
+    <select class="fi2" id="mat-type"><option>Lecture Notes</option><option>Slides</option><option>Video</option><option>Past Questions</option><option>Reference</option></select>
+    <label class="label" for="mat-week">Week</label><input class="fi2" id="mat-week" placeholder="e.g. Week 5">
+    <label class="label" for="mat-url">URL / Link *</label><input class="fi2" id="mat-url" placeholder="https://…">
+    <div class="msg" id="mat-msg"></div>
+     <button class="btn-p w-full" onclick="submitMaterial()">Add Material</button>
+  </div>
+</div>
+
+<!-- SUBMIT ASSIGNMENT MODAL (student) -->
+<div class="modal-bg" id="submit-asgn-modal">
+  <div class="modal">
+    <h2><span id="sa-title">Submit Assignment</span><button class="modal-close" onclick="closeM('submit-asgn-modal')">✕</button></h2>
+     <div id="sa-desc" class="text-base text-t2 mb-1"></div>
+    <label class="label" for="sa-response">Your Response *</label><textarea class="fi2" id="sa-response" rows="4" placeholder="Type your answer here…"></textarea>
+    <label class="label" for="sa-link">Link (optional — GitHub, Google Doc, etc.)</label><input class="fi2" id="sa-link" placeholder="https://…">
+    <div class="msg" id="sa-msg"></div>
+     <button class="btn-p w-full" onclick="doSubmitAssignment()">Submit</button>
+  </div>
+</div>
+
+<script src="../shared/api.js"></script>
+<script src="./student-app.js"></script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../sw.js").catch(()=>{});}
+</script>
+</body>
+</html>

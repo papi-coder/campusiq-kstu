@@ -1,0 +1,13 @@
+[
+  {
+    "id": "ad582d63-8aec-448a-930b-539fa419b096",
+    "createdAt": "2026-07-11T12:19:36.238Z",
+    "name": "Super Admin",
+    "email": "admin@kstu.edu.gh",
+    "username": "admin",
+    "password": "admin123",
+    "role": "admin",
+    "department": "ICT",
+    "status": "active"
+  }
+]
