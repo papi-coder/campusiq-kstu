@@ -10,6 +10,13 @@ const app = express();
 const publicDir = path.join(__dirname, '..', 'public');
 
 app.disable('x-powered-by');
+
+// CORS must come BEFORE body parsing / routes so preflight + actual requests succeed
+const cors = require('cors');
+app.use(cors({
+  origin: true, // reflect request origin
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.static(publicDir));
 

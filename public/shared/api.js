@@ -1,25 +1,31 @@
 // public/shared/api.js
 // Thin fetch wrapper used by every CampusIQ page to talk to the backend API.
-// Auto-detects whether it's running locally (scan ports 3001-3005) or deployed on Vercel
-// (same-origin /api/*), with file:// fallback to localhost.
+// Auto-detects local API port (3001-3005) or falls back to same-origin/production.
+// Works when opened via http(s) or file:// on the local machine.
 
 const CampusAPI = (() => {
   let BASE = '';
   const { protocol, hostname } = window.location;
   const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
   const isFile = protocol === 'file:';
-  const httpOrigin = () => {
+
+  // For file:// we must use an absolute http(s) origin, never file://
+  const originFor = () => {
     if (isLocal) return `${protocol}//${hostname}`;
     return 'http://localhost';
   };
 
   const candidates = [];
   if (isLocal || isFile) {
-    const base = httpOrigin();
+    const base = originFor();
     for (let p = 3001; p <= 3005; p++) candidates.push(`${base}:${p}`);
   }
-  // Same-origin fallback (Vercel/production, or when static server proxies /api)
-  candidates.push(`${protocol}//${(isLocal ? hostname : (isFile ? 'localhost' : ''))}`);
+  // Same-origin fallback (Vercel/production, or when a static server proxies /api)
+  if (!isFile) {
+    candidates.push(`${protocol}//${isLocal ? hostname : ''}`);
+  } else {
+    candidates.push('http://localhost');
+  }
 
   // Probe health endpoint to find the live API server
   (async () => {
