@@ -183,9 +183,9 @@ document.getElementById('l-pass').addEventListener('keydown', e => { if(e.key===
 
 function launchApp(){
   document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('nav').style.display = 'flex';
-  document.getElementById('notice-ticker').style.display = 'block';
-  document.getElementById('main').style.display = 'block';
+  document.getElementById('nav').classList.remove('hidden');
+  document.getElementById('notice-ticker').classList.remove('hidden');
+  document.getElementById('main').classList.remove('hidden');
   document.getElementById('nav-av').textContent = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   buildNav();
   showScreen('home');

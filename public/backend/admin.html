@@ -395,8 +395,8 @@ function adminLogin(){
   const err=document.getElementById('a-err');
   CampusAPI.adminLogin(username,password).then(()=>{
     document.getElementById('login-screen').style.display='none';
-    document.getElementById('topbar').style.display='flex';
-    document.getElementById('layout').style.display='flex';
+    document.getElementById('topbar').classList.remove('hidden');
+    document.getElementById('layout').classList.remove('hidden');
     loadDashboard();
   }).catch(e=>{err.textContent=e.message;});
 }

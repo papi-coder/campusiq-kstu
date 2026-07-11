@@ -9,5 +9,33 @@
     "role": "admin",
     "department": "ICT",
     "status": "active"
+  },
+  {
+    "id": "593298e8-be72-40db-9a5c-8ce5d721286c",
+    "createdAt": "2026-07-11T13:40:31.907Z",
+    "name": "Test Student",
+    "email": "test@kstu.edu.gh",
+    "password": "test123",
+    "role": "student",
+    "studentId": "KsTU/2024/0042",
+    "staffId": null,
+    "programme": "BTech Computer Technology",
+    "level": "Level 100",
+    "department": null,
+    "title": null
+  },
+  {
+    "id": "2f2bcd08-f79a-4bff-be0d-e329fe917eae",
+    "createdAt": "2026-07-11T13:50:50.227Z",
+    "name": "Verify Student",
+    "email": "verify@kstu.edu.gh",
+    "password": "verify123",
+    "role": "student",
+    "studentId": "KsTU/2024/9999",
+    "staffId": null,
+    "programme": "BTech Computer Technology",
+    "level": "Level 200",
+    "department": null,
+    "title": null
   }
 ]

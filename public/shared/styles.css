@@ -17,7 +17,7 @@
 }
 
 /* Display helpers */
-.hidden { display: none !important; }
+.hidden { display: none; }
 .block { display: block !important; }
 .flex { display: flex !important; }
 .inline-flex { display: inline-flex !important; }
