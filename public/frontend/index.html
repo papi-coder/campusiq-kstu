@@ -246,7 +246,7 @@ window.doLogin = async function () {
     <button class="btn-login" onclick="window.doLogin()" data-i18n="signin_btn">Sign In to CampusIQ</button>
     <div class="login-err" id="l-err"></div>
     <div class="notice">🔐 <span data-i18n="accounts_note">Accounts are created by the KsTU Admin. Contact your department if you need login details.</span></div>
-    <button class="btn-install-login hidden" id="install-btn-login" onclick="window.installApp && window.installApp()" style="margin-top:0.6rem;width:100%;padding:0.55rem;background:#1d4ed8;color:#fff;border:1px solid rgba(59,130,246,0.45);border-radius:20px;font-size:0.78rem;cursor:pointer;font-family:inherit"><span data-i18n="install_app">📲 Install CampusIQ App</span></button>
+     <button class="btn-install-login hidden" id="install-btn-login" onclick="window.installApp && window.installApp()"><span data-i18n="install_app">📲 Install CampusIQ App</span></button>
   </div>
 </div>
 
@@ -256,7 +256,7 @@ window.doLogin = async function () {
     <div class="logo-sub">STUDENT ID CARD</div>
     <div id="public-id-card"></div>
         <button class="btn-login" onclick="if(window.showLogin)window.showLogin()">🔑 <span data-i18n="login_to">Login to CampusIQ</span></button>
-        <button class="btn-login" style="margin-top:0.5rem;background:#1d4ed8;" onclick="location.href='/'">← <span data-i18n="back_home">Back to Home</span></button>
+        <button class="btn-login btn-login-back" onclick="location.href='/'">← <span data-i18n="back_home">Back to Home</span></button>
   </div>
 </div>
 
@@ -270,9 +270,9 @@ window.doLogin = async function () {
     <button class="lang-btn" onclick="toggleLang()" id="lang-btn">🇬🇭 TW</button>
     <button class="bell-btn" onclick="toggleNotifPanel()">🔔<span class="notif-badge" id="notif-badge"></span></button>
     <button class="btn-install hidden" id="install-btn" onclick="installApp()">📲 Install App</button>
-    <div class="av" id="nav-av" style="position:relative;overflow:hidden">
-      <span id="nav-av-text" style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:#ffffff"></span>
-      <img id="nav-av-img" class="nav-av-img" style="display:none" alt="">
+    <div class="av nav-avatar" id="nav-av">
+      <span id="nav-av-text" class="nav-avatar-text"></span>
+      <img id="nav-av-img" class="nav-av-img" alt="">
     </div>
     <button class="logout" onclick="logout()">Sign out</button>
   </div>
@@ -320,12 +320,12 @@ window.doLogin = async function () {
       <button class="btn-sm bs-blue" onclick="askPapi('What are the best tech careers in Ghana?')">Career advice</button>
       <button class="btn-sm bs-blue" onclick="askPapi('Explain machine learning algorithms simply')">ML basics</button>
     </div>
-     <div id="ai-attachments" class="flex gap-05 flex-wrap p-4" style="display:none"></div>
+      <div id="ai-attachments" class="flex gap-05 flex-wrap p-4 hidden"></div>
      <div class="border-t flex gap-05 flex-wrap p-75">
         <label for="ai-input" class="sr-only">Ask Papi</label>
         <input class="fi2 m-0 flex-1" id="ai-input" placeholder="Ask Papi anything about your KsTU courses, exams, career…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();askPapi()}">
         <button class="btn-o whitespace-nowrap" type="button" onclick="document.getElementById('ai-file').click()" data-i18n="upload_q">📎 Upload</button>
-        <input type="file" id="ai-file" accept=".txt,.md,.csv,.json,.html,.log,image/*" style="display:none" onchange="addAiFiles(event)">
+        <input type="file" id="ai-file" accept=".txt,.md,.csv,.json,.html,.log,image/*" class="hidden" onchange="addAiFiles(event)" aria-label="Attach file">
         <button class="btn-sm bs-red" onclick="clearPapiChat()" title="Clear chat">🗑</button>
         <button class="btn-p whitespace-nowrap text-orbitron text-072" id="ai-send-btn" onclick="askPapi()">SEND</button>
     </div>
@@ -367,7 +367,7 @@ window.doLogin = async function () {
         <div><label class="label" for="att-self-date">Date</label><input class="fi2" type="date" id="att-self-date"></div>
       </div>
       <label class="label" for="att-self-name-input">Full Name</label>
-      <input class="fi2" id="att-self-name-input" placeholder="Enter your full name">
+       <label class="label" for="att-self-name-input">Full Name</label><input class="fi2" id="att-self-name-input" placeholder="Enter your full name">
       <div id="att-self-roster" class="mt-1"></div>
       <button class="btn-g hidden mt-75" id="att-self-btn" onclick="markSelfAttendance()">✅ Mark Me Present</button>
       <div class="msg" id="att-self-msg"></div>
@@ -541,8 +541,8 @@ window.doLogin = async function () {
     <button class="btn-o passport-upload" onclick="document.getElementById('passport-input').click()">
       📷 <span data-i18n="passport_upload">Upload Passport Photo</span>
     </button>
-    <button class="bs-red passport-remove" id="passport-remove-btn" style="display:none" onclick="removePassport()">✕ Remove Photo</button>
-    <input type="file" id="passport-input" accept="image/*" style="display:none" onchange="uploadPassport(event)">
+    <button class="bs-red passport-remove hidden" id="passport-remove-btn" onclick="removePassport()">✕ Remove Photo</button>
+    <input type="file" id="passport-input" accept="image/*" class="hidden" onchange="uploadPassport(event)" aria-label="Upload passport photo">
   </div>
   <div class="passport-msg" id="passport-msg"></div>
 </section>
@@ -658,6 +658,7 @@ window.doLogin = async function () {
   </div>
 </div>
 
+<script src="../shared/api.js"></script>
 <script src="./student-app.js"></script>
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../sw.js").catch(()=>{});}
 (function(){
@@ -686,7 +687,6 @@ window.doLogin = async function () {
     deferredPrompt = null;
   };
 })();
-</script>
 </script>
 </body>
 </html>

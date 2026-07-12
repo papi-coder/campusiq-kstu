@@ -458,11 +458,6 @@ function getStatusBadgeMarkup(status){
   if(status==='saved') return '<span class="badge bgo badge-sm">🔖 Saved</span>';
   return '';
 }
-function getMatchDisplay(match){
-  if(match>=90) return { color:'#d1fae5', background:'linear-gradient(90deg,#10b981,#06b6d4)' };
-  if(match>=75) return { color:'#fef3c7', background:'linear-gradient(90deg,#f59e0b,#fcd34d)' };
-  return { color:'#fee2e2', background:'linear-gradient(90deg,#ef4444,#f97316)' };
-}
 function getMatchBadgeClass(match){
   if(match>=70) return 'bg';
   if(match>=40) return 'bgo';
@@ -500,7 +495,6 @@ function buildPortfolioProjectMarkup(portfolio){
   return '<h3>PROJECTS</h3>' + pieces.join('');
 }
 function buildJobCard(job, status, daysLeft){
-  const matchDisplay=getMatchDisplay(job.match);
   const statusMarkup=getStatusBadgeMarkup(status);
   const typeBadgeClass=getJobTypeBadgeClass(job.type);
   const typeLabel=getJobTypeLabel(job.type);
@@ -520,12 +514,12 @@ function buildJobCard(job, status, daysLeft){
       </div>
     </div>
     <div class="mb-65">
-      <div class="match-row"><span class="text-t2">Match</span><span style="color:${matchDisplay.color};font-weight:600">${job.match}%</span></div>
-      <div class="prog-bar prog-bar-sm"><div class="prog-fill" style="width:${job.match}%;background:${matchDisplay.background}"></div></div>
+      <div class="match-row"><span class="text-t2">Match</span><span class="text-match-${getLevel(job.match,90,75)}">${job.match}%</span></div>
+      <div class="prog-bar prog-bar-sm"><div class="prog-fill prog-fill-${getLevel(job.match,90,75)}" style="width:${job.match}%"></div></div>
     </div>
     <div class="pay-row">
       <span class="text-lg fw-600 text-green">${job.pay}</span>
-      <span class="text-075" style="color:${getDaysLeftColor(daysLeft)}">⏰ ${getDeadlineText(daysLeft)}</span>
+      <span class="text-075 text-deadline-${daysLeft<=3?'urgent':'warning'}">⏰ ${getDeadlineText(daysLeft)}</span>
     </div>
     <div class="tags-row">${job.tags.slice(0,3).map(t=>`<span class="job-tag">${t}</span>`).join('')}</div>
     <div class="card-actions">
@@ -701,7 +695,7 @@ function checkDeadlines(){
   const banner=document.getElementById('deadline-banner');
   if(!urgent.length){banner.style.display='none';return;}
   banner.style.display='block';
-  document.getElementById('deadline-list').innerHTML=urgent.map(j=>`<div class="text-base text-t2 mb-4">Saved job <strong class="text-gold">${j.role}</strong> at ${j.company} closes in <strong style="color:${j.daysLeft<=2?'#ef4444':'#fcd34d'}">${j.daysLeft} day${j.daysLeft!==1?'s':''}</strong> — <a href="#" onclick="openJob('${j.id}');return false" class="course-link">apply now →</a></div>`).join('');
+   document.getElementById('deadline-list').innerHTML=urgent.map(j=>`<div class="text-base text-t2 mb-4">Saved job <strong class="text-gold">${j.role}</strong> at ${j.company} closes in <strong class="text-deadline-${j.daysLeft<=2?'urgent':'warning'}">${j.daysLeft} day${j.daysLeft!==1?'s':''}</strong> — <a href="#" onclick="openJob('${j.id}');return false" class="course-link">apply now →</a></div>`).join('');
 }
 
 // JOB MODAL + COUNTDOWN
@@ -740,8 +734,8 @@ function openJob(id){
   // Footer
   document.getElementById('jm-footer').innerHTML=`
     <button class="btn btn-o flex-1" onclick="closeModal('job-modal')">Close</button>
-    ${applied?'<span class="badge bg" style="padding:.5rem 1rem;font-size:.78rem;display:flex;align-items:center">✓ Applied</span>':`<button class="btn btn-g flex-2" onclick="submitApplication()">Submit Application</button>`}
-    <button class="btn btn-o text-lg" style="padding:.5rem .75rem" onclick="toggleSave('${j.id}')">${st==='saved'?'🔖 Saved':'🔖 Save'}</button>
+    ${applied?'<span class="badge bg badge-sm">✓ Applied</span>':`<button class="btn btn-g flex-2" onclick="submitApplication()">Submit Application</button>`}
+    <button class="btn btn-o text-lg p-55" onclick="toggleSave('${j.id}')">${st==='saved'?'🔖 Saved':'🔖 Save'}</button>
   `;
   document.getElementById('job-modal').classList.add('open');
 }
@@ -756,9 +750,9 @@ function startCountdown(j){
     const urgent=days<=3;
     box.innerHTML=`<div class="countdown-label">⏰ Application Closes</div>
       <div class="flex justify-center gap-2">
-        <div><div class="countdown-digits" style="color:${urgent?'#ef4444':'#fcd34d'}">${days}</div><div class="text-060 text-t2 uppercase">days</div></div>
-        <div><div class="countdown-digits" style="color:${urgent?'#ef4444':'#fcd34d'}">${hrs}</div><div class="text-060 text-t2 uppercase">hrs</div></div>
-        <div><div class="countdown-digits" style="color:${urgent?'#ef4444':'#fcd34d'}">${mins}</div><div class="text-060 text-t2 uppercase">min</div></div>
+        <div><div class="countdown-digits countdown-digit-${urgent?'urgent':'warning'}">${days}</div><div class="text-060 text-t2 uppercase">days</div></div>
+        <div><div class="countdown-digits countdown-digit-${urgent?'urgent':'warning'}">${hrs}</div><div class="text-060 text-t2 uppercase">hrs</div></div>
+        <div><div class="countdown-digits countdown-digit-${urgent?'urgent':'warning'}">${mins}</div><div class="text-060 text-t2 uppercase">min</div></div>
       </div>
       ${urgent?'<div class="countdown-urgent">⚠ Closing soon — apply now!</div>':''}`;
   }
@@ -786,7 +780,7 @@ function submitApplication(){
   document.getElementById('jm-apply-section').style.display='none';
   document.getElementById('jm-applied-confirm').style.display='block';
   document.getElementById('jm-applied-msg').textContent=refCode?'Your application was submitted with a referral code — referred applications are reviewed first! Good luck!':'Your application has been sent to the employer. Good luck!';
-  document.getElementById('jm-footer').innerHTML=`<button class="btn btn-o flex-1" onclick="closeModal('job-modal')">Close</button><span class="badge bg" style="padding:.5rem 1rem;font-size:.78rem;display:flex;align-items:center">✓ Applied${refCode?' · Referred':''}</span>`;
+  document.getElementById('jm-footer').innerHTML=`    <button class="btn btn-o flex-1" onclick="closeModal('job-modal')">Close</button><span class="badge bg badge-sm">✓ Applied${refCode?' · Referred':''}</span>`;
   showNotif(refCode?'🎉 Application + referral sent to '+activeJob.company+'!':'🎉 Application submitted to '+activeJob.company+'!');
   renderJobs();renderMyApps();
 }
@@ -826,19 +820,18 @@ function runSkillGap(){
     });
   });
   const matchBadgeClass=getMatchBadgeClass(pct);
-  const matchDisplay=getMatchDisplay(pct);
   result.innerHTML=`
     <div class="gc mb-1">
       <div class="sh"><h2>${j.role} at ${j.company}</h2><div class="sh-line"></div><span class="badge ${matchBadgeClass}">${pct}% Match</span></div>
-      <div class="prog-bar prog-bar-sm mb-1"><div class="prog-fill" style="width:${pct}%;background:${matchDisplay.background}"></div></div>
+       <div class="prog-bar prog-bar-sm mb-1"><div class="prog-fill prog-fill-${getLevel(pct,90,75)}" style="width:${pct}%"></div></div>
       <div class="g2 gap-75">
         <div>
            <div class="section-title">✓ Skills You Have (${have.length}/${required.length})</div>
-           ${have.length?have.map(s=>`<div class="list-item"><span style="color:#34d399;font-size:.9rem">✓</span><span>${s}</span></div>`).join(''):'<div class="text-sm text-t3">No matching skills found from your enrolled courses yet.</div>'}
+           ${have.length?have.map(s=>`<div class="list-item"><span class="text-skill-have">✓</span><span>${s}</span></div>`).join(''):'<div class="text-sm text-t3">No matching skills found from your enrolled courses yet.</div>'}
         </div>
         <div>
            <div class="missing-title">✗ Skills You're Missing (${missing.length})</div>
-           ${missing.length?missing.map(s=>`<div class="list-item"><span style="color:#fca5a5;font-size:.9rem">✗</span><span>${s}</span></div>`).join(''):'<div class="text-sm text-green">🎉 You have all required skills for this role!</div>'}
+           ${missing.length?missing.map(s=>`<div class="list-item"><span class="text-skill-missing">✗</span><span>${s}</span></div>`).join(''):'<div class="text-sm text-green">🎉 You have all required skills for this role!</div>'}
         </div>
       </div>
     </div>
@@ -892,7 +885,7 @@ function generateCV(){
     <h3>TECHNICAL SKILLS</h3>
     <p>${allSkills.map(s=>`<span class="cv-skill">${s}</span>`).join(' ')}</p>
     ${buildPortfolioProjectMarkup(portfolio)}
-    <p class="text-t3 text-065 text-center mt-8" style="border-top:1px solid #eee;padding-top:.75rem">Generated by CampusIQ — Powered by Papi · Kumasi Technical University 2026</p>
+    <p class="text-t3 text-065 text-center mt-8 cv-footer-border">Generated by CampusIQ — Powered by Papi · Kumasi Technical University 2026</p>
   `;
   document.getElementById('cv-output').style.display='block';
   document.getElementById('cv-output').scrollIntoView({behavior:'smooth'});
@@ -982,7 +975,7 @@ function renderHeatmap(){
       <td class="text-072 text-t2">${m.name}</td>
       <td class="heatmap-amount">${m.min.toLocaleString()}</td>
       <td class="heatmap-amount-bold">${m.max.toLocaleString()}</td>
-      <td><div class="flex items-center gap-1"><div class="hm-bar" style="flex:1"><div class="hm-fill" style="width:${heat}%;background:${hc}"></div></div><span class="text-072" style="color:${hc};font-weight:600;width:35px">${heat}%</span></div></td>
+        <td><div class="flex items-center gap-1"><div class="hm-bar hm-bar-flex"><div class="hm-fill heatmap-fill-${getLevel(heat,80,60)}" style="width:${heat}%"></div></div><span class="text-072" style="color:${hc};font-weight:600;width:35px">${heat}%</span></div></td>
        <td><span class="badge bb">${m.openJobs}</span></td>
      </tr>`;
     }).join('');
@@ -1018,7 +1011,7 @@ function renderPortfolioGrid(){
   document.getElementById('pf-count').textContent=items.length+' project'+(items.length!==1?'s':'');
   document.getElementById('portfolio-grid').innerHTML=items.length?items.map(p=>`<div class="pf-card">
     <div class="portfolio-link">${p.title}</div>
-    ${p.courseCode?`<span class="badge bb status-badge-sm" style="display:inline-block">${p.courseCode}</span>`:''}
+    ${p.courseCode?`<span class="badge bb portfolio-badge-inline">${p.courseCode}</span>`:''}
     <div class="portfolio-desc">${p.desc}</div>
     <div class="flex gap-25 flex-wrap mb-5">${(p.skills||[]).map(s=>`<span class="portfolio-skill">${s}</span>`).join('')}</div>
     <div class="flex justify-between items-center">
@@ -1028,7 +1021,7 @@ function renderPortfolioGrid(){
         <button class="btn-sm bs-red" onclick="removeProject('${p.id}')">Remove</button>
       </div>
     </div>
-  </div>`).join(''):'<div style="grid-column:1/-1;color:var(--t3);font-size:.85rem;padding:2rem;text-align:center">No projects yet. Add your first project above!</div>';
+   </div>`).join(''):'<div class="empty-state-text">No projects yet. Add your first project above!</div>';
 }
 function removeProject(id){
   savePortfolio(getPortfolio().filter(p=>p.id!==id));
@@ -1071,7 +1064,7 @@ function previewPortfolio(){
   <h2>Skills</h2><p>${skillMarkup}</p>
   <h2>Projects (${items.length})</h2>
   ${projectMarkup}
-  <p class="text-t3 text-072 mt-8" style="border-top:1px solid #e2e8f0;padding-top:.75rem">Generated by CampusIQ — Powered by Papi · KsTU 2026</p>
+   <p class="text-t3 text-072 mt-8 cv-footer-border">Generated by CampusIQ — Powered by Papi · KsTU 2026</p>
   </body></html>`);
   w.document.close();
 }
@@ -1104,10 +1097,10 @@ async function renderMyApps(){
     const daysLeft=Math.ceil((dl-Date.now())/864e5);
     return`<div class="saved-row">
       <div class="saved-logo">${j.logo}</div>
-      <div class="applied-info"><div class="applied-title">${j.role}</div><div class="applied-sub">${j.company} · ${j.pay}</div><div class="text-075" style="color:${daysLeft<=3?'#fca5a5':'#fcd34d'}">⏰ ${daysLeft<=0?'Deadline passed':daysLeft+' days left'}</div></div>
+      <div class="applied-info"><div class="applied-title">${j.role}</div><div class="applied-sub">${j.company} · ${j.pay}</div><div class="text-075 text-deadline-${daysLeft<=3?'urgent':'warning'}">⏰ ${daysLeft<=0?'Deadline passed':daysLeft+' days left'}</div></div>
       <div class="footer-actions"><button class="btn-sm bs-green" onclick="openJob('${j.id}')">Apply Now</button><button class="btn-sm bs-red" onclick="toggleSave('${j.id}');renderMyApps()">Remove</button></div>
     </div>`;
-  }).join(''):'<div style="color:var(--t3);font-size:.8rem">No saved jobs. Click 🔖 on any job to save it.</div>';
+  }).join(''):'<div class="empty-state-text">No saved jobs. Click 🔖 on any job to save it.</div>';
 }
 
 // =====================================================================

@@ -1,5 +1,5 @@
 // CampusIQ Service Worker — offline support for timetable, results, and careers
-const CACHE_NAME = 'campusiq-v2';
+const CACHE_NAME = 'campusiq-v3';
 const STATIC_ASSETS = [
   './frontend/index.html',
   './frontend/careers.html',
@@ -25,11 +25,10 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
-  // Always fetch API calls from network
+  // Always fetch API calls from network — do NOT mask failures with a fake
+  // response, otherwise the frontend can't tell "server down" from "offline".
   if (url.pathname.startsWith('/api/')) {
-    event.respondWith(
-      fetch(event.request).catch(() => new Response(JSON.stringify({ success: false, message: 'Offline — API unavailable' }), { headers: { 'Content-Type': 'application/json' } }))
-    );
+    event.respondWith(fetch(event.request));
     return;
   }
   // Cache-first for static assets

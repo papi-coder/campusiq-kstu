@@ -76,11 +76,11 @@ const LANDING_T = {
   en:{ kstu:'Kumasi Technical University · Powered by Papi', student_portal:'Student Portal', students_sub:'Students · Lecturers · HODs', admin_backend:'Admin Backend', admin_sub:'Accounts · Fees · Results · Notices', career_hub:'Career Hub', career_sub:'Jobs · Skills · CV · Alumni · Salary Map', install_app:'Install App', install_sub:'Add to home screen · Works offline' },
   tw:{ kstu:'Kumasi Technical University · Papi Na Ɛyɛ', student_portal:'Sukuuni Portal', students_sub:'Sukuuni · Kyerɛkyerɛni · Hwɛsofoɔ', admin_backend:'Admin Backend', admin_sub:'Akawnt · Ka-sɛm · Nsonsonoe · Nkɔm', career_hub:'Adwuma Hub', career_sub:'Adwuma · Nimdeɛ · CV · Alumni · Ka Map', install_app:'Fa App', install_sub:'Fa abɔ mu · Ɛyɛ adwuma' }
 };
-function getLandingLang(){ try { return localStorage.getItem('campusiq_lang') || 'en'; } catch(e){ return 'en'; } }
+function getLandingLang(){ try { return localStorage.getItem('campusiq_lang') || 'en'; } catch(e){ console.warn('Could not read language preference:', e); return 'en'; } }
 function applyLandingLang(){
   const lang = getLandingLang();
   document.querySelectorAll('[data-i18n]').forEach(el => {
-    const k = el.getAttribute('data-i18n');
+    const k = el.dataset.i18n;
     if(LANDING_T[lang] && LANDING_T[lang][k] !== undefined) el.textContent = LANDING_T[lang][k];
   });
   const btn = document.getElementById('landing-lang');
@@ -89,7 +89,7 @@ function applyLandingLang(){
 }
 function toggleLandingLang(){
   const next = getLandingLang() === 'en' ? 'tw' : 'en';
-  try { localStorage.setItem('campusiq_lang', next); } catch(e){}
+  try { localStorage.setItem('campusiq_lang', next); } catch(e){ console.warn('Could not save language preference:', e); }
   applyLandingLang();
 }
 applyLandingLang();

@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "e5dbcec9-ade0-4369-a947-8ebef743b49b",
+    "createdAt": "2026-07-11T22:07:10.080Z",
+    "studentId": "df300db6-90a8-40d8-95b6-f6d29d334449",
+    "studentName": "papi",
+    "hostelId": "e247f9e1-4c63-4984-b7d7-6912c7a724a5",
+    "hostelName": "Volta Hall (Block A)",
+    "programme": "Btech computer engineering",
+    "level": "Level 200",
+    "status": "pending",
+    "roomNumber": null
+  }
+]

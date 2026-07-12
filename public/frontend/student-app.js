@@ -239,7 +239,7 @@ const T = {
 function t(key){ return (T[currentLang]||T.en)[key] || key; }
 function toggleLang(){
   currentLang = currentLang === 'en' ? 'tw' : 'en';
-  try { localStorage.setItem('campusiq_lang', currentLang); } catch(e){}
+  try { localStorage.setItem('campusiq_lang', currentLang); } catch(e){ console.warn('Could not save language preference:', e); }
   document.getElementById('lang-btn').textContent = currentLang === 'en' ? '🇬🇭 TW' : '🇬🇧 EN';
   applyTranslations();
 }
@@ -261,15 +261,15 @@ function applyTranslations(){
   });
   // Generic data-i18n attributes added throughout the markup
   document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
+    const key = el.dataset.i18n;
     if(T.en[key] !== undefined) el.textContent = t(key);
   });
   document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-    const key = el.getAttribute('data-i18n-ph');
+    const key = el.dataset.i18nPh;
     if(T.en[key] !== undefined) el.setAttribute('placeholder', t(key));
   });
   document.querySelectorAll('[data-i18n-title]').forEach(el => {
-    const key = el.getAttribute('data-i18n-title');
+    const key = el.dataset.i18nTitle;
     if(T.en[key] !== undefined) el.setAttribute('title', t(key));
   });
   // Placeholder attributes for known inputs
@@ -540,9 +540,9 @@ function renderAiAttachments(){
   wrap.style.display = 'flex';
   wrap.innerHTML = papiAttachments.map((a,i) => {
     const isImg = a.type && a.type.startsWith('image/');
-    const thumb = isImg ? `<img src="${a.dataUrl}" style="width:30px;height:30px;object-fit:cover;border-radius:6px" alt="">` : '📄';
-    return `<div style="display:inline-flex;align-items:center;gap:0.35rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:0.25rem 0.4rem;font-size:0.72rem;color:#dbeafe">
-      ${thumb}<span>${escHtml(a.name)}</span><button onclick="removeAiFile(${i})" style="background:none;border:none;color:#fca5a5;cursor:pointer;font-size:0.8rem">✕</button>
+    const thumb = isImg ? `<img src="${a.dataUrl}" class="attachment-thumb" alt="">` : '📄';
+    return `<div class="attachment-chip">
+      ${thumb}<span>${escHtml(a.name)}</span><button onclick="removeAiFile(${i})" class="attachment-chip-remove">✕</button>
     </div>`;
   }).join('');
 }
@@ -809,8 +809,8 @@ function addQBlock(){
   const d = document.createElement('div');
   d.classList.add('qblock');
   d.id = 'qb'+qCount;
-  d.innerHTML = `<div class="qblock-label">Question ${qCount}</div>
-    <input class="fi2" placeholder="Question text" style="margin-bottom:0.4rem">
+    d.innerHTML = `<div class="qblock-label">Question ${qCount}</div>
+    <input class="fi2 question-text-input" placeholder="Question text">
     ${[0,1,2,3].map(i=>`<div class="qblock-row"><input type="radio" name="c${qCount}" value="${i}" ${i===0?'checked':''}><input class="fi2 qblock-option-input" placeholder="Option ${String.fromCodePoint(65+i)}"></div>`).join('')}
     <div class="qblock-points"><span class="qblock-points-label">Points:</span><input class="fi2 qblock-points-input" type="number" value="10"></div>`;
   document.getElementById('ex-qblocks').appendChild(d);
@@ -851,7 +851,7 @@ async function viewSubs(id, title){
     return `<tr><td>${escAttr(s.studentName)}</td><td>${escAttr((s.answers||[]).map((a,i)=>'Q'+(i+1)+': '+(a>=0?'Option '+String.fromCharCode(65+a):'—')).join('; '))}</td><td><strong>${s.score ?? '—'}</strong> / ${s.totalPoints ?? '—'}</td><td><span class="badge ${getResultBadgeClass(s.percentage ?? 0)}">${s.percentage ?? 0}%</span></td><td>${new Date(s.submittedAt).toLocaleString()}</td></tr>`;
   }).join('');
   const tableHtml = `<table><thead><tr><th>Student</th><th>Answers</th><th>Score</th><th>Grade</th><th>Submitted</th></tr></thead><tbody>${rows}</tbody></table>`;
-  document.getElementById('subs-content').innerHTML = subs.length ? tableHtml : '<div class="u-inline-94">No submissions yet.</div>';
+  document.getElementById('subs-content').innerHTML = subs.length ? tableHtml : '<div class="text-quiet text-sm">No submissions yet.</div>';
   document.getElementById('subs-modal').classList.add('open');
 }
 async function gradeAsgn(id){
@@ -975,7 +975,7 @@ async function loadAutoRoster(){
       return;
     }
     const names = roster.map(r => r.studentName);
-    c.innerHTML = '<div class="text-072 text-t2 mb-4">Mark attendance from roster:</div>' + roster.map((r,i)=>`<div class="list-item-flex-between"><span class="text-sm">${escAttr(r.studentName)}</span><select class="fi2 att-roster-select" data-index="${i}" style="padding:0.25rem 0.4rem;font-size:0.75rem;width:auto"><option value="present">Present</option><option value="late">Late</option><option value="absent">Absent</option></select></div>`).join('');
+    c.innerHTML = '<div class="text-072 text-t2 mb-4">Mark attendance from roster:</div>' + roster.map((r,i)=>`<div class="list-item-flex-between"><span class="text-sm">${escAttr(r.studentName)}</span><select class="fi2 att-roster-select roster-select" data-index="${i}"><option value="present">Present</option><option value="late">Late</option><option value="absent">Absent</option></select></div>`).join('');
     document.getElementById('att-submit-btn').style.display='block';
     document.getElementById('att-submit-btn').dataset.names = JSON.stringify(names);
     document.getElementById('att-selected-names').textContent = names.join(', ');
@@ -991,7 +991,7 @@ function buildAttForm(){
   const names = document.getElementById('att-students').value.split(',').map(s=>s.trim()).filter(Boolean);
   const c = document.getElementById('att-form-rows');
   if(!names.length){ c.innerHTML=''; document.getElementById('att-submit-btn').style.display='none'; document.getElementById('att-selected-names').textContent='None'; return; }
-  c.innerHTML = '<div class="text-072 text-t2 mb-4">Mark each student:</div>' + names.map((n,i)=>`<div class="list-item-flex-between"><span class="text-sm">${n}</span><select class="fi2 att-roster-select" data-index="${i}" style="padding:0.25rem 0.4rem;font-size:0.75rem;width:auto"><option value="present">Present</option><option value="late">Late</option><option value="absent">Absent</option></select></div>`).join('');
+  c.innerHTML = '<div class="text-072 text-t2 mb-4">Mark each student:</div>' + names.map((n,i)=>`<div class="list-item-flex-between"><span class="text-sm">${n}</span><select class="fi2 att-roster-select roster-select" data-index="${i}"><option value="present">Present</option><option value="late">Late</option><option value="absent">Absent</option></select></div>`).join('');
   document.getElementById('att-submit-btn').style.display='block';
   document.getElementById('att-submit-btn').dataset.names = JSON.stringify(names);
   document.getElementById('att-selected-names').textContent = names.join(', ');
@@ -1007,7 +1007,7 @@ function generateAttQR(){
   const date = document.getElementById('att-date').value || new Date().toISOString().slice(0,10);
   const code = 'ATT-'+course.replace(/\s+/g,'')+'-'+date;
   document.getElementById('att-qr-box').style.display='block';
-  document.getElementById('att-qr-content').innerHTML = `<div style="font-family:monospace;font-size:0.55rem;word-break:break-all">${code}</div><div style="font-size:0.6rem;color:#666;margin-top:4px">Scan to mark attendance</div>`;
+  document.getElementById('att-qr-content').innerHTML = `<div class="qr-code-display">${code}</div><div class="qr-code-hint">Scan to mark attendance</div>`;
   document.getElementById('att-qr-code').textContent = 'Code: '+code+' · Expires in 15 min';
 }
 
@@ -1039,17 +1039,18 @@ async function loadResults(){
         document.getElementById('grade-breakdown').innerHTML = Object.entries(grades).sort(([a],[b]) => (gradeOrder[a] ?? 99) - (gradeOrder[b] ?? 99)).map(([g,c])=>{
           const badgeClass = getGradeBadgeClassByLetter(g);
           const markerColor = getGradeMarkerColor(g);
-          return `<div class="grade-row"><span class="badge ${badgeClass}">${g}</span><div class="grade-bar-wrap"><div class="prog-bar"><div class="prog-fill" style="width:${(c/results.length)*100}%;background:${markerColor}"></div></div></div><span class="grade-count">${c}</span></div>`;
+          const fillClass = g==='A'?'grade-fill-high':g==='F'?'grade-fill-low':'grade-fill-mid';
+          return `<div class="grade-row"><span class="badge ${badgeClass}">${g}</span><div class="grade-bar-wrap"><div class="prog-bar"><div class="grade-fill ${fillClass}" style="width:${(c/results.length)*100}%"></div></div></div><span class="grade-count">${c}</span></div>`;
         }).join('');
       }
       const resultRows = results.map(r => `<tr><td>${r.courseCode}</td><td>${r.caScore}</td><td>${r.examScore}</td><td>${r.total}</td><td><span class="badge ${getGradeBadgeClassByLetter(r.grade)}">${r.grade}</span></td></tr>`).join('');
-      document.getElementById('results-tbody').innerHTML = results.length ? resultRows : '<tr><td colspan="5" class="u-inline-116">No results recorded yet.</td></tr>';
+      document.getElementById('results-tbody').innerHTML = results.length ? resultRows : '<tr><td colspan="5" class="table-empty-center">No results recorded yet.</td></tr>';
     } else {
       const results = await CampusAPI.listResults();
       const lecResultRows = results.map(r => {
 return `<tr><td>${r.studentName||r.studentId}</td><td>${r.courseCode}</td><td>${r.caScore}</td><td>${r.examScore}</td><td>${r.total}</td><td><span class="badge ${getGradeBadgeClassByLetter(r.grade)}">${r.grade}</span></td></tr>`;
 }).join("");
-document.getElementById("results-lec-tbody").innerHTML = results.length ? lecResultRows : '<tr><td colspan="6" class="u-inline-116">No results yet.</td></tr>';
+document.getElementById("results-lec-tbody").innerHTML = results.length ? lecResultRows : '<tr><td colspan="6" class="table-empty-center">No results yet.</td></tr>';
     }
    } catch(err){ console.warn(err); console.error(err); }
 }
@@ -1107,14 +1108,14 @@ async function loadFees(){
     const totalPaid = payments.filter(p=>p.status==='confirmed').reduce((s,p)=>s+p.amount,0);
     const pending = payments.filter(p=>p.status==='pending_confirmation').reduce((s,p)=>s+p.amount,0);
     const owed = myFee ? myFee.total - totalPaid : 0;
-    const balanceColor = getBalanceColor(owed);
+    const balanceClass = owed > 0 ? 'balance-negative' : 'balance-positive';
     document.getElementById('fee-summary').innerHTML = myFee ? `
       <div class="sh"><h2>My Fee Statement</h2><div class="sh-line"></div><span class="badge b-gold">${currentUser.level||'—'}</span></div>
       <div class="grid4 gap-05">
         <div class="text-center"><div class="stat-card-value text-blue">GHS ${myFee.total}</div><div class="stat-card-label">Total Due</div></div>
         <div class="text-center"><div class="stat-card-value text-green">GHS ${totalPaid}</div><div class="stat-card-label">Paid</div></div>
         <div class="text-center"><div class="stat-card-value text-gold">GHS ${pending}</div><div class="stat-card-label">Pending</div></div>
-        <div class="text-center"><div class="stat-card-value" style="color:${balanceColor}">GHS ${Math.max(0,owed)}</div><div class="stat-card-label">Balance</div></div>
+        <div class="text-center"><div class="stat-card-value ${balanceClass}">GHS ${Math.max(0,owed)}</div><div class="stat-card-label">Balance</div></div>
       </div>` : '<div class="text-quiet text-sm">No fee structure found for your programme. Contact admin.</div>';
     document.getElementById('payment-history').innerHTML = payments.length ? payments.map(p=>`<div class="reg-item"><div><strong class="reg-item-title">GHS ${p.amount}</strong> <span class="reg-item-sub">${p.method}</span><div class="text-070 text-t3">${p.reference||''} · ${new Date(p.createdAt).toLocaleDateString()}</div></div><span class="badge ${statusBadgeClass(p.status)}">${p.status==='pending_confirmation'?'Pending Confirmation':p.status}</span></div>`).join('') : '<div class="text-quiet text-sm">No payments recorded yet.</div>';
    } catch(err){ console.warn(err); console.error(err); }
@@ -1241,7 +1242,7 @@ function showMapFallback(){
 
 function clearMapMarkers(){
   Object.values(mapMarkers).forEach(m => {
-    try { if(m.provider === 'google') m.obj.setMap(null); else if(m.obj && m.obj.remove) m.obj.remove(); } catch(e){}
+    try { if(m.provider === 'google') m.obj.setMap(null); else if(m.obj && m.obj.remove) m.obj.remove(); } catch(e){ console.warn('Failed to clear map marker:', e); }
   });
   mapMarkers = {};
 }
@@ -1274,7 +1275,7 @@ async function renderMapFallback(){
   const el = document.getElementById('map-fallback-students');
   if(!el) return;
   const locs = await CampusAPI.getLiveLocations().catch(()=>[]);
-   el.innerHTML = locs.length ? '<div class="map-location-name" style="font-size:0.8rem;font-weight:600;margin-bottom:0.5rem">Students currently on campus:</div>' + locs.map(l=>`<div class="map-location-item"><div class="map-location-dot" style="background:#10b981"></div>${l.userName} — ${l.building||'On campus'}</div>`).join('') : '<div class="text-quiet text-sm">No other students sharing location right now.</div>';
+    el.innerHTML = locs.length ? '<div class="map-fallback-name">Students currently on campus:</div>' + locs.map(l=>`<div class="map-location-item"><div class="map-dot map-dot-green"></div>${l.userName} — ${l.building||'On campus'}</div>`).join('') : '<div class="text-quiet text-sm">No other students sharing location right now.</div>';
 }
 
 async function updateMapMarkers(){
@@ -1308,7 +1309,7 @@ async function loadLiveLocations(){
     const locs = await CampusAPI.getLiveLocations();
     document.getElementById('loc-live-badge').textContent = locs.length + ' online';
     document.getElementById('loc-online-list').innerHTML = locs.length
-      ? locs.map(l=>`<div class="map-location-item"><div class="map-location-dot" style="background:${l.userId===currentUser?.id?'#3b82f6':'#10b981'}"></div><div><strong>${l.userName}</strong> <span class="map-location-meta">${l.role}</span><div class="map-location-building">${l.building||'On campus'}</div></div><span class="map-location-live">● Live</span></div>`).join('')
+      ? locs.map(l=>`<div class="map-location-item"><div class="map-dot ${l.userId===currentUser?.id?'map-dot-blue':'map-dot-green'}"></div><div><strong>${l.userName}</strong> <span class="map-location-meta">${l.role}</span><div class="map-location-building">${l.building||'On campus'}</div></div><span class="map-location-live">● Live</span></div>`).join('')
       : '<div class="text-quiet text-sm">No one sharing right now.</div>';
   } catch(err){console.warn(err);}
 }
@@ -1387,8 +1388,8 @@ function renderIDCard(){
   const removeBtn = document.getElementById('passport-remove-btn');
   if(removeBtn) removeBtn.style.display = currentUser.passportDataUrl ? 'inline-flex' : 'none';
   // Simple QR-like representation (text-based, no external lib needed)
-  const profileUrl = `${location.origin}${location.pathname}?student=${currentUser.studentId || currentUser.id}`;
-  document.getElementById('id-qr').innerHTML = `<div class="id-qr-text-static">${profileUrl}</div>`;
+   const profileUrl = `${location.origin}${location.pathname}?student=${currentUser.studentId || currentUser.id}`;
+  document.getElementById('id-qr').innerHTML = `<div class="qr-code-display">${profileUrl}</div>`;
 }
 function printIDCard(){
   const card = document.getElementById('id-card-display').outerHTML;
@@ -1589,7 +1590,7 @@ async function viewAsgnSubs(id, title){
     }).join('');
     document.getElementById('subs-content').innerHTML = subs.length
       ? `<table><thead><tr><th>Student</th><th>Response</th><th>Link</th><th>Score</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>`
-      : '<div class="u-inline-94">No submissions yet.</div>';
+      : '<div class="text-quiet text-sm">No submissions yet.</div>';
     document.getElementById('subs-modal').classList.add('open');
   }catch(err){ console.warn(err); document.getElementById('subs-content').textContent='Error loading submissions.'; }
 }
@@ -1674,19 +1675,19 @@ async function removePassport(){
       const initials = user.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
       const card = document.getElementById('public-id-card');
       const photoHtml = user.passportDataUrl
-        ? `<div style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#06b6d4);margin:0 auto 0.75rem;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:#fff;overflow:hidden"><img src="/api/users/${escAttr(user.id)}/photo" style="width:100%;height:100%;object-fit:cover;display:block" alt="Passport"></div>`
-        : `<div style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#06b6d4);margin:0 auto 0.75rem;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:#fff">${initials}</div>`;
+        ? `<div class="public-id-avatar"><img src="/api/users/${escAttr(user.id)}/photo" class="public-id-avatar-img" alt="Passport"></div>`
+        : `<div class="public-id-avatar">${initials}</div>`;
       card.innerHTML = `
-        <div style="background:linear-gradient(135deg,#1e3a5f,#0d1b2e);border:1px solid #3b82f6;border-radius:16px;padding:1.5rem;color:#fff;text-align:center;position:relative;overflow:hidden">
-          <div style="position:absolute;right:-20px;top:10px;font-family:'Orbitron',sans-serif;font-size:4rem;color:rgba(59,130,246,0.08);transform:rotate(10deg)">KsTU</div>
+        <div class="public-id-card">
+          <div class="public-id-watermark">KsTU</div>
           ${photoHtml}
-          <div style="font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.4rem;color:#fff">${escHtml(user.name)}</div>
-          <div style="font-size:0.75rem;color:#94a3b8;margin-bottom:0.875rem">${escHtml(user.programme || user.role)}</div>
-          <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:#cbd5e1;margin-bottom:0.5rem">
-            <div><div style="font-size:0.6rem;color:#64748b;text-transform:uppercase;letter-spacing:0.05em">Student ID</div><div style="font-weight:600;color:#f8fafc">${escHtml(user.studentId || '—')}</div></div>
-            <div><div style="font-size:0.6rem;color:#64748b;text-transform:uppercase;letter-spacing:0.05em">Level</div><div style="font-weight:600;color:#f8fafc">${escHtml(user.level || '—')}</div></div>
+          <div class="public-id-name">${escHtml(user.name)}</div>
+          <div class="public-id-programme">${escHtml(user.programme || user.role)}</div>
+          <div class="public-id-details">
+            <div><div class="public-id-label">Student ID</div><div class="public-id-value">${escHtml(user.studentId || '—')}</div></div>
+            <div><div class="public-id-label">Level</div><div class="public-id-value">${escHtml(user.level || '—')}</div></div>
           </div>
-          <div style="font-size:0.6rem;color:#64748b;margin-top:0.75rem">Powered by CampusIQ · Papi</div>
+          <div class="public-id-powered">Powered by CampusIQ · Papi</div>
         </div>
       `;
       document.getElementById('login-screen').classList.add('hidden');

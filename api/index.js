@@ -913,3 +913,8 @@ app.post('/api/ai/ask', async (req, res) => {
     return fail(res, 502, 'AI provider request failed');
   }
 });
+
+// Start server when run directly: `node api/index.js`
+if (require.main === module) {
+  startServer();
+}

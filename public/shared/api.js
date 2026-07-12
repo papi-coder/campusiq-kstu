@@ -1,6 +1,6 @@
 // public/shared/api.js
 // Thin fetch wrapper used by every CampusIQ page to talk to the backend API.
-// Auto-detects local API port (3001-3005) or falls back to same-origin/production.
+// Auto-detects local API port (3001-3010) or falls back to same-origin/production.
 // Works when opened via http(s) or file:// on the local machine.
 
 const CampusAPI = (() => {
@@ -8,6 +8,7 @@ const CampusAPI = (() => {
   const { protocol, hostname } = window.location;
   const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
   const isFile = protocol === 'file:';
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
   // For file:// we must use an absolute http(s) origin, never file://
   const originFor = () => {
@@ -16,41 +17,144 @@ const CampusAPI = (() => {
   };
 
   const candidates = [];
+  let fallbackOrigin = '';
   if (isLocal || isFile) {
     const base = originFor();
-    for (let p = 3001; p <= 3005; p++) candidates.push(`${base}:${p}`);
+    // The API server auto-retries ports 3001..3010 on EADDRINUSE, so probe the
+    // same range to discover whichever port it actually bound to.
+    for (let p = 3001; p <= 3010; p++) candidates.push(`${base}:${p}`);
+    fallbackOrigin = candidates[0]; // e.g. http://localhost:3001
   }
   // Same-origin fallback (Vercel/production, or when a static server proxies /api)
   if (!isFile) {
     candidates.push(`${protocol}//${isLocal ? hostname : ''}`);
   } else {
-    candidates.push('http://localhost');
+    candidates.push(fallbackOrigin);
   }
 
-  // Probe health endpoint to find the live API server
-  (async () => {
-    for (const candidate of candidates) {
-      try {
-        const ctrl = new AbortController();
-        const tid = setTimeout(() => ctrl.abort(), 400);
-        const r = await fetch(candidate + '/api/health', { method: 'GET', signal: ctrl.signal });
-        clearTimeout(tid);
-        if (r.ok) { BASE = candidate; return; }
-      } catch (e) { /* try next */ }
+  // ---- Connectivity monitoring --------------------------------------------
+  // Tracks whether the backend API is reachable and shows a clear status banner
+  // on every page (all pages load this module). Pages can also subscribe via
+  // CampusAPI.onStatus(cb) to react to online/offline transitions.
+  let online = null; // null = unknown, true = reachable, false = offline
+  const statusListeners = [];
+  function setStatus(next) {
+    if (next === online) return;
+    online = next;
+    updateBanner();
+    statusListeners.forEach(cb => { try { cb(online); } catch (e) {} });
+  }
+  function onStatus(cb) { if (typeof cb === 'function') statusListeners.push(cb); }
+
+  let bannerEl = null;
+  function ensureBanner() {
+    if (bannerEl) return bannerEl;
+    bannerEl = document.createElement('div');
+    bannerEl.id = 'api-status-banner';
+    bannerEl.setAttribute('role', 'status');
+    bannerEl.setAttribute('aria-live', 'polite');
+    Object.assign(bannerEl.style, {
+      position: 'fixed', top: '0', left: '0', right: '0', zIndex: '99999',
+      textAlign: 'center', padding: '8px 12px', fontSize: '0.8rem',
+      fontWeight: '700', letterSpacing: '0.02em', fontFamily: 'inherit',
+      pointerEvents: 'none', transition: 'opacity .3s ease', display: 'none'
+    });
+    (document.body || document.documentElement).appendChild(bannerEl);
+    return bannerEl;
+  }
+  function updateBanner() {
+    const el = ensureBanner();
+    const dot = document.getElementById('api-status-dot');
+    const label = document.getElementById('api-status-label');
+    if (online === false) {
+      el.textContent = '⚠ Offline — API unavailable. Connect the CampusIQ server or check your network.';
+      el.style.background = '#7f1d1d';
+      el.style.color = '#fecaca';
+      el.style.borderBottom = '1px solid #b91c1c';
+      el.style.display = '';
+      if (dot) { dot.style.background = '#ef4444'; dot.style.animation = 'none'; }
+      if (label) label.textContent = 'Offline — API unavailable';
+    } else if (online === true) {
+      el.textContent = '● API Connected';
+      el.style.background = '#064e3b';
+      el.style.color = '#a7f3d0';
+      el.style.borderBottom = '1px solid #047857';
+      el.style.display = '';
+      if (dot) { dot.style.background = '#22c55e'; dot.style.animation = 'blink 2s infinite'; }
+      if (label) label.textContent = 'API Connected';
+      clearTimeout(ensureBanner._hideT);
+      ensureBanner._hideT = setTimeout(() => { if (online === true) el.style.display = 'none'; }, 2500);
+    } else {
+      el.style.display = 'none';
+      if (dot) dot.style.background = '#f59e0b';
     }
-    BASE = candidates[candidates.length - 1];
-  })();
+  }
+
+  let probing = false;
+  async function probe() {
+    if (probing) return online;
+    probing = true;
+    try {
+      const order = (BASE ? [BASE, ...candidates] : candidates).filter(Boolean);
+      for (const candidate of order) {
+        try {
+          const ctrl = new AbortController();
+          const tid = setTimeout(() => ctrl.abort(), 700);
+          const r = await fetch(candidate + '/api/health', { method: 'GET', signal: ctrl.signal });
+          clearTimeout(tid);
+          if (r.ok) { BASE = candidate; setStatus(true); return true; }
+        } catch (e) { /* try next candidate */ }
+      }
+      // Same-origin /api/health (static server that proxies the API)
+      if (!isFile) {
+        try {
+          const r = await fetch('/api/health', { method: 'GET' });
+          if (r.ok) { BASE = ''; setStatus(true); return true; }
+        } catch (e) { /* offline */ }
+      }
+      setStatus(false);
+      return false;
+    } finally {
+      probing = false;
+    }
+  }
+  function safeProbe() { return probe(); }
+
+  // Initial probe, periodic monitoring, and reconnect when the browser reports
+  // connectivity changes.
+  safeProbe();
+  setInterval(safeProbe, 15000);
+  window.addEventListener('online', safeProbe);
+  window.addEventListener('offline', () => setStatus(false));
 
   async function request(path, options = {}) {
-    // If BASE hasn't resolved yet (probe still in flight), give it a moment
+    // Fail fast with a clear message when we already know the API is down.
+    if (online === false) {
+      safeProbe(); // try to recover in the background
+      throw new Error('Offline — API unavailable. Connect the CampusIQ server or check your network.');
+    }
+    // If BASE hasn't resolved yet (probe still in flight), keep retrying
+    // until we have a base or we've waited long enough.
     if (!BASE && (isLocal || isFile)) {
-      await new Promise(resolve => setTimeout(resolve, 60));
+      const start = Date.now();
+      while (!BASE && Date.now() - start < 3000) {
+        await sleep(100);
+      }
+      // Final fallback if probe never resolved
+      if (!BASE) BASE = fallbackOrigin || candidates[candidates.length - 1];
     }
     const url = BASE + path;
-    const res = await fetch(url, {
-      headers: { 'Content-Type': 'application/json' },
-      ...options,
-    });
+    let res;
+    try {
+      res = await fetch(url, {
+        headers: { 'Content-Type': 'application/json' },
+        ...options,
+      });
+    } catch (netErr) {
+      // A network-level failure means the API is unreachable (offline/server down).
+      if (online !== false) safeProbe();
+      throw new Error('Offline — API unavailable. Connect the CampusIQ server or check your network.');
+    }
     let json;
     try { json = await res.json(); }
     catch { throw new Error('Server returned an invalid response'); }
@@ -61,6 +165,10 @@ const CampusAPI = (() => {
   }
 
   return {
+    get status() { return online; },
+    isOnline: () => online === true,
+    onStatus,
+    probe: safeProbe,
     get: (path) => request(path, { method: 'GET' }),
     post: (path, body) => request(path, { method: 'POST', body: JSON.stringify(body) }),
     put: (path, body) => request(path, { method: 'PUT', body: JSON.stringify(body) }),
@@ -189,9 +297,6 @@ Object.assign(CampusAPI, {
   // Course chat
   getChatMessages: (courseCode) => CampusAPI.get(`/api/chat/${courseCode}`),
   sendChatMessage: (courseCode, m) => CampusAPI.post(`/api/chat/${courseCode}`, m),
-
-  // Papi AI tutor
-  askAI: (payload) => CampusAPI.post('/api/ai', payload),
 });
 
 // Portfolio, alumni, referrals
