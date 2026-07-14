@@ -27,7 +27,7 @@ const CampusAPI = (() => {
   }
   // Same-origin fallback (Vercel/production, or when a static server proxies /api)
   if (!isFile) {
-    candidates.push(`${protocol}//${isLocal ? hostname : ''}`);
+    candidates.push(`${protocol}//${hostname}`);
   } else {
     candidates.push(fallbackOrigin);
   }

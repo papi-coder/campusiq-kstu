@@ -20,7 +20,11 @@ app.use(cors({
 app.use(express.json());
 app.use(express.static(publicDir));
 
-(async () => { await db.seedIfEmpty(); })();
+// Seed default data on first run (admin account, sample hostels, etc.)
+// Wrapped so a seeding failure does not crash the serverless function
+// and take down /api/health and every other route.
+const seedPromise = (async () => { await db.seedIfEmpty(); })();
+seedPromise.catch((e) => console.error('[CampusIQ] Seed failed:', e));
 
 // ---------- helpers ----------
 function ok(res, data) { res.json({ success: true, data }); }
