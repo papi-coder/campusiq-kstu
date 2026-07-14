@@ -505,6 +505,7 @@ function startServer(port = Number(process.env.PORT || 3001), attempt = 1) {
   });
 }
 
+// Start server when run directly: `node api/index.js`
 if (require.main === module) {
   startServer();
 }
@@ -914,7 +915,3 @@ app.post('/api/ai/ask', async (req, res) => {
   }
 });
 
-// Start server when run directly: `node api/index.js`
-if (require.main === module) {
-  startServer();
-}
