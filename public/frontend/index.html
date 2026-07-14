@@ -2,11 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+ <meta name="apple-mobile-web-app-capable" content="yes">
+ <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+ <meta name="apple-mobile-web-app-title" content="CampusIQ">
+ <meta name="theme-color" content="#3b82f6">
  <link rel="stylesheet" href="../shared/styles.css">
  <title>CampusIQ — KsTU</title>
-<link rel="manifest" href="../manifest.json">
-<link rel="apple-touch-icon" href="../apple-touch-icon.png" sizes="180x180">
+ <link rel="manifest" href="../manifest.json">
+ <link rel="apple-touch-icon" href="../apple-touch-icon.png" sizes="180x180">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -235,18 +239,18 @@ window.doLogin = async function () {
     <div class="logo-txt">⬡ CampusIQ</div>
     <div class="logo-sub">KUMASI TECHNICAL UNIVERSITY</div>
     <div class="role-tabs">
-      <button class="role-tab active" onclick="window.selRole('student',this)">🎓 <span data-i18n="student_label">Student</span></button>
-      <button class="role-tab" onclick="window.selRole('lecturer',this)">👨‍🏫 <span data-i18n="lecturer_label">Lecturer</span></button>
-      <button class="role-tab" onclick="window.selRole('hod',this)">🏛 <span data-i18n="hod_label">HOD</span></button>
+      <button type="button" class="role-tab active" onclick="window.selRole('student',this)">🎓 <span data-i18n="student_label">Student</span></button>
+      <button type="button" class="role-tab" onclick="window.selRole('lecturer',this)">👨‍🏫 <span data-i18n="lecturer_label">Lecturer</span></button>
+      <button type="button" class="role-tab" onclick="window.selRole('hod',this)">🏛 <span data-i18n="hod_label">HOD</span></button>
     </div>
      <label for="l-email" class="sr-only">Email address</label>
     <input class="fi" id="l-email" type="email" placeholder="Email address">
      <label for="l-pass" class="sr-only">Password</label>
-    <input class="fi" id="l-pass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="btn-login" onclick="window.doLogin()" data-i18n="signin_btn">Sign In to CampusIQ</button>
+    <input class="fi" id="l-pass" type="password" autocomplete="current-password" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button type="button" class="btn-login" onclick="window.doLogin()" data-i18n="signin_btn">Sign In to CampusIQ</button>
     <div class="login-err" id="l-err"></div>
     <div class="notice">🔐 <span data-i18n="accounts_note">Accounts are created by the KsTU Admin. Contact your department if you need login details.</span></div>
-     <button class="btn-install-login hidden" id="install-btn-login" onclick="window.installApp && window.installApp()"><span data-i18n="install_app">📲 Install CampusIQ App</span></button>
+     <button type="button" class="btn-install-login hidden" id="install-btn-login" onclick="window.installApp && window.installApp()"><span data-i18n="install_app">📲 Install CampusIQ App</span></button>
   </div>
 </div>
 
@@ -255,8 +259,8 @@ window.doLogin = async function () {
     <div class="logo-txt">⬡ CampusIQ</div>
     <div class="logo-sub">STUDENT ID CARD</div>
     <div id="public-id-card"></div>
-        <button class="btn-login" onclick="if(window.showLogin)window.showLogin()">🔑 <span data-i18n="login_to">Login to CampusIQ</span></button>
-        <button class="btn-login btn-login-back" onclick="location.href='/'">← <span data-i18n="back_home">Back to Home</span></button>
+        <button type="button" class="btn-login" onclick="if(window.showLogin)window.showLogin()">🔑 <span data-i18n="login_to">Login to CampusIQ</span></button>
+        <button type="button" class="btn-login btn-login-back" onclick="location.href='/'">← <span data-i18n="back_home">Back to Home</span></button>
   </div>
 </div>
 
@@ -266,22 +270,22 @@ window.doLogin = async function () {
   <span class="nav-logo">⬡ CampusIQ</span>
   <div class="ntabs hide-scrollbar" id="ntabs"></div>
   <div class="nav-r">
-    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">☀️</button>
-    <button class="lang-btn" onclick="toggleLang()" id="lang-btn">🇬🇭 TW</button>
-    <button class="bell-btn" onclick="toggleNotifPanel()">🔔<span class="notif-badge" id="notif-badge"></span></button>
-    <button class="btn-install hidden" id="install-btn" onclick="installApp()">📲 Install App</button>
+    <button type="button" class="theme-btn" onclick="toggleTheme()" id="theme-btn">☀️</button>
+    <button type="button" class="lang-btn" onclick="toggleLang()" id="lang-btn">🇬🇭 TW</button>
+    <button type="button" class="bell-btn" onclick="toggleNotifPanel()">🔔<span class="notif-badge" id="notif-badge"></span></button>
+    <button type="button" class="btn-install hidden" id="install-btn" onclick="installApp()">📲 Install App</button>
     <div class="av nav-avatar" id="nav-av">
       <span id="nav-av-text" class="nav-avatar-text"></span>
-      <img id="nav-av-img" class="nav-av-img" alt="">
+      <img id="nav-av-img" class="nav-av-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
     </div>
-    <button class="logout" onclick="logout()">Sign out</button>
+    <button type="button" class="logout" onclick="logout()">Sign out</button>
   </div>
 </nav>
 
 <div id="notice-ticker" class="hidden"><span id="notice-ticker-inner">Loading announcements…</span></div>
 <div class="notif-panel" id="notif-panel">
   <div class="flex justify-between items-center fw-600 text-sm border-b px-1 py-05">
-    Notifications <button onclick="markAllRead()" class="bs-blue text-070">Mark all read</button>
+    Notifications <button type="button" onclick="markAllRead()" class="bs-blue text-070">Mark all read</button>
   </div>
   <div id="notif-list"><div class="p-1 text-center text-quiet text-sm">No notifications yet</div></div>
 </div>
@@ -314,20 +318,20 @@ window.doLogin = async function () {
        <div class="ai-msg-ai">👋 Hello! I'm <strong>Papi</strong>, your KsTU AI tutor. Ask me anything — course concepts, exam prep, career advice, or anything about campus life at KsTU. What would you like to learn today?</div>
     </div>
      <div class="p-4 border-t flex gap-05 flex-wrap">
-      <button class="btn-sm bs-blue" onclick="askPapi('Explain Big O notation simply')">Big O notation</button>
-      <button class="btn-sm bs-blue" onclick="askPapi('Help me with calculus integration step by step')">Calculus help</button>
-      <button class="btn-sm bs-blue" onclick="askPapi('Create a 2-week study plan for my exams')">Study plan</button>
-      <button class="btn-sm bs-blue" onclick="askPapi('What are the best tech careers in Ghana?')">Career advice</button>
-      <button class="btn-sm bs-blue" onclick="askPapi('Explain machine learning algorithms simply')">ML basics</button>
+      <button type="button" class="btn-sm bs-blue" onclick="askPapi('Explain Big O notation simply')">Big O notation</button>
+      <button type="button" class="btn-sm bs-blue" onclick="askPapi('Help me with calculus integration step by step')">Calculus help</button>
+      <button type="button" class="btn-sm bs-blue" onclick="askPapi('Create a 2-week study plan for my exams')">Study plan</button>
+      <button type="button" class="btn-sm bs-blue" onclick="askPapi('What are the best tech careers in Ghana?')">Career advice</button>
+      <button type="button" class="btn-sm bs-blue" onclick="askPapi('Explain machine learning algorithms simply')">ML basics</button>
     </div>
       <div id="ai-attachments" class="flex gap-05 flex-wrap p-4 hidden"></div>
      <div class="border-t flex gap-05 flex-wrap p-75">
         <label for="ai-input" class="sr-only">Ask Papi</label>
-        <input class="fi2 m-0 flex-1" id="ai-input" placeholder="Ask Papi anything about your KsTU courses, exams, career…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();askPapi()}">
+        <input type="text" class="fi2 m-0 flex-1" id="ai-input" placeholder="Ask Papi anything about your KsTU courses, exams, career…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();askPapi()}">
         <button class="btn-o whitespace-nowrap" type="button" onclick="document.getElementById('ai-file').click()" data-i18n="upload_q">📎 Upload</button>
         <input type="file" id="ai-file" accept=".txt,.md,.csv,.json,.html,.log,image/*" class="hidden" onchange="addAiFiles(event)" aria-label="Attach file">
-        <button class="btn-sm bs-red" onclick="clearPapiChat()" title="Clear chat">🗑</button>
-        <button class="btn-p whitespace-nowrap text-orbitron text-072" id="ai-send-btn" onclick="askPapi()">SEND</button>
+        <button type="button" class="btn-sm bs-red" onclick="clearPapiChat()" title="Clear chat">🗑</button>
+        <button type="button" class="btn-p whitespace-nowrap text-orbitron text-072" id="ai-send-btn" onclick="askPapi()">SEND</button>
     </div>
   </div>
 </section>
@@ -336,9 +340,9 @@ window.doLogin = async function () {
 <section class="screen" id="screen-classroom">
   <div class="sh"><h2 id="t-classroom">Virtual Classroom</h2><div class="sh-line"></div><span class="badge b-blue" id="vc-badge"></span></div>
   <div id="lec-classroom-tools" class="hidden mb-1 flex gap-05 flex-wrap">
-    <button class="btn-p" onclick="openExamModal()">+ Post Exam</button>
-    <button class="btn-g" onclick="openAssignmentModal()">+ Post Assignment</button>
-    <button class="btn-o" onclick="openMaterialModal()">+ Add Material</button>
+    <button type="button" class="btn-p" onclick="openExamModal()">+ Post Exam</button>
+    <button type="button" class="btn-g" onclick="openAssignmentModal()">+ Post Assignment</button>
+    <button type="button" class="btn-o" onclick="openMaterialModal()">+ Add Material</button>
   </div>
   <div class="grid2 mb-1">
     <div>
@@ -367,9 +371,9 @@ window.doLogin = async function () {
         <div><label class="label" for="att-self-date">Date</label><input class="fi2" type="date" id="att-self-date"></div>
       </div>
       <label class="label" for="att-self-name-input">Full Name</label>
-       <label class="label" for="att-self-name-input">Full Name</label><input class="fi2" id="att-self-name-input" placeholder="Enter your full name">
+       <label class="label" for="att-self-name-input">Full Name</label><input type="text" class="fi2" id="att-self-name-input" placeholder="Enter your full name">
       <div id="att-self-roster" class="mt-1"></div>
-      <button class="btn-g hidden mt-75" id="att-self-btn" onclick="markSelfAttendance()">✅ Mark Me Present</button>
+      <button type="button" class="btn-g hidden mt-75" id="att-self-btn" onclick="markSelfAttendance()">✅ Mark Me Present</button>
       <div class="msg" id="att-self-msg"></div>
     </div>
   </div>
@@ -377,13 +381,13 @@ window.doLogin = async function () {
     <div class="gc mb-1">
       <div class="sh"><h2 id="t-take_attendance">Take Attendance</h2><div class="sh-line"></div></div>
       <div class="grid2">
-        <div><label class="label" for="att-course">Course Code</label><input class="fi2" id="att-course" placeholder="CPT 301"></div>
+        <div><label class="label" for="att-course">Course Code</label><input type="text" class="fi2" id="att-course" placeholder="CPT 301"></div>
         <div><label class="label" for="att-date">Date</label><input class="fi2" type="date" id="att-date"></div>
       </div>
       <div class="flex gap-05 items-center flex-wrap mt-05">
-        <button class="btn-p" onclick="buildAttForm()">Load Students</button>
-        <button class="btn-g" onclick="loadAutoRoster()">📋 Load Roster</button>
-        <button class="btn-o" onclick="generateAttQR()">📱 Generate QR Code</button>
+        <button type="button" class="btn-p" onclick="buildAttForm()">Load Students</button>
+        <button type="button" class="btn-g" onclick="loadAutoRoster()">📋 Load Roster</button>
+        <button type="button" class="btn-o" onclick="generateAttQR()">📱 Generate QR Code</button>
       </div>
       <label class="label mt-1" for="att-students">Student Names (comma-separated — optional if using roster)</label>
       <textarea class="fi2" id="att-students" rows="2" placeholder="Kwame Owusu, Abena Mensah, Kofi Asante…"></textarea>
@@ -394,7 +398,7 @@ window.doLogin = async function () {
       </div>
       <div id="att-form-rows" class="mt-1"></div>
       <div class="text-072 text-t2 mt-05">Selected names: <span id="att-selected-names">None</span></div>
-      <button class="btn-g hidden mt-75" id="att-submit-btn" onclick="submitAttendance()">✅ Submit Attendance</button>
+      <button type="button" class="btn-g hidden mt-75" id="att-submit-btn" onclick="submitAttendance()">✅ Submit Attendance</button>
       <div class="msg" id="att-msg"></div>
     </div>
   </div>
@@ -402,7 +406,7 @@ window.doLogin = async function () {
 
 <!-- RESULTS & GPA -->
 <section class="screen" id="screen-results">
-  <div class="sh"><h2 id="t-results">Results & GPA</h2><div class="sh-line"></div></div>
+  <div class="sh"><h2 id="t-results">Results &amp; GPA</h2><div class="sh-line"></div></div>
   <div id="results-student-view" class="hidden">
     <div class="grid2 mb-1">
       <div class="gc">
@@ -466,7 +470,7 @@ window.doLogin = async function () {
 
 <!-- FEES & PAYMENTS -->
 <section class="screen" id="screen-fees">
-  <div class="sh"><h2 id="t-fees_t">Fees & Finance</h2><div class="sh-line"></div></div>
+  <div class="sh"><h2 id="t-fees_t">Fees &amp; Finance</h2><div class="sh-line"></div></div>
   <div id="fee-summary" class="gc blue mb-1"></div>
   <div class="grid2">
     <div>
@@ -478,17 +482,17 @@ window.doLogin = async function () {
       <label class="label" for="pay-amount">Amount Paid (GHS)</label><input class="fi2" id="pay-amount" type="number" placeholder="e.g. 2000">
       <label class="label" for="pay-method">Payment Method</label>
       <select class="fi2" id="pay-method"><option>Mobile Money (MTN)</option><option>Mobile Money (Vodafone)</option><option>Bank Transfer</option><option>Cash (Bursary)</option></select>
-      <label class="label" for="pay-ref">Transaction Reference / Receipt No.</label><input class="fi2" id="pay-ref" placeholder="e.g. GHT20261234567">
-      <label class="label" for="pay-note">Note (optional)</label><input class="fi2" id="pay-note" placeholder="e.g. First instalment">
+      <label class="label" for="pay-ref">Transaction Reference / Receipt No.</label><input type="text" class="fi2" id="pay-ref" placeholder="e.g. GHT20261234567">
+      <label class="label" for="pay-note">Note (optional)</label><input type="text" class="fi2" id="pay-note" placeholder="e.g. First instalment">
       <div class="msg" id="pay-msg"></div>
-      <button class="btn-p w-full" onclick="submitPaymentReceipt()">📤 Submit Receipt for Confirmation</button>
+      <button type="button" class="btn-p w-full" onclick="submitPaymentReceipt()">📤 Submit Receipt for Confirmation</button>
     </div>
   </div>
 </section>
 
 <!-- HOSTELS -->
 <section class="screen" id="screen-hostels">
-  <div class="sh"><h2 id="t-hostels_t">Hostels & Accommodation</h2><div class="sh-line"></div></div>
+  <div class="sh"><h2 id="t-hostels_t">Hostels &amp; Accommodation</h2><div class="sh-line"></div></div>
   <div id="hostel-app-status" class="mb-1"></div>
   <div class="grid2" id="hostels-grid"></div>
 </section>
@@ -504,7 +508,7 @@ window.doLogin = async function () {
       <div class="sh"><h2 id="t-my_location">My Location Controls</h2><div class="sh-line"></div></div>
        <div class="flex justify-between items-center mb-75">
          <div><div class="text-base fw-500">Share My Location</div><div class="text-072 text-t2" id="loc-share-status">Currently not sharing</div></div>
-         <button class="btn-g" id="loc-toggle-btn" onclick="toggleLocationSharing()">Enable Sharing</button>
+         <button type="button" class="btn-g" id="loc-toggle-btn" onclick="toggleLocationSharing()">Enable Sharing</button>
        </div>
        <div class="text-075 text-t2 mb-75">Building: <strong id="loc-my-building">—</strong></div>
        <div id="loc-online-list" class="h-200 overflow-y-auto"></div>
@@ -537,11 +541,11 @@ window.doLogin = async function () {
     </div>
   </div>
   <div class="flex gap-05 justify-center flex-wrap">
-    <button class="btn-p" onclick="printIDCard()">🖨 Print ID Card</button>
-    <button class="btn-o passport-upload" onclick="document.getElementById('passport-input').click()">
+    <button type="button" class="btn-p" onclick="printIDCard()">🖨 Print ID Card</button>
+    <button type="button" class="btn-o passport-upload" onclick="document.getElementById('passport-input').click()">
       📷 <span data-i18n="passport_upload">Upload Passport Photo</span>
     </button>
-    <button class="bs-red passport-remove hidden" id="passport-remove-btn" onclick="removePassport()">✕ Remove Photo</button>
+    <button type="button" class="bs-red passport-remove hidden" id="passport-remove-btn" onclick="removePassport()">✕ Remove Photo</button>
     <input type="file" id="passport-input" accept="image/*" class="hidden" onchange="uploadPassport(event)" aria-label="Upload passport photo">
   </div>
   <div class="passport-msg" id="passport-msg"></div>
@@ -563,8 +567,8 @@ window.doLogin = async function () {
     <div class="chat-msgs" id="chat-msgs"></div>
     <div class="flex gap-05 p-75 border-t">
       <label for="chat-input" class="sr-only">Type a message</label>
-      <input class="fi2 m-0 flex-1" id="chat-input" placeholder="Type a message…" onkeydown="if(event.key==='Enter')sendChat()">
-      <button class="btn-p" onclick="sendChat()">Send</button>
+      <input type="text" class="fi2 m-0 flex-1" id="chat-input" placeholder="Type a message…" onkeydown="if(event.key==='Enter')sendChat()">
+      <button type="button" class="btn-p" onclick="sendChat()">Send</button>
     </div>
   </div>
 </section>
@@ -580,31 +584,31 @@ window.doLogin = async function () {
 <!-- EXAM MODAL CREATE -->
 <div class="modal-bg" id="exam-modal">
   <div class="modal">
-    <h2>Post New Exam <button class="modal-close" onclick="closeM('exam-modal')">✕</button></h2>
-    <label class="label" for="ex-title">Title *</label><input class="fi2" id="ex-title">
-    <label class="label" for="ex-course">Course Code *</label><input class="fi2" id="ex-course">
+    <h2>Post New Exam <button type="button" class="modal-close" onclick="closeM('exam-modal')">✕</button></h2>
+    <label class="label" for="ex-title">Title *</label><input type="text" class="fi2" id="ex-title">
+    <label class="label" for="ex-course">Course Code *</label><input type="text" class="fi2" id="ex-course">
     <label class="label" for="ex-dur">Duration (minutes)</label><input class="fi2" type="number" id="ex-dur" value="30">
     <div id="ex-qblocks"></div>
-     <button class="btn-o w-full mb-75" onclick="addQBlock()">+ Add Question</button>
+     <button type="button" class="btn-o w-full mb-75" onclick="addQBlock()">+ Add Question</button>
     <div class="msg" id="ex-msg"></div>
-     <button class="btn-p w-full" onclick="submitExam()">Publish Exam</button>
+     <button type="button" class="btn-p w-full" onclick="submitExam()">Publish Exam</button>
   </div>
 </div>
 
 <!-- TAKE EXAM MODAL -->
 <div class="modal-bg" id="take-modal">
   <div class="modal">
-    <h2><span id="te-title">Exam</span> <button class="modal-close" onclick="cancelExam()">✕</button></h2>
+    <h2><span id="te-title">Exam</span> <button type="button" class="modal-close" onclick="cancelExam()">✕</button></h2>
     <div id="te-questions"></div>
     <div class="msg" id="te-msg"></div>
-     <button class="btn-p w-full" onclick="submitExamAnswers()">Submit Answers</button>
+     <button type="button" class="btn-p w-full" onclick="submitExamAnswers()">Submit Answers</button>
   </div>
 </div>
 
 <!-- EXAM RESULT MODAL -->
 <div class="modal-bg" id="exam-result-modal">
   <div class="modal">
-    <h2>Your Result <button class="modal-close" onclick="closeM('exam-result-modal')">✕</button></h2>
+    <h2>Your Result <button type="button" class="modal-close" onclick="closeM('exam-result-modal')">✕</button></h2>
     <div id="er-content"></div>
   </div>
 </div>
@@ -612,7 +616,7 @@ window.doLogin = async function () {
 <!-- SUBMISSIONS MODAL -->
 <div class="modal-bg" id="subs-modal">
   <div class="modal">
-    <h2><span id="subs-title">Submissions</span><button class="modal-close" onclick="closeM('subs-modal')">✕</button></h2>
+    <h2><span id="subs-title">Submissions</span><button type="button" class="modal-close" onclick="closeM('subs-modal')">✕</button></h2>
     <div id="subs-content"></div>
   </div>
 </div>
@@ -620,41 +624,41 @@ window.doLogin = async function () {
 <!-- ASSIGNMENT MODAL -->
 <div class="modal-bg" id="assign-modal">
   <div class="modal">
-    <h2>Post Assignment <button class="modal-close" onclick="closeM('assign-modal')">✕</button></h2>
-    <label class="label" for="asgn-title">Title *</label><input class="fi2" id="asgn-title">
-    <label class="label" for="asgn-course">Course Code *</label><input class="fi2" id="asgn-course">
+    <h2>Post Assignment <button type="button" class="modal-close" onclick="closeM('assign-modal')">✕</button></h2>
+    <label class="label" for="asgn-title">Title *</label><input type="text" class="fi2" id="asgn-title">
+    <label class="label" for="asgn-course">Course Code *</label><input type="text" class="fi2" id="asgn-course">
     <label class="label" for="asgn-desc">Description</label><textarea class="fi2" id="asgn-desc"></textarea>
     <label class="label" for="asgn-deadline">Deadline *</label><input class="fi2" type="datetime-local" id="asgn-deadline">
     <label class="label" for="asgn-score">Max Score</label><input class="fi2" type="number" id="asgn-score" value="100">
     <div class="msg" id="asgn-msg"></div>
-     <button class="btn-p w-full" onclick="submitAssignment()">Post Assignment</button>
+     <button type="button" class="btn-p w-full" onclick="submitAssignment()">Post Assignment</button>
   </div>
 </div>
 
 <!-- MATERIAL MODAL -->
 <div class="modal-bg" id="material-modal">
   <div class="modal">
-    <h2>Add Course Material <button class="modal-close" onclick="closeM('material-modal')">✕</button></h2>
-    <label class="label" for="mat-course">Course Code *</label><input class="fi2" id="mat-course">
-    <label class="label" for="mat-title">Title *</label><input class="fi2" id="mat-title">
+    <h2>Add Course Material <button type="button" class="modal-close" onclick="closeM('material-modal')">✕</button></h2>
+    <label class="label" for="mat-course">Course Code *</label><input type="text" class="fi2" id="mat-course">
+    <label class="label" for="mat-title">Title *</label><input type="text" class="fi2" id="mat-title">
     <label class="label" for="mat-type">Type</label>
     <select class="fi2" id="mat-type"><option>Lecture Notes</option><option>Slides</option><option>Video</option><option>Past Questions</option><option>Reference</option></select>
-    <label class="label" for="mat-week">Week</label><input class="fi2" id="mat-week" placeholder="e.g. Week 5">
-    <label class="label" for="mat-url">URL / Link *</label><input class="fi2" id="mat-url" placeholder="https://…">
+    <label class="label" for="mat-week">Week</label><input type="text" class="fi2" id="mat-week" placeholder="e.g. Week 5">
+    <label class="label" for="mat-url">URL / Link *</label><input type="text" class="fi2" id="mat-url" placeholder="https://…">
     <div class="msg" id="mat-msg"></div>
-     <button class="btn-p w-full" onclick="submitMaterial()">Add Material</button>
+     <button type="button" class="btn-p w-full" onclick="submitMaterial()">Add Material</button>
   </div>
 </div>
 
 <!-- SUBMIT ASSIGNMENT MODAL (student) -->
 <div class="modal-bg" id="submit-asgn-modal">
   <div class="modal">
-    <h2><span id="sa-title">Submit Assignment</span><button class="modal-close" onclick="closeM('submit-asgn-modal')">✕</button></h2>
+    <h2><span id="sa-title">Submit Assignment</span><button type="button" class="modal-close" onclick="closeM('submit-asgn-modal')">✕</button></h2>
      <div id="sa-desc" class="text-base text-t2 mb-1"></div>
     <label class="label" for="sa-response">Your Response *</label><textarea class="fi2" id="sa-response" rows="4" placeholder="Type your answer here…"></textarea>
-    <label class="label" for="sa-link">Link (optional — GitHub, Google Doc, etc.)</label><input class="fi2" id="sa-link" placeholder="https://…">
+    <label class="label" for="sa-link">Link (optional — GitHub, Google Doc, etc.)</label><input type="text" class="fi2" id="sa-link" placeholder="https://…">
     <div class="msg" id="sa-msg"></div>
-     <button class="btn-p w-full" onclick="doSubmitAssignment()">Submit</button>
+     <button type="button" class="btn-p w-full" onclick="doSubmitAssignment()">Submit</button>
   </div>
 </div>
 
@@ -676,16 +680,25 @@ window.doLogin = async function () {
     hideInstall();
     deferredPrompt = null;
   });
-  window.installApp = async function () {
-    if (!deferredPrompt) {
-      alert('To install: open this site in your browser menu and tap "Add to Home Screen" or "Install App".');
-      return;
-    }
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') { hideInstall(); }
-    deferredPrompt = null;
-  };
+  // iOS doesn't fire beforeinstallprompt; show button with manual instructions
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (isIOS) {
+    window.installApp = function () {
+      alert('To install CampusIQ on iOS:\n\n1. Tap the Share button □\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add"');
+    };
+    showInstall();
+  } else {
+    window.installApp = async function () {
+      if (!deferredPrompt) {
+        alert('To install: open this site in your browser menu and tap "Add to Home Screen" or "Install App".');
+        return;
+      }
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') { hideInstall(); }
+      deferredPrompt = null;
+    };
+  }
 })();
 </script>
 </body>

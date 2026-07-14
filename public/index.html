@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CampusIQ">
+<meta name="theme-color" content="#0a0a0f">
 <title>CampusIQ — KsTU | Powered by Papi</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
@@ -31,7 +35,7 @@ a{text-decoration:none}
 </head>
 <body>
 <div class="wrap">
-  <button class="lang-toggle" id="landing-lang" onclick="toggleLandingLang()">🇬🇭 TW</button>
+  <button type="button" class="lang-toggle" id="landing-lang" onclick="toggleLandingLang()">🇬🇭 TW</button>
   <div class="logo">⬡ CampusIQ</div>
   <div class="sub" data-i18n="kstu">Kumasi Technical University · Powered by Papi</div>
   <div class="cards">
@@ -50,13 +54,13 @@ a{text-decoration:none}
       <div class="card-title" data-i18n="career_hub">Career Hub</div>
       <div class="card-sub" data-i18n="career_sub">Jobs · Skills · CV · Alumni · Salary Map</div>
     </a>
-    <button class="card c4" onclick="installPWA()">
-      <div class="card-icon">📱</div>
-      <div class="card-title" data-i18n="install_app">Install App</div>
-      <div class="card-sub" data-i18n="install_sub">Add to home screen · Works offline</div>
+    <button type="button" class="card c4" onclick="installPWA()">
+      <span class="card-icon">📱</span>
+      <span class="card-title" data-i18n="install_app">Install App</span>
+      <span class="card-sub" data-i18n="install_sub">Add to home screen · Works offline</span>
     </button>
   </div>
-  <button class="install-btn" id="install-btn" onclick="installPWA()">📱 Install CampusIQ App</button>
+  <button type="button" class="install-btn" id="install-btn" onclick="installPWA()">📱 Install CampusIQ App</button>
   <div class="papi">POWERED BY PAPI · KSTU 2026</div>
 </div>
 <script>
@@ -67,7 +71,14 @@ window.addEventListener('beforeinstallprompt', e => {
 });
 function installPWA(){
   if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null;}); }
-  else { alert('To install: tap the browser menu → "Add to Home Screen"'); }
+  else {
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (isIOS) {
+      alert('To install CampusIQ on iOS:\n\n1. Tap the Share button □\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add"');
+    } else {
+      alert('To install: tap the browser menu → "Add to Home Screen"');
+    }
+  }
 }
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW registration failed:',e));
 

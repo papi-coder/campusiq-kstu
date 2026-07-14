@@ -40,12 +40,19 @@ app.post('/api/admin/login', async (req, res) => {
     return fail(res, 400, "Email and password are required");
   }
 
-  const admin = await db.findOne("users", u =>
+  let admin = await db.findOne("users", u =>
     (u.email.toLowerCase() === String(email).toLowerCase() || u.username?.toLowerCase() === String(email).toLowerCase()) &&
     u.password === password &&
     u.role === "admin"
   );
-
+  if (!admin) {
+    await new Promise(r => setTimeout(r, 150));
+    admin = await db.findOne("users", u =>
+      (u.email.toLowerCase() === String(email).toLowerCase() || u.username?.toLowerCase() === String(email).toLowerCase()) &&
+      u.password === password &&
+      u.role === "admin"
+    );
+  }
   if (!admin) {
     return fail(res, 401, "Invalid admin credentials");
   }
@@ -78,11 +85,20 @@ app.post('/api/admin/change-password', async (req, res) => {
 app.post('/api/login', async (req, res) => {
   const { email, password, role } = req.body || {};
   if (!email || !password || !role) return fail(res, 400, 'Email, password, and role are required');
-  const user = await db.findOne('users', u =>
+  let user = await db.findOne('users', u =>
     u.email.toLowerCase() === String(email).toLowerCase() &&
     u.password === password &&
     u.role === role
   );
+  // Brief retry for KV read-after-write consistency (newly created accounts)
+  if (!user) {
+    await new Promise(r => setTimeout(r, 150));
+    user = await db.findOne('users', u =>
+      u.email.toLowerCase() === String(email).toLowerCase() &&
+      u.password === password &&
+      u.role === role
+    );
+  }
   if (!user) return fail(res, 401, 'Invalid email, password, or role. Contact your admin if you need an account.');
   const safeUser = { ...user };
   delete safeUser.password;
@@ -102,7 +118,11 @@ app.get('/api/users', async (req, res) => {
 app.get('/api/users/lookup', async (req, res) => {
   const { studentId } = req.query;
   if (!studentId) return fail(res, 400, 'studentId is required');
-  const user = await db.findOne('users', u => String(u.studentId||'').includes(studentId));
+  let user = await db.findOne('users', u => String(u.studentId||'').includes(studentId));
+  if (!user) {
+    await new Promise(r => setTimeout(r, 150));
+    user = await db.findOne('users', u => String(u.studentId||'').includes(studentId));
+  }
   if (!user) return fail(res, 404, 'User not found');
   const { password, ...safe } = user;
   ok(res, safe);

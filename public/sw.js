@@ -1,10 +1,10 @@
 // CampusIQ Service Worker — offline support for timetable, results, and careers
 const CACHE_NAME = 'campusiq-v3';
 const STATIC_ASSETS = [
-  './frontend/index.html',
-  './frontend/careers.html',
-  './shared/api.js',
-  './',
+  '/frontend/index.html',
+  '/frontend/careers.html',
+  '/shared/api.js',
+  '/',
 ];
 
 self.addEventListener('install', event => {
@@ -41,7 +41,7 @@ self.addEventListener('fetch', event => {
           caches.open(CACHE_NAME).then(c => c.put(event.request, clone));
         }
         return res;
-      }).catch(() => caches.match('./frontend/index.html'));
+      }).catch(() => caches.match('/frontend/index.html'));
     })
   );
 });

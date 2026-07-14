@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+ <meta name="apple-mobile-web-app-capable" content="yes">
+ <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+ <meta name="apple-mobile-web-app-title" content="CampusIQ Careers">
+ <meta name="theme-color" content="#0a0a0f">
  <link rel="stylesheet" href="../shared/styles.css">
   <title>CampusIQ — Career Hub | KsTU</title>
   <link rel="manifest" href="../manifest.json">
@@ -164,17 +168,17 @@ td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 <nav>
   <a class="nav-logo" href="index.html">⬡ CampusIQ</a>
   <div class="nav-tabs hide-scrollbar">
-    <button class="ntab active" id="t0" onclick="show('jobs',0)">💼 Jobs</button>
-    <button class="ntab" id="t1" onclick="show('skills',1)">🎯 Skill Gap</button>
-    <button class="ntab" id="t2" onclick="show('cv',2)">📄 CV Builder</button>
-    <button class="ntab" id="t3" onclick="show('alumni',3)">🎓 Alumni</button>
-    <button class="ntab" id="t4" onclick="show('salary',4)">📊 Salary Map</button>
-    <button class="ntab" id="t5" onclick="show('portfolio',5)">🗂 Portfolio</button>
-    <button class="ntab" id="t6" onclick="show('my-apps',6)">📋 Applications</button>
+    <button type="button" class="ntab active" id="t0" onclick="show('jobs',0)">💼 Jobs</button>
+    <button type="button" class="ntab" id="t1" onclick="show('skills',1)">🎯 Skill Gap</button>
+    <button type="button" class="ntab" id="t2" onclick="show('cv',2)">📄 CV Builder</button>
+    <button type="button" class="ntab" id="t3" onclick="show('alumni',3)">🎓 Alumni</button>
+    <button type="button" class="ntab" id="t4" onclick="show('salary',4)">📊 Salary Map</button>
+    <button type="button" class="ntab" id="t5" onclick="show('portfolio',5)">🗂 Portfolio</button>
+    <button type="button" class="ntab" id="t6" onclick="show('my-apps',6)">📋 Applications</button>
   </div>
   <div class="u-ai-center u-fs-0 u-d-flex">
     <span class="u-fs-072 u-c-t3" id="nav-user"></span>
-    <button class="back-btn" onclick="window.location.href='index.html'">← Back</button>
+    <button type="button" class="back-btn" onclick="window.location.href='index.html'">← Back</button>
   </div>
 </nav>
 
@@ -191,14 +195,14 @@ td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
   </div>
 
   <div class="u-jc-space u-mb-1 u-ai-center u-fw-wrap u-d-flex">
-    <div class="sh u-no-margin"><h2>Jobs & Internships in Ghana</h2><div class="sh-line"></div><span class="badge bg" id="jobs-count">20 opportunities</span></div>
+    <div class="sh u-no-margin"><h2>Jobs &amp; Internships in Ghana</h2><div class="sh-line"></div><span class="badge bg" id="jobs-count">20 opportunities</span></div>
   </div>
   <div class="g4 u-mb-1" id="jobs-stats"></div>
   <div class="u-ai-center u-mb-1 u-fw-wrap u-d-flex">
     <div class="search-wrap u-minw-200 u-fs-1">
       <span class="search-icon">🔍</span>
        <label for="job-search" class="sr-only">Search jobs</label>
-      <input class="search-box" id="job-search" placeholder="Search jobs, companies, skills…" oninput="renderJobs()">
+      <input type="text" class="search-box" id="job-search" placeholder="Search jobs, companies, skills…" oninput="renderJobs()">
     </div>
     <select class="fi u-w-140 u-no-margin" id="job-type" onchange="renderJobs()" aria-label="Select">
       <option value="">All Types</option>
@@ -216,12 +220,12 @@ td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
     </select>
   </div>
   <div class="u-mb-1 u-fw-wrap u-d-flex">
-    <button class="fchip active" onclick="setFilter('all',this)">All</button>
-    <button class="fchip" onclick="setFilter('saved',this)">🔖 Saved</button>
-    <button class="fchip" onclick="setFilter('applied',this)">✓ Applied</button>
-    <button class="fchip" onclick="setFilter('matched',this)">⚡ Best Match (85%+)</button>
-    <button class="fchip" onclick="setFilter('kumasi',this)">📍 Kumasi</button>
-    <button class="fchip" onclick="setFilter('remote',this)">🌐 Remote</button>
+    <button type="button" class="fchip active" onclick="setFilter('all',this)">All</button>
+    <button type="button" class="fchip" onclick="setFilter('saved',this)">🔖 Saved</button>
+    <button type="button" class="fchip" onclick="setFilter('applied',this)">✓ Applied</button>
+    <button type="button" class="fchip" onclick="setFilter('matched',this)">⚡ Best Match (85%+)</button>
+    <button type="button" class="fchip" onclick="setFilter('kumasi',this)">📍 Kumasi</button>
+    <button type="button" class="fchip" onclick="setFilter('remote',this)">🌐 Remote</button>
   </div>
   <div class="g2" id="jobs-grid"></div>
 </div>
@@ -246,14 +250,14 @@ td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
   <div class="g2 u-mb-1">
     <div class="gc">
       <div class="sh"><h2>Your Details</h2><div class="sh-line"></div></div>
-      <label class="label" for="cv-name">Full Name</label><input class="fi" id="cv-name">
-      <label class="label" for="cv-email">Email</label><input class="fi" id="cv-email">
-      <label class="label" for="cv-phone">Phone</label><input class="fi" id="cv-phone" placeholder="+233 XX XXX XXXX">
-      <label class="label" for="cv-target">Target Role (tailors keywords)</label><input class="fi" id="cv-target" placeholder="e.g. Software Engineering Intern">
-      <label class="label" for="cv-extra-skills">Additional Skills (comma-separated)</label><input class="fi" id="cv-extra-skills" placeholder="e.g. Public Speaking, AutoCAD">
+      <label class="label" for="cv-name">Full Name</label><input type="text" class="fi" id="cv-name">
+      <label class="label" for="cv-email">Email</label><input type="text" class="fi" id="cv-email">
+      <label class="label" for="cv-phone">Phone</label><input type="text" class="fi" id="cv-phone" placeholder="+233 XX XXX XXXX">
+      <label class="label" for="cv-target">Target Role (tailors keywords)</label><input type="text" class="fi" id="cv-target" placeholder="e.g. Software Engineering Intern">
+      <label class="label" for="cv-extra-skills">Additional Skills (comma-separated)</label><input type="text" class="fi" id="cv-extra-skills" placeholder="e.g. Public Speaking, AutoCAD">
       <label class="label" for="cv-summary">Professional Summary (optional — auto-generated if blank)</label>
       <textarea class="fi" id="cv-summary" rows="3" placeholder="Leave blank to auto-generate from your profile…"></textarea>
-      <button class="btn btn-p u-fs-100" onclick="generateCV()">🪄 Generate CV from My Profile</button>
+      <button type="button" class="btn btn-p u-fs-100" onclick="generateCV()">🪄 Generate CV from My Profile</button>
     </div>
     <div class="gc">
       <div class="sh"><h2>Pulled from Your Profile</h2><div class="sh-line"></div></div>
@@ -264,8 +268,8 @@ td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
     <div class="sh"><h2>Generated CV</h2><div class="sh-line"></div></div>
     <div id="cv-preview"></div>
     <div class="u-d-flex">
-      <button class="btn btn-p u-fs-1" onclick="downloadCV()">📥 Download CV (HTML)</button>
-      <button class="btn btn-o u-fs-1" onclick="document.getElementById('cv-output').style.display='none'">Edit Details</button>
+      <button type="button" class="btn btn-p u-fs-1" onclick="downloadCV()">📥 Download CV (HTML)</button>
+      <button type="button" class="btn btn-o u-fs-1" onclick="document.getElementById('cv-output').style.display='none'">Edit Details</button>
     </div>
   </div>
 </div>
@@ -275,12 +279,12 @@ td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
   <div class="sh"><h2>🎓 Alumni Network — Ask a Graduate</h2><div class="sh-line"></div><span class="badge bg" id="alumni-online-count">24 alumni online</span></div>
   <p class="u-mb-1 u-c-t2 u-lh-17">Connect with KsTU graduates now working at top Ghanaian companies. Ask real questions about their job, their career path, and how to get there.</p>
   <div class="u-mb-1 u-fw-wrap u-d-flex">
-    <button class="fchip active" onclick="filterAlumni('all',this)">All Faculties</button>
-    <button class="fchip" onclick="filterAlumni('sci',this)">🔬 Applied Sciences</button>
-    <button class="fchip" onclick="filterAlumni('eng',this)">⚙️ Engineering</button>
-    <button class="fchip" onclick="filterAlumni('biz',this)">💼 Business</button>
-    <button class="fchip" onclick="filterAlumni('arts',this)">🎨 Creative Arts</button>
-    <button class="fchip" onclick="filterAlumni('health',this)">🏥 Health Sciences</button>
+    <button type="button" class="fchip active" onclick="filterAlumni('all',this)">All Faculties</button>
+    <button type="button" class="fchip" onclick="filterAlumni('sci',this)">🔬 Applied Sciences</button>
+    <button type="button" class="fchip" onclick="filterAlumni('eng',this)">⚙️ Engineering</button>
+    <button type="button" class="fchip" onclick="filterAlumni('biz',this)">💼 Business</button>
+    <button type="button" class="fchip" onclick="filterAlumni('arts',this)">🎨 Creative Arts</button>
+    <button type="button" class="fchip" onclick="filterAlumni('health',this)">🏥 Health Sciences</button>
   </div>
   <div class="g3" id="alumni-grid"></div>
   <div class="sh u-mt-1"><h2>My Questions</h2><div class="sh-line"></div></div>
@@ -289,7 +293,7 @@ td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
 <!-- ===== SALARY HEATMAP ===== -->
 <div class="section" id="sec-salary">
-  <div class="sh"><h2>📊 Salary & Demand Heatmap</h2><div class="sh-line"></div><span class="badge bp">Live Market Data</span></div>
+  <div class="sh"><h2>📊 Salary &amp; Demand Heatmap</h2><div class="sh-line"></div><span class="badge bp">Live Market Data</span></div>
   <p class="u-mb-1 u-c-t2 u-lh-17">See which KsTU courses lead to the highest-paying and most in-demand roles in Ghana right now.</p>
   <div class="gc u-mb-1 u-overflow-x-auto">
     <table class="hm-table u-minw-140" id="heatmap-table"><thead><tr><th>Course</th><th>Programme</th><th>Min (GHS)</th><th>Max (GHS)</th><th>Demand</th><th>Open Jobs</th></tr></thead><tbody></tbody></table>
@@ -307,29 +311,29 @@ td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
   <div class="g2 u-mb-1">
     <div class="gc">
       <div class="sh"><h2>Add a Project</h2><div class="sh-line"></div></div>
-      <label class="label" for="pf-title">Project Title *</label><input class="fi" id="pf-title" placeholder="e.g. Smart Campus Navigation App">
+      <label class="label" for="pf-title">Project Title *</label><input type="text" class="fi" id="pf-title" placeholder="e.g. Smart Campus Navigation App">
       <label class="label" for="pf-course">Related KsTU Course</label>
       <select class="fi" id="pf-course" aria-label="Select">
         <option value="">Select course…</option>
-        <option>CPT 301 — Data Structures</option><option>CPT 305 — AI & ML</option>
+        <option>CPT 301 — Data Structures</option><option>CPT 305 — AI &amp; ML</option>
         <option>DSC 201 — Statistics</option><option>MAT 201 — Calculus II</option>
         <option>EEE 301 — Power Systems</option><option>FIN 201 — Banking</option>
         <option>MKT 301 — Digital Marketing</option><option>CPT 201 — OOP Java</option>
       </select>
       <label class="label" for="pf-desc">Description *</label><textarea class="fi" id="pf-desc" rows="3" placeholder="What did you build? What problem does it solve? What did you learn?"></textarea>
-      <label class="label" for="pf-skills">Skills Demonstrated (comma-separated)</label><input class="fi" id="pf-skills" placeholder="e.g. Python, React, Team Leadership">
-      <label class="label" for="pf-link">Project Link (GitHub, demo, Google Doc…)</label><input class="fi" id="pf-link" placeholder="https://github.com/yourname/project">
+      <label class="label" for="pf-skills">Skills Demonstrated (comma-separated)</label><input type="text" class="fi" id="pf-skills" placeholder="e.g. Python, React, Team Leadership">
+      <label class="label" for="pf-link">Project Link (GitHub, demo, Google Doc…)</label><input type="text" class="fi" id="pf-link" placeholder="https://github.com/yourname/project">
       <div class="msg" id="pf-msg"></div>
-      <button class="btn btn-p u-fs-100" onclick="addProject()">+ Add to Portfolio</button>
+      <button type="button" class="btn btn-p u-fs-100" onclick="addProject()">+ Add to Portfolio</button>
     </div>
     <div class="gc gold">
       <div class="sh"><h2>Your Public Portfolio Link</h2><div class="sh-line"></div></div>
       <div class="u-c-t2 u-lh-17">Share this link with employers — it shows all your projects, skills, and education in one clean page.</div>
       <div class="u-bg-black-25 u-ai-center u-b-075 u-d-flex">
         <span class="u-fs-1" id="pf-public-link">Loading…</span>
-        <button class="btn-sm bs-blue" onclick="copyPortfolioLink()">Copy</button>
+        <button type="button" class="btn-sm bs-blue" onclick="copyPortfolioLink()">Copy</button>
       </div>
-      <button class="btn btn-p u-fs-100" onclick="previewPortfolio()">👁 Preview Public Portfolio</button>
+      <button type="button" class="btn btn-p u-fs-100" onclick="previewPortfolio()">👁 Preview Public Portfolio</button>
     </div>
   </div>
   <div class="sh"><h2>My Projects</h2><div class="sh-line"></div><span class="badge bb" id="pf-count">0 projects</span></div>
@@ -365,7 +369,7 @@ td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
         <div class="u-c-t2 u-mt-3" id="jm-company"></div>
         <div class="u-fw-wrap u-d-flex" id="jm-badges"></div>
       </div>
-      <button class="modal-close u-ml-auto" onclick="closeModal('job-modal')">✕</button>
+      <button type="button" class="modal-close u-ml-auto" onclick="closeModal('job-modal')">✕</button>
     </div>
     <div class="g2 u-mb-1">
       <div class="gc u-p-65"><div class="u-fs-062 u-c-t2 u-text-uppercase u-mb-025">Pay</div><div class="u-fs-088 u-fw-600 u-color-green" id="jm-pay"></div></div>
@@ -380,7 +384,7 @@ td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
         <div class="u-fs-1">
           <div class="u-fw-600">Get Referred — Skip the Queue</div>
           <div class="u-c-t2 u-lh-16" id="jm-referral-text"></div>
-          <button class="btn-sm bs-purple" id="jm-referral-btn" onclick="requestReferral()">Request Referral Code</button>
+          <button type="button" class="btn-sm bs-purple" id="jm-referral-btn" onclick="requestReferral()">Request Referral Code</button>
         </div>
       </div>
     </div>
@@ -397,20 +401,20 @@ td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
       <div id="jm-req"></div>
     </div>
     <div class="u-mb-1">
-      <div class="u-text-uppercase u-c-t2">Skills & Courses</div>
+      <div class="u-text-uppercase u-c-t2">Skills &amp; Courses</div>
       <div id="jm-skills"></div>
     </div>
     <!-- Apply form -->
     <div id="jm-apply-section">
       <div class="sh"><h2>Apply Now</h2><div class="sh-line"></div></div>
-      <label class="label" for="ap-name">Full Name *</label><input class="fi" id="ap-name">
+      <label class="label" for="ap-name">Full Name *</label><input type="text" class="fi" id="ap-name">
       <label class="label" for="ap-email">Email *</label><input class="fi" id="ap-email" type="email">
-      <label class="label" for="ap-phone">Phone</label><input class="fi" id="ap-phone" placeholder="+233 XX XXX XXXX">
-      <label class="label" for="ap-prog">KsTU Programme & Level</label><input class="fi" id="ap-prog">
+      <label class="label" for="ap-phone">Phone</label><input type="text" class="fi" id="ap-phone" placeholder="+233 XX XXX XXXX">
+      <label class="label" for="ap-prog">KsTU Programme &amp; Level</label><input type="text" class="fi" id="ap-prog">
       <label class="label" for="ap-cover">Cover Letter / Why You're a Good Fit *</label>
       <textarea class="fi" id="ap-cover" rows="4" placeholder="Tell them why you're the right person for this role…"></textarea>
-      <label class="label" for="ap-portfolio">Portfolio / LinkedIn (optional)</label><input class="fi" id="ap-portfolio" placeholder="https://linkedin.com/in/yourname">
-      <label class="label" for="ap-referral">Referral Code (optional)</label><input class="fi" id="ap-referral" placeholder="Auto-fills if you requested a referral">
+      <label class="label" for="ap-portfolio">Portfolio / LinkedIn (optional)</label><input type="text" class="fi" id="ap-portfolio" placeholder="https://linkedin.com/in/yourname">
+      <label class="label" for="ap-referral">Referral Code (optional)</label><input type="text" class="fi" id="ap-referral" placeholder="Auto-fills if you requested a referral">
       <div class="msg" id="ap-msg"></div>
     </div>
     <div id="jm-applied-confirm" class="gc green u-p-875 u-text-center u-hide">
@@ -425,12 +429,12 @@ td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 <!-- ALUMNI QUESTION MODAL -->
 <div class="modal-bg" id="alumni-modal">
   <div class="modal">
-    <h2>Ask <span id="am-name"></span> <button class="modal-close" onclick="closeModal('alumni-modal')">✕</button></h2>
+    <h2>Ask <span id="am-name"></span> <button type="button" class="modal-close" onclick="closeModal('alumni-modal')">✕</button></h2>
     <div class="gc blue u-mb-1" id="am-profile"></div>
     <label class="label" for="am-question">Your Question *</label>
     <textarea class="fi" id="am-question" rows="4" placeholder="e.g. How did you get your first job at this company? What skills should I focus on? What does a typical day look like?"></textarea>
     <div class="msg" id="am-msg"></div>
-    <button class="btn btn-p u-fs-100" onclick="sendAlumniQuestion()">Send Question</button>
+    <button type="button" class="btn btn-p u-fs-100" onclick="sendAlumniQuestion()">Send Question</button>
   </div>
 </div>
 
@@ -523,9 +527,9 @@ function buildJobCard(job, status, daysLeft){
     </div>
     <div class="tags-row">${job.tags.slice(0,3).map(t=>`<span class="job-tag">${t}</span>`).join('')}</div>
     <div class="card-actions">
-       <button class="btn btn-p flex-2 text-072 p-45" onclick="openJob('${job.id}')">View & Apply</button>
-       <button class="btn btn-o text-lg p-55" onclick="toggleSave('${job.id}')" title="${saveTitle}">${saveActionLabel}</button>
-      ${REFERRAL_POOL[job.company] && job.match >= 85 ? `<button class="btn-sm bs-purple p-55 text-075" onclick="openJob('${job.id}')" title="Referral available">🤝</button>` : ''}
+       <button type="button" class="btn btn-p flex-2 text-072 p-45" onclick="openJob('${job.id}')">View &amp; Apply</button>
+       <button type="button" class="btn btn-o text-lg p-55" onclick="toggleSave('${job.id}')" title="${saveTitle}">${saveActionLabel}</button>
+      ${REFERRAL_POOL[job.company] && job.match >= 85 ? `<button type="button" class="btn-sm bs-purple p-55 text-075" onclick="openJob('${job.id}')" title="Referral available">🤝</button>` : ''}
     </div>
   </div>`;
 }
@@ -733,9 +737,9 @@ function openJob(id){
   document.getElementById('ap-msg').textContent='';
   // Footer
   document.getElementById('jm-footer').innerHTML=`
-    <button class="btn btn-o flex-1" onclick="closeModal('job-modal')">Close</button>
-    ${applied?'<span class="badge bg badge-sm">✓ Applied</span>':`<button class="btn btn-g flex-2" onclick="submitApplication()">Submit Application</button>`}
-    <button class="btn btn-o text-lg p-55" onclick="toggleSave('${j.id}')">${st==='saved'?'🔖 Saved':'🔖 Save'}</button>
+    <button type="button" class="btn btn-o flex-1" onclick="closeModal('job-modal')">Close</button>
+    ${applied?'<span class="badge bg badge-sm">✓ Applied</span>':`<button type="button" class="btn btn-g flex-2" onclick="submitApplication()">Submit Application</button>`}
+    <button type="button" class="btn btn-o text-lg p-55" onclick="toggleSave('${j.id}')">${st==='saved'?'🔖 Saved':'🔖 Save'}</button>
   `;
   document.getElementById('job-modal').classList.add('open');
 }
@@ -780,7 +784,7 @@ function submitApplication(){
   document.getElementById('jm-apply-section').style.display='none';
   document.getElementById('jm-applied-confirm').style.display='block';
   document.getElementById('jm-applied-msg').textContent=refCode?'Your application was submitted with a referral code — referred applications are reviewed first! Good luck!':'Your application has been sent to the employer. Good luck!';
-  document.getElementById('jm-footer').innerHTML=`    <button class="btn btn-o flex-1" onclick="closeModal('job-modal')">Close</button><span class="badge bg badge-sm">✓ Applied${refCode?' · Referred':''}</span>`;
+  document.getElementById('jm-footer').innerHTML=`    <button type="button" class="btn btn-o flex-1" onclick="closeModal('job-modal')">Close</button><span class="badge bg badge-sm">✓ Applied${refCode?' · Referred':''}</span>`;
   showNotif(refCode?'🎉 Application + referral sent to '+activeJob.company+'!':'🎉 Application submitted to '+activeJob.company+'!');
   renderJobs();renderMyApps();
 }
@@ -919,7 +923,7 @@ function renderAlumni(){
       <span class="text-t3 text-xs">💬 ${a.answered} answered</span>
       <span class="badge ${a.available?'bg':'br'}">${a.available?'● Available':'Busy'}</span>
     </div>
-    <button class="btn ${a.available?'btn-p':'btn-o'} w-full text-075" ${!a.available?'disabled':''} onclick="openAlumniModal('${a.id}')">${a.available?'💬 Ask a Question':'Currently Unavailable'}</button>
+    <button type="button" class="btn ${a.available?'btn-p':'btn-o'} w-full text-075" ${!a.available?'disabled':''} onclick="openAlumniModal('${a.id}')">${a.available?'💬 Ask a Question':'Currently Unavailable'}</button>
   </div>`).join('');
   loadMyQuestions();
 }
@@ -1018,7 +1022,7 @@ function renderPortfolioGrid(){
       <span class="portfolio-date">${p.date}</span>
       <div class="flex gap-3">
         ${p.link?`        <a href="${p.link}" target="_blank" class="btn-sm bs-blue course-link">🔗 View</a>`:''}
-        <button class="btn-sm bs-red" onclick="removeProject('${p.id}')">Remove</button>
+        <button type="button" class="btn-sm bs-red" onclick="removeProject('${p.id}')">Remove</button>
       </div>
     </div>
    </div>`).join(''):'<div class="empty-state-text">No projects yet. Add your first project above!</div>';
@@ -1090,15 +1094,15 @@ async function renderMyApps(){
   document.getElementById('applied-list').innerHTML=applied.length?applied.map(j=>`<div class="applied-row">
     <div class="applied-logo">${j.logo}</div>
     <div class="applied-info"><div class="applied-title">${j.role}</div><div class="applied-sub">${j.company} · ${j.pay}</div></div>
-    <div class="flex gap-3 flex-shrink-0"><span class="badge bg">✓ Applied</span><button class="btn-sm bs-blue" onclick="openJob('${j.id}')">View</button></div>
-  </div>`).join(''):'<div class="text-t3 text-sm empty-state">No applications yet. <button class="btn-sm bs-blue" onclick="show(\'jobs\',0)">Browse Jobs →</button></div>';
+    <div class="flex gap-3 flex-shrink-0"><span class="badge bg">✓ Applied</span><button type="button" class="btn-sm bs-blue" onclick="openJob('${j.id}')">View</button></div>
+  </div>`).join(''):'<div class="text-t3 text-sm empty-state">No applications yet. <button type="button" class="btn-sm bs-blue" onclick="show(\'jobs\',0)">Browse Jobs →</button></div>';
   document.getElementById('saved-list').innerHTML=saved.length?saved.map(j=>{
     const dl=new Date(j.deadlineStr);
     const daysLeft=Math.ceil((dl-Date.now())/864e5);
     return`<div class="saved-row">
       <div class="saved-logo">${j.logo}</div>
       <div class="applied-info"><div class="applied-title">${j.role}</div><div class="applied-sub">${j.company} · ${j.pay}</div><div class="text-075 text-deadline-${daysLeft<=3?'urgent':'warning'}">⏰ ${daysLeft<=0?'Deadline passed':daysLeft+' days left'}</div></div>
-      <div class="footer-actions"><button class="btn-sm bs-green" onclick="openJob('${j.id}')">Apply Now</button><button class="btn-sm bs-red" onclick="toggleSave('${j.id}');renderMyApps()">Remove</button></div>
+      <div class="footer-actions"><button type="button" class="btn-sm bs-green" onclick="openJob('${j.id}')">Apply Now</button><button type="button" class="btn-sm bs-red" onclick="toggleSave('${j.id}');renderMyApps()">Remove</button></div>
     </div>`;
   }).join(''):'<div class="empty-state-text">No saved jobs. Click 🔖 on any job to save it.</div>';
 }

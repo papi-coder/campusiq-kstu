@@ -2,149 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CampusIQ Admin">
+<meta name="theme-color" content="#0a0a0f">
 <title>CampusIQ Admin — KsTU</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0a0f;--panel:#0d1117;--blue:#3b82f6;--cyan:#06b6d4;--gold:#f59e0b;--green:#10b981;--red:#ef4444;--t1:#f0f4ff;--t2:#94a3b8;--t3:#475569}
-html{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--t1)}
-.hidden{display:none}
-body{min-height:100vh;background:linear-gradient(135deg,#0a0a0f 0%,#0d1117 60%,#0a0f1a 100%)}
-#login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;background:rgba(0,0,0,0.96)}
-.login-box{background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;width:100%;max-width:380px}
-.login-box h1{font-family:'Orbitron',sans-serif;font-size:1.3rem;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:0.3rem}
-.login-box .sub{text-align:center;color:var(--t3);font-size:0.72rem;letter-spacing:0.15em;margin-bottom:1.5rem}
-input,select,textarea{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--t1);padding:0.6rem 0.9rem;border-radius:10px;font-family:inherit;font-size:0.85rem;outline:none;margin-bottom:0.75rem}
-input:focus,select:focus,textarea:focus{border-color:var(--blue)}
-button{cursor:pointer;font-family:inherit;border:none;border-radius:20px;font-weight:500;transition:opacity .15s}
-.btn-primary{background:linear-gradient(135deg,#b91c1c,#b45309);color:#fff;padding:.7rem;width:100%;font-size:.85rem}
-.btn-primary:hover{opacity:0.88}
-.err{color:#fca5a5;font-size:0.78rem;text-align:center;margin-top:0.5rem;min-height:1.1rem}
-.hint{margin-top:0.875rem;padding:0.6rem;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;font-size:0.7rem;color:var(--t3);text-align:center}
-.text-xs{font-size:.72rem}
-.text-muted{color:#94a3b8}
-.card-row{display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.78rem}
-.table-center{text-align:center;color:var(--t3)}
-.table-empty{text-align:center;color:var(--t3);padding:1.5rem;font-size:0.8rem}
-.badge-xs{font-size:.6rem;padding:.15rem .45rem}
-.text-center{text-align:center}
-.text-sm{font-size:.82rem}
-.text-blue{color:#60c8ff}
-.text-green{color:#047857}
-.text-gold{color:#fcd34d}
-.text-red{color:#fca5a5}
-.card-space{margin-bottom:.75rem}
-.topbar{height:50px;display:flex;align-items:center;padding:0 1rem;gap:0.75rem;background:rgba(10,10,15,0.95);border-bottom:1px solid rgba(255,255,255,0.07);position:sticky;top:0;z-index:50}
-.tb-logo{font-family:'Orbitron',sans-serif;font-size:0.9rem;font-weight:700;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.tb-r{margin-left:auto;display:flex;align-items:center;gap:0.75rem;font-size:0.72rem;color:var(--t3)}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:blink 2s infinite}
-@keyframes blink{50%{opacity:0.3}}
-.logout{padding:0.25rem 0.7rem;border:1px solid #991b1b;background:#7f1d1d;color:#fff5f5;border-radius:20px;font-size:0.7rem}
-.admin-bell{position:relative;padding:0.25rem 0.6rem}
-.admin-notif-badge{position:absolute;top:-4px;right:-4px;background:#dc2626;color:#fff;font-size:0.55rem;min-width:14px;height:14px;border-radius:50%;display:none;align-items:center;justify-content:center;font-weight:700;padding:0 2px}
-.admin-notif-badge.show{display:flex}
-.admin-notif-panel{position:fixed;top:50px;right:0;width:340px;max-height:70vh;background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:0 0 16px 16px;z-index:200;overflow-y:auto;display:none;padding:1rem}
-.admin-notif-panel.open{display:block}
-.admin-notif-item{padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:0.8rem}
-.admin-notif-item .t{font-weight:600;margin-bottom:2px}
-.admin-notif-item .m{color:#94a3b8;font-size:0.74rem}
-.layout{display:flex;min-height:calc(100vh - 50px)}
-.sidebar{width:190px;background:rgba(13,17,23,0.7);border-right:1px solid rgba(255,255,255,0.06);padding:0.75rem 0;flex-shrink:0}
-.sb-item{display:flex;align-items:center;gap:0.55rem;padding:0.5rem 0.875rem;cursor:pointer;font-size:0.78rem;color:var(--t2);border-left:2px solid transparent}
-.sb-item:hover{background:rgba(255,255,255,0.04)}
-.sb-item.active{background:#7f1d1d;color:#fff5f5;border-left-color:var(--red)}
-.sb-sec{font-size:0.6rem;color:var(--t3);text-transform:uppercase;letter-spacing:0.1em;padding:0.7rem 0.875rem 0.2rem}
-.content{flex:1;padding:1.25rem;overflow-x:hidden}
-.page{display:none;animation:fade .2s ease}
-.page.active{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.page-title{font-family:'Orbitron',sans-serif;font-size:1rem;margin-bottom:1rem}
-.card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem;margin-bottom:1rem}
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
-.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.75rem}
-.stat{text-align:center}
-.stat .v{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:700}
-.stat .l{font-size:0.65rem;color:var(--t2);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px}
-table{width:100%;border-collapse:collapse;font-size:0.78rem}
-th{text-align:left;padding:0.5rem;color:var(--t2);font-size:0.65rem;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08)}
-td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
-.badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:20px;font-size:0.6rem;font-weight:600;text-transform:uppercase}
-.b-green{background:#0c5130;color:#f0fdf4}
-.b-red{background:#7f1d1d;color:#fff5f5}
-.b-gold{background:#7c4700;color:#fff8e7}
-.b-blue{background:#0b3d93;color:#f8fbff}
-.btn-wide{width:100%}
-.text-quiet{color:#475569}
-.btn-blue{background:#1e40af;border:1px solid #2563eb;color:#bfdbfe}
-.btn-green{background:#0b5b39;border:1px solid #0f766e;color:#f0fdf4}
-.btn-red{background:#7f1d1d;border:1px solid #991b1b;color:#fff5f5}
-.btn-fill{background:linear-gradient(135deg,#b91c1c,#b45309);color:#fff;padding:.5rem 1rem;font-size:.8rem}
-.row-between{display:flex;justify-content:space-between;align-items:center}
-.mb-0{margin-bottom:0}
-.mb-075{margin-bottom:.75rem}
-.mb-1{margin-bottom:1rem}
-.mt-075{margin-top:.75rem}
-.w-full{width:100%}
-.max-w-420{max-width:420px}
-.overflow-x-auto{overflow-x:auto}
-.section-heading-small{font-size:0.85rem;margin-bottom:0.75rem}
-.button-full{width:100%}
-.no-margin{margin:0}
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;align-items:center;justify-content:center;padding:1rem}
-.modal-bg.open{display:flex}
-.modal{background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:1.5rem;width:100%;max-width:460px;max-height:88vh;overflow-y:auto}
-.modal h2{font-family:'Orbitron',sans-serif;font-size:0.95rem;margin-bottom:1rem;display:flex;justify-content:space-between}
-.modal h2 button{background:none;color:var(--t2);font-size:1.1rem;border:none;cursor:pointer}
-.label{font-size:0.68rem;color:var(--t2);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:3px}
-.msg{font-size:0.78rem;min-height:1rem;margin-bottom:0.5rem;text-align:center}
-.cred-box{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:0.875rem;font-size:0.8rem;line-height:1.9}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
-
-/* Mobile hamburger + overlay (hidden on desktop) */
-.hamburger{display:none;background:none;border:none;color:var(--t1);font-size:1.25rem;line-height:1;cursor:pointer;padding:0.3rem 0.5rem;border-radius:8px}
-.hamburger:hover{background:rgba(255,255,255,0.06)}
-.sidebar-overlay{display:none;position:fixed;inset:0;border:0;background:rgba(0,0,0,0.55);z-index:90;cursor:pointer;padding:0}
-body.sidebar-open{overflow:hidden}
-
-@media (max-width:768px){
-  .hamburger{display:block}
-  .sidebar{
-    position:fixed;top:0;left:0;bottom:0;
-    width:240px;max-width:80vw;height:100vh;
-    transform:translateX(-100%);
-    transition:transform .25s ease;
-    z-index:100;overflow-y:auto;
-  }
-  .layout.nav-open .sidebar{transform:translateX(0)}
-  .layout.nav-open .sidebar-overlay{display:block}
-  .content{padding:0.875rem;overflow-x:hidden}
-  .card{padding:0.75rem}
-  .page-title{font-size:0.9rem;margin-bottom:0.75rem}
-  table{font-size:0.72rem}
-  th{padding:0.4rem 0.35rem}
-  td{padding:0.4rem 0.35rem}
-  .card.overflow-x-auto{overflow-x:auto}
-  .grid2,.grid4{grid-template-columns:1fr}
-  .topbar{gap:0.5rem;padding:0 0.6rem}
-  .modal-bg{padding:0.5rem}
-  .modal{max-width:100%;max-height:94vh;border-radius:12px;padding:1.1rem}
-  .modal h2{font-size:0.85rem}
-  .stat .v{font-size:1.3rem}
-  .login-box{padding:1.5rem}
-}
-
-@media (max-width:480px){
-  .topbar{height:auto;flex-direction:column;align-items:flex-start;gap:0.4rem;padding:0.5rem 0.6rem}
-  .tb-r{margin-left:0;flex-wrap:wrap}
-  .content{padding:0.7rem}
-  .card{padding:0.6rem}
-  .page-title{font-size:0.82rem}
-  .row-between{flex-direction:column;align-items:stretch;gap:0.6rem}
-  .row-between .btn-fill{width:100%}
-  .btn-fill{padding:.55rem 0.9rem;font-size:.78rem}
-}
-</style>
 <link rel="manifest" href="../manifest.json">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png" sizes="180x180">
 </head>
@@ -154,9 +17,9 @@ body.sidebar-open{overflow:hidden}
   <div class="login-box">
     <h1 data-i18n="login_title">🛡 Admin Portal</h1>
     <div class="sub" data-i18n="login_sub">CAMPUSIQ · KSTU BACKEND</div>
-    <input id="a-user" aria-label="Username" placeholder="Username" data-i18n-ph="username">
-    <input id="a-pass" type="password" aria-label="Password" placeholder="Password" onkeydown="if(event.key==='Enter')adminLogin()" data-i18n-ph="password">
-    <button class="btn-primary" onclick="adminLogin()" data-i18n="signin">Sign In</button>
+    <input type="text" id="a-user" aria-label="Username" placeholder="Username" data-i18n-ph="username">
+    <input id="a-pass" type="password" autocomplete="current-password" aria-label="Password" placeholder="Password" onkeydown="if(event.key==='Enter')adminLogin()" data-i18n-ph="password">
+    <button type="button" class="btn-primary" onclick="adminLogin()" data-i18n="signin">Sign In</button>
     <div class="err" id="a-err"></div>
     <div class="hint" data-i18n="default_hint">Default: <strong>admin</strong> / <strong>admin123</strong></div>
   </div>
@@ -167,13 +30,13 @@ body.sidebar-open{overflow:hidden}
   <span>🛡</span><span class="tb-logo">CampusIQ Admin</span>
   <div class="tb-r">
     <span class="dot" id="api-status-dot"></span> <span id="api-status-label">API Connected</span>
-    <button class="logout" id="admin-lang-btn" onclick="toggleAdminLang()">🇬🇭 TW</button>
-    <button class="logout admin-bell" id="admin-bell" onclick="toggleAdminNotif()">🔔<span id="admin-notif-badge" class="admin-notif-badge"></span></button>
-    <button class="logout" onclick="logout()">Sign Out</button>
+    <button type="button" class="logout" id="admin-lang-btn" onclick="toggleAdminLang()">🇬🇭 TW</button>
+    <button type="button" class="logout admin-bell" id="admin-bell" onclick="toggleAdminNotif()">🔔<span id="admin-notif-badge" class="admin-notif-badge"></span></button>
+    <button type="button" class="logout" onclick="logout()">Sign Out</button>
   </div>
 </div>
 <div class="admin-notif-panel" id="admin-notif-panel">
-  <div class="row-between mb-1"><div class="page-title no-margin">📢 Announcements</div><button class="btn-sm btn-red" onclick="toggleAdminNotif()">✕</button></div>
+  <div class="row-between mb-1"><div class="page-title no-margin">📢 Announcements</div><button type="button" class="btn-sm btn-red" onclick="toggleAdminNotif()">✕</button></div>
   <div id="admin-notif-list"><div class="table-empty">Loading…</div></div>
 </div>
 
@@ -188,10 +51,10 @@ body.sidebar-open{overflow:hidden}
     <button type="button" class="sb-item" onclick="go('hods',this)" data-i18n="hods">🏛 HODs</button>
     <div class="sb-sec">Academic</div>
     <button type="button" class="sb-item" onclick="go('timetable',this)" data-i18n="timetable">📅 Timetable</button>
-    <button type="button" class="sb-item" onclick="go('results',this)" data-i18n="results">🏆 Results & Grading</button>
+    <button type="button" class="sb-item" onclick="go('results',this)" data-i18n="results">🏆 Results &amp; Grading</button>
     <div class="sb-sec">Campus</div>
     <button type="button" class="sb-item" onclick="go('hostels',this)" data-i18n="hostels">🏠 Hostels</button>
-    <button type="button" class="sb-item" onclick="go('fees',this)" data-i18n="fees">💰 Fees & Finance</button>
+    <button type="button" class="sb-item" onclick="go('fees',this)" data-i18n="fees">💰 Fees &amp; Finance</button>
     <div class="sb-sec">System</div>
     <button type="button" class="sb-item" onclick="go('settings',this)" data-i18n="settings">⚙️ Settings</button>
     <div class="sb-sec">Communications</div>
@@ -210,9 +73,9 @@ body.sidebar-open{overflow:hidden}
       <div class="grid2">
         <div class="card">
           <h3 class="section-heading-small" data-i18n="quick_create">Quick Create</h3>
-          <button class="btn-fill button-full mb-075" onclick="openUserModal('student')">+ <span data-i18n="add_student">Add Student</span></button>
-          <button class="btn-fill button-full mb-075" onclick="openUserModal('lecturer')">+ <span data-i18n="add_lecturer">Add Lecturer</span></button>
-          <button class="btn-fill button-full" onclick="openUserModal('hod')">+ <span data-i18n="add_hod">Add HOD</span></button>
+          <button type="button" class="btn-fill button-full mb-075" onclick="openUserModal('student')">+ <span data-i18n="add_student">Add Student</span></button>
+          <button type="button" class="btn-fill button-full mb-075" onclick="openUserModal('lecturer')">+ <span data-i18n="add_lecturer">Add Lecturer</span></button>
+          <button type="button" class="btn-fill button-full" onclick="openUserModal('hod')">+ <span data-i18n="add_hod">Add HOD</span></button>
         </div>
         <div class="card">
           <h3 class="section-heading-small" data-i18n="recently_created">Recently Created</h3>
@@ -224,7 +87,7 @@ body.sidebar-open{overflow:hidden}
     <div class="page" id="page-students">
       <div class="row-between mb-1">
         <div class="page-title no-margin" data-i18n="students">Students</div>
-        <button class="btn-fill" onclick="openUserModal('student')">+ <span data-i18n="add_student">Add Student</span></button>
+        <button type="button" class="btn-fill" onclick="openUserModal('student')">+ <span data-i18n="add_student">Add Student</span></button>
       </div>
       <div class="card overflow-x-auto">
         <table><thead><tr><th>Name</th><th>Email</th><th>Programme</th><th>Level</th><th>Student ID</th><th>Actions</th></tr></thead>
@@ -235,7 +98,7 @@ body.sidebar-open{overflow:hidden}
     <div class="page" id="page-lecturers">
       <div class="row-between mb-1">
         <div class="page-title no-margin" data-i18n="lecturers">Lecturers</div>
-        <button class="btn-fill" onclick="openUserModal('lecturer')">+ <span data-i18n="add_lecturer">Add Lecturer</span></button>
+        <button type="button" class="btn-fill" onclick="openUserModal('lecturer')">+ <span data-i18n="add_lecturer">Add Lecturer</span></button>
       </div>
       <div class="card overflow-x-auto">
         <table><thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Staff ID</th><th>Actions</th></tr></thead>
@@ -246,7 +109,7 @@ body.sidebar-open{overflow:hidden}
     <div class="page" id="page-hods">
       <div class="row-between mb-1">
         <div class="page-title no-margin" data-i18n="hods">HODs</div>
-        <button class="btn-fill" onclick="openUserModal('hod')">+ <span data-i18n="add_hod">Add HOD</span></button>
+        <button type="button" class="btn-fill" onclick="openUserModal('hod')">+ <span data-i18n="add_hod">Add HOD</span></button>
       </div>
       <div class="card overflow-x-auto">
         <table><thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Staff ID</th><th>Actions</th></tr></thead>
@@ -257,7 +120,7 @@ body.sidebar-open{overflow:hidden}
     <div class="page" id="page-timetable">
       <div class="row-between mb-1">
         <div class="page-title no-margin" data-i18n="timetable">University Timetable</div>
-        <button class="btn-fill" onclick="openTimetableModal()">+ <span data-i18n="add_entry">Add Entry</span></button>
+        <button type="button" class="btn-fill" onclick="openTimetableModal()">+ <span data-i18n="add_entry">Add Entry</span></button>
       </div>
       <div class="card overflow-x-auto">
         <table><thead><tr><th>Day</th><th>Time</th><th>Course</th><th>Room</th><th>Lecturer</th><th>Actions</th></tr></thead>
@@ -267,8 +130,8 @@ body.sidebar-open{overflow:hidden}
 
     <div class="page" id="page-results">
       <div class="row-between mb-1">
-        <div class="page-title no-margin" data-i18n="results">Results & Grading</div>
-        <button class="btn-fill" onclick="openResultModal()">+ <span data-i18n="add_result">Add Result</span></button>
+        <div class="page-title no-margin" data-i18n="results">Results &amp; Grading</div>
+        <button type="button" class="btn-fill" onclick="openResultModal()">+ <span data-i18n="add_result">Add Result</span></button>
       </div>
       <div class="card overflow-x-auto">
         <table><thead><tr><th>Student</th><th>Course</th><th>CA</th><th>Exam</th><th>Total</th><th>Grade</th><th>Actions</th></tr></thead>
@@ -279,7 +142,7 @@ body.sidebar-open{overflow:hidden}
     <div class="page" id="page-hostels">
       <div class="row-between mb-1">
         <div class="page-title no-margin" data-i18n="hostels">Hostel Management</div>
-        <button class="btn-fill" onclick="openHostelModal()">+ <span data-i18n="add_hostel">Add Hostel</span></button>
+        <button type="button" class="btn-fill" onclick="openHostelModal()">+ <span data-i18n="add_hostel">Add Hostel</span></button>
       </div>
       <div class="card overflow-x-auto">
         <table><thead><tr><th>Name</th><th>Type</th><th>Capacity</th><th>Occupied</th><th>Fee/Sem</th><th>Status</th><th>Actions</th></tr></thead>
@@ -289,8 +152,8 @@ body.sidebar-open{overflow:hidden}
 
     <div class="page" id="page-fees">
       <div class="row-between mb-1">
-        <div class="page-title no-margin" data-i18n="fees">Fees & Finance</div>
-        <button class="btn-fill" onclick="openFeeModal()">+ <span data-i18n="add_fee">Add Fee Structure</span></button>
+        <div class="page-title no-margin" data-i18n="fees">Fees &amp; Finance</div>
+        <button type="button" class="btn-fill" onclick="openFeeModal()">+ <span data-i18n="add_fee">Add Fee Structure</span></button>
       </div>
       <div class="card overflow-x-auto">
         <table><thead><tr><th>Programme</th><th>Level</th><th>Year</th><th>Tuition</th><th>Hostel</th><th>Exam</th><th>SRC</th><th>Total</th><th>Actions</th></tr></thead>
@@ -302,9 +165,9 @@ body.sidebar-open{overflow:hidden}
       <div class="page-title" data-i18n="settings">Settings</div>
       <div class="card max-w-420">
         <h3 class="section-heading-small" data-i18n="change_pw">Change Admin Password</h3>
-        <input id="set-oldpw" type="password" aria-label="Current password" placeholder="Current password" data-i18n-ph="pw">
-        <input id="set-newpw" type="password" aria-label="New password" placeholder="New password (min 6 chars)" data-i18n-ph="new_pw">
-        <button class="btn-fill button-full" onclick="changeAdminPw()" data-i18n="update_pw">Update Password</button>
+        <input id="set-oldpw" type="password" autocomplete="current-password" aria-label="Current password" placeholder="Current password" data-i18n-ph="pw">
+        <input id="set-newpw" type="password" autocomplete="current-password" aria-label="New password" placeholder="New password (min 6 chars)" data-i18n-ph="new_pw">
+        <button type="button" class="btn-fill button-full" onclick="changeAdminPw()" data-i18n="update_pw">Update Password</button>
         <div class="msg" id="set-msg"></div>
       </div>
     </div>
@@ -316,25 +179,25 @@ body.sidebar-open{overflow:hidden}
 <!-- USER MODAL -->
 <div class="modal-bg" id="user-modal">
   <div class="modal">
-    <h2><span id="um-title">Add Student</span><button onclick="closeModal('user-modal')">✕</button></h2>
+    <h2><span id="um-title">Add Student</span><button type="button" onclick="closeModal('user-modal')">✕</button></h2>
     <div id="um-form">
-      <label for="um-name" class="label">Full Name *</label><input id="um-name">
+      <label for="um-name" class="label">Full Name *</label><input type="text" id="um-name">
       <label for="um-email" class="label">Email *</label><input id="um-email" type="email">
-      <label for="um-pass" class="label">Password *</label><input id="um-pass">
+      <label for="um-pass" class="label">Password *</label><input type="text" id="um-pass">
       <div id="um-student-fields">
-        <label class="label" for="um-studentid">Student ID</label><input id="um-studentid" placeholder="KsTU/2024/0042">
-        <label class="label" for="um-programme">Programme</label><input id="um-programme" placeholder="BTech Computer Technology">
+        <label class="label" for="um-studentid">Student ID</label><input type="text" id="um-studentid" placeholder="KsTU/2024/0042">
+        <label class="label" for="um-programme">Programme</label><input type="text" id="um-programme" placeholder="BTech Computer Technology">
         <label class="label" for="um-level">Level</label>
         <select id="um-level"><option value="">Select…</option><option>Level 100</option><option>Level 200</option><option>Level 300</option><option>Level 400</option></select>
       </div>
       <div id="um-staff-fields" class="hidden">
         <label class="label" for="um-title-field">Title</label>
         <select id="um-title-field"><option>Dr.</option><option>Prof.</option><option>Mr.</option><option>Mrs.</option><option>Ms.</option><option>Engr.</option></select>
-        <label class="label" for="um-staffid">Staff ID</label><input id="um-staffid">
-        <label class="label" for="um-department">Department</label><input id="um-department">
+        <label class="label" for="um-staffid">Staff ID</label><input type="text" id="um-staffid">
+        <label class="label" for="um-department">Department</label><input type="text" id="um-department">
       </div>
       <div class="msg" id="um-msg"></div>
-      <button class="btn-fill btn-wide" onclick="submitUser()">Create Account</button>
+      <button type="button" class="btn-fill btn-wide" onclick="submitUser()">Create Account</button>
     </div>
     <div id="um-success" class="hidden">
       <div class="cred-box">
@@ -344,102 +207,102 @@ body.sidebar-open{overflow:hidden}
         Password: <span id="cred-pw"></span><br>
         <span class="text-muted text-xs">This account can log in immediately at the student/lecturer app.</span>
       </div>
-      <button class="btn-fill btn-wide mt-075" onclick="closeModal('user-modal')">Done</button>
+      <button type="button" class="btn-fill btn-wide mt-075" onclick="closeModal('user-modal')">Done</button>
     </div>
   </div>
 </div>
 
 <div class="modal-bg" id="hostel-modal">
   <div class="modal">
-    <h2><span id="hm-title">Add Hostel</span><button onclick="closeModal('hostel-modal')">✕</button></h2>
+    <h2><span id="hm-title">Add Hostel</span><button type="button" onclick="closeModal('hostel-modal')">✕</button></h2>
     <input type="hidden" id="hm-id">
-    <label for="hm-name" class="label">Hostel Name *</label><input id="hm-name" placeholder="e.g. Volta Hall (Block A)">
+    <label for="hm-name" class="label">Hostel Name *</label><input type="text" id="hm-name" placeholder="e.g. Volta Hall (Block A)">
     <label for="hm-type" class="label">Type</label>
     <select id="hm-type"><option>Mixed</option><option>Male</option><option>Female</option></select>
     <label for="hm-capacity" class="label">Capacity *</label><input id="hm-capacity" type="number">
     <label for="hm-occupied" class="label">Currently Occupied</label><input id="hm-occupied" type="number" value="0">
     <label for="hm-fee" class="label">Fee per Semester (GHS) *</label><input id="hm-fee" type="number">
     <div class="msg" id="hm-msg"></div>
-    <button class="btn-fill btn-wide" onclick="submitHostel()">Save Hostel</button>
+    <button type="button" class="btn-fill btn-wide" onclick="submitHostel()">Save Hostel</button>
   </div>
 </div>
 
 <div class="modal-bg" id="fee-modal">
   <div class="modal">
-    <h2><span id="fm-title">Add Fee Structure</span><button onclick="closeModal('fee-modal')">✕</button></h2>
+    <h2><span id="fm-title">Add Fee Structure</span><button type="button" onclick="closeModal('fee-modal')">✕</button></h2>
     <input type="hidden" id="fm-id">
-    <label for="fm-programme" class="label">Programme *</label><input id="fm-programme" placeholder="BTech Computer Technology">
+    <label for="fm-programme" class="label">Programme *</label><input type="text" id="fm-programme" placeholder="BTech Computer Technology">
     <label for="fm-level" class="label">Level *</label>
     <select id="fm-level"><option>Level 100</option><option>Level 200</option><option>Level 300</option><option>Level 400</option></select>
-    <label for="fm-year" class="label">Academic Year *</label><input id="fm-year" placeholder="2025/2026">
+    <label for="fm-year" class="label">Academic Year *</label><input type="text" id="fm-year" placeholder="2025/2026">
     <label for="fm-tuition" class="label">Tuition (GHS) *</label><input id="fm-tuition" type="number">
     <label for="fm-hostel" class="label">Hostel (GHS)</label><input id="fm-hostel" type="number" value="0">
     <label for="fm-exam" class="label">Exam Fee (GHS)</label><input id="fm-exam" type="number" value="0">
     <label for="fm-src" class="label">SRC Dues (GHS)</label><input id="fm-src" type="number" value="0">
     <div class="msg" id="fm-msg"></div>
-    <button class="btn-fill btn-wide" onclick="submitFee()">Save Fee Structure</button>
+    <button type="button" class="btn-fill btn-wide" onclick="submitFee()">Save Fee Structure</button>
   </div>
 </div>
 
 <div class="modal-bg" id="timetable-modal">
   <div class="modal">
-    <h2><span id="tm-title">Add Timetable Entry</span><button onclick="closeModal('timetable-modal')">✕</button></h2>
+    <h2><span id="tm-title">Add Timetable Entry</span><button type="button" onclick="closeModal('timetable-modal')">✕</button></h2>
     <input type="hidden" id="tm-id">
     <label for="tm-day" class="label">Day *</label>
     <select id="tm-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
-    <label for="tm-time" class="label">Time *</label><input id="tm-time" placeholder="e.g. 7:30-9:30">
-    <label for="tm-course" class="label">Course Code *</label><input id="tm-course" placeholder="e.g. CPT 301">
-    <label for="tm-room" class="label">Room *</label><input id="tm-room" placeholder="e.g. Lab A-201">
-    <label for="tm-lecturer" class="label">Lecturer</label><input id="tm-lecturer" placeholder="e.g. Dr. Mensah K.">
+    <label for="tm-time" class="label">Time *</label><input type="text" id="tm-time" placeholder="e.g. 7:30-9:30">
+    <label for="tm-course" class="label">Course Code *</label><input type="text" id="tm-course" placeholder="e.g. CPT 301">
+    <label for="tm-room" class="label">Room *</label><input type="text" id="tm-room" placeholder="e.g. Lab A-201">
+    <label for="tm-lecturer" class="label">Lecturer</label><input type="text" id="tm-lecturer" placeholder="e.g. Dr. Mensah K.">
     <div class="msg" id="tm-msg"></div>
-    <button class="btn-fill btn-wide" onclick="submitTimetable()">Save Entry</button>
+    <button type="button" class="btn-fill btn-wide" onclick="submitTimetable()">Save Entry</button>
   </div>
 </div>
 
 <div class="modal-bg" id="cal-edit-modal">
   <div class="modal">
-    <h2><span id="cal-edit-title">Edit Calendar Event</span><button onclick="closeModal('cal-edit-modal')">✕</button></h2>
+    <h2><span id="cal-edit-title">Edit Calendar Event</span><button type="button" onclick="closeModal('cal-edit-modal')">✕</button></h2>
     <input type="hidden" id="cal-edit-id">
-    <label for="cal-edit-title-f" class="label">Event Title *</label><input id="cal-edit-title-f" class="admin-modal-input">
+    <label for="cal-edit-title-f" class="label">Event Title *</label><input type="text" id="cal-edit-title-f" class="admin-modal-input">
     <label for="cal-edit-type" class="label">Type</label><select id="cal-edit-type" class="admin-modal-select"><option value="event">Event</option><option value="exam">Exam</option><option value="semester">Semester</option><option value="holiday">Holiday</option></select>
     <label for="cal-edit-start" class="label">Start Date *</label><input id="cal-edit-start" type="date" class="admin-modal-input">
     <label for="cal-edit-end" class="label">End Date</label><input id="cal-edit-end" type="date" class="admin-modal-input">
-    <div class="msg" id="cal-edit-msg"></div><button class="btn-fill" onclick="submitEditCalendarEvent()">Save Event</button>
+    <div class="msg" id="cal-edit-msg"></div><button type="button" class="btn-fill" onclick="submitEditCalendarEvent()">Save Event</button>
   </div>
 </div>
 
 <div class="modal-bg" id="alloc-edit-modal">
   <div class="modal">
-    <h2><span id="alloc-edit-title">Edit Allocation</span><button onclick="closeModal('alloc-edit-modal')">✕</button></h2>
+    <h2><span id="alloc-edit-title">Edit Allocation</span><button type="button" onclick="closeModal('alloc-edit-modal')">✕</button></h2>
     <input type="hidden" id="alloc-edit-id">
-    <label for="alloc-edit-room" class="label">Room Number</label><input id="alloc-edit-room" class="admin-modal-input" placeholder="e.g. A-204">
+    <label for="alloc-edit-room" class="label">Room Number</label><input type="text" id="alloc-edit-room" class="admin-modal-input" placeholder="e.g. A-204">
     <label for="alloc-edit-status" class="label">Status</label><select id="alloc-edit-status" class="admin-modal-select"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select>
-    <div class="msg" id="alloc-edit-msg"></div><button class="btn-fill" onclick="submitEditAlloc()">Save Allocation</button>
+    <div class="msg" id="alloc-edit-msg"></div><button type="button" class="btn-fill" onclick="submitEditAlloc()">Save Allocation</button>
   </div>
 </div>
 
 <div class="modal-bg" id="pay-edit-modal">
   <div class="modal">
-    <h2><span id="pay-edit-title">Edit Payment</span><button onclick="closeModal('pay-edit-modal')">✕</button></h2>
+    <h2><span id="pay-edit-title">Edit Payment</span><button type="button" onclick="closeModal('pay-edit-modal')">✕</button></h2>
     <input type="hidden" id="pay-edit-id">
     <label for="pay-edit-amount" class="label">Amount (GHS)</label><input id="pay-edit-amount" type="number" class="admin-modal-input">
-    <label for="pay-edit-method" class="label">Method</label><input id="pay-edit-method" class="admin-modal-input">
+    <label for="pay-edit-method" class="label">Method</label><input type="text" id="pay-edit-method" class="admin-modal-input">
     <label for="pay-edit-status" class="label">Status</label><select id="pay-edit-status" class="admin-modal-select"><option value="pending_confirmation">Pending</option><option value="confirmed">Confirmed</option><option value="rejected">Rejected</option></select>
-    <div class="msg" id="pay-edit-msg"></div><button class="btn-fill" onclick="submitEditPay()">Save Payment</button>
+    <div class="msg" id="pay-edit-msg"></div><button type="button" class="btn-fill" onclick="submitEditPay()">Save Payment</button>
   </div>
   </div>
 
 <div class="modal-bg" id="result-modal">
   <div class="modal">
-    <h2><span id="rm-title">Add Result</span><button onclick="closeModal('result-modal')">✕</button></h2>
+    <h2><span id="rm-title">Add Result</span><button type="button" onclick="closeModal('result-modal')">✕</button></h2>
     <input type="hidden" id="rm-id">
-    <label for="rm-studentid" class="label">Student ID *</label><input id="rm-studentid" placeholder="KsTU/24/042">
-    <label for="rm-studentname" class="label">Student Name</label><input id="rm-studentname">
-    <label for="rm-course" class="label">Course Code *</label><input id="rm-course" placeholder="CPT 301">
+    <label for="rm-studentid" class="label">Student ID *</label><input type="text" id="rm-studentid" placeholder="KsTU/24/042">
+    <label for="rm-studentname" class="label">Student Name</label><input type="text" id="rm-studentname">
+    <label for="rm-course" class="label">Course Code *</label><input type="text" id="rm-course" placeholder="CPT 301">
     <label for="rm-ca" class="label">CA Score (out of 40) *</label><input id="rm-ca" type="number">
     <label for="rm-exam" class="label">Exam Score (out of 60) *</label><input id="rm-exam" type="number">
     <div class="msg" id="rm-msg"></div>
-    <button class="btn-fill btn-wide" onclick="submitResult()">Save Result</button>
+    <button type="button" class="btn-fill btn-wide" onclick="submitResult()">Save Result</button>
   </div>
 </div>
 
@@ -465,7 +328,7 @@ const TA = {
     username:'Username', password:'Password', signin:'Sign In',
     default_hint:'Default: admin / admin123',
     dashboard:'Dashboard', students:'Students', lecturers:'Lecturers', hods:'HODs',
-    timetable:'Timetable', results:'Results & Grading', hostels:'Hostels', fees:'Fees & Finance',
+    timetable:'Timetable', results:'Results &amp; Grading', hostels:'Hostels', fees:'Fees &amp; Finance',
     settings:'Settings', notices:'Notice Board', calendar:'Academic Calendar',
     allocations:'Hostel Allocations', payments:'Fee Payments', bulk:'Bulk Import',
     add_student:'+ Add Student', add_lecturer:'+ Add Lecturer', add_hod:'+ Add HOD',
@@ -658,9 +521,9 @@ async function loadUsers(role,tbodyId){
     const users=await CampusAPI.listUsers(role);
     if(!users.length){tbody.innerHTML='<tr><td colspan="'+span+'" class="table-empty">No '+role+'s yet.</td></tr>';return;}
     if(role==='student'){
-      tbody.innerHTML=users.map(u=>'<tr><td>'+u.name+'</td><td>'+u.email+'</td><td>'+(u.programme||'—')+'</td><td>'+(u.level||'—')+'</td><td>'+(u.studentId||'—')+'</td><td><button class="btn-sm btn-red" onclick="deleteUser(\''+u.id+'\',\''+role+'\')">Delete</button></td></tr>').join('');
+      tbody.innerHTML=users.map(u=>'<tr><td>'+u.name+'</td><td>'+u.email+'</td><td>'+(u.programme||'—')+'</td><td>'+(u.level||'—')+'</td><td>'+(u.studentId||'—')+'</td><td><button type="button" class="btn-sm btn-red" onclick="deleteUser(\''+u.id+'\',\''+role+'\')">Delete</button></td></tr>').join('');
     }else{
-      tbody.innerHTML=users.map(u=>'<tr><td>'+(u.title?u.title+' ':'')+u.name+'</td><td>'+u.email+'</td><td>'+(u.department||'—')+'</td><td>'+(u.staffId||'—')+'</td><td><button class="btn-sm btn-red" onclick="deleteUser(\''+u.id+'\',\''+role+'\')">Delete</button></td></tr>').join('');
+      tbody.innerHTML=users.map(u=>'<tr><td>'+(u.title?u.title+' ':'')+u.name+'</td><td>'+u.email+'</td><td>'+(u.department||'—')+'</td><td>'+(u.staffId||'—')+'</td><td><button type="button" class="btn-sm btn-red" onclick="deleteUser(\''+u.id+'\',\''+role+'\')">Delete</button></td></tr>').join('');
   }
   }catch(e){tbody.innerHTML='<tr><td colspan="6" class="error-cell">Error: '+e.message+'</td></tr>';}
 }
@@ -725,7 +588,7 @@ async function loadHostels(){
       const statusBadge=getHostelBadgeClass(h.occupied, h.capacity);
       const statusText=getHostelStatusText(h.occupied, h.capacity);
        const escapedHostel=cacheForEdit(h);
-      return '<tr><td>'+h.name+'</td><td>'+h.type+'</td><td>'+h.capacity+'</td><td>'+h.occupied+'</td><td>GHS '+h.feePerSemester+'</td><td><span class="badge '+statusBadge+'">'+statusText+'</span></td><td><button class="btn-sm btn-blue" onclick=\'editHostel('+escapedHostel+')\'>Edit</button> <button class="btn-sm btn-red" onclick="deleteHostel(\''+h.id+'\')">Delete</button></td></tr>';
+      return '<tr><td>'+h.name+'</td><td>'+h.type+'</td><td>'+h.capacity+'</td><td>'+h.occupied+'</td><td>GHS '+h.feePerSemester+'</td><td><span class="badge '+statusBadge+'">'+statusText+'</span></td><td><button type="button" class="btn-sm btn-blue" onclick=\'editHostel('+escapedHostel+')\'>Edit</button> <button type="button" class="btn-sm btn-red" onclick="deleteHostel(\''+h.id+'\')">Delete</button></td></tr>';
     }).join(''):'<tr><td colspan="7" class="table-empty">No hostels yet.</td></tr>';
   }catch(e){tbody.innerHTML='<tr><td colspan="7" class="error-cell">Error: '+e.message+'</td></tr>';}
 }
@@ -779,7 +642,7 @@ async function loadFees(){
     var rows=await CampusAPI.listFeeStructures();
     tbody.innerHTML=rows.length?rows.map(function(f){
        const escapedFee=cacheForEdit(f);
-      return '<tr><td>'+f.programme+'</td><td>'+f.level+'</td><td>'+f.academicYear+'</td><td>'+f.tuition+'</td><td>'+f.hostel+'</td><td>'+f.examFee+'</td><td>'+f.srcDues+'</td><td class="payment-amount">GHS '+f.total+'</td><td><button class="btn-sm btn-blue" onclick=\'editFee('+escapedFee+')\'>Edit</button> <button class="btn-sm btn-red" onclick="deleteFee(\''+f.id+'\')">Delete</button></td></tr>';
+      return '<tr><td>'+f.programme+'</td><td>'+f.level+'</td><td>'+f.academicYear+'</td><td>'+f.tuition+'</td><td>'+f.hostel+'</td><td>'+f.examFee+'</td><td>'+f.srcDues+'</td><td class="payment-amount">GHS '+f.total+'</td><td><button type="button" class="btn-sm btn-blue" onclick=\'editFee('+escapedFee+')\'>Edit</button> <button type="button" class="btn-sm btn-red" onclick="deleteFee(\''+f.id+'\')">Delete</button></td></tr>';
     }).join(''):'<tr><td colspan="9" class="table-empty">No fee structures yet.</td></tr>';
   }catch(e){tbody.innerHTML='<tr><td colspan="9" class="text-red">Error: '+e.message+'</td></tr>';}
 }
@@ -837,7 +700,7 @@ async function loadTimetable(){
     var rows=await CampusAPI.listTimetable();
     tbody.innerHTML=rows.length?rows.map(function(t){
        const escapedTimetable=cacheForEdit(t);
-      return '<tr><td>'+t.day+'</td><td>'+t.time+'</td><td>'+t.courseCode+'</td><td>'+t.room+'</td><td>'+(t.lecturer||'—')+'</td><td><button class="btn-sm btn-blue" onclick=\'editTimetable('+escapedTimetable+')\'>Edit</button> <button class="btn-sm btn-red" onclick="deleteTimetable(\''+t.id+'\')">Delete</button></td></tr>';
+      return '<tr><td>'+t.day+'</td><td>'+t.time+'</td><td>'+t.courseCode+'</td><td>'+t.room+'</td><td>'+(t.lecturer||'—')+'</td><td><button type="button" class="btn-sm btn-blue" onclick=\'editTimetable('+escapedTimetable+')\'>Edit</button> <button type="button" class="btn-sm btn-red" onclick="deleteTimetable(\''+t.id+'\')">Delete</button></td></tr>';
     }).join(''):'<tr><td colspan="6" class="table-empty">No timetable entries yet.</td></tr>';
   }catch(e){tbody.innerHTML='<tr><td colspan="6" class="error-cell">Error: '+e.message+'</td></tr>';} 
 }
@@ -888,7 +751,7 @@ async function loadResults(){
   try{
     var rows=await CampusAPI.listResults();
     tbody.innerHTML=rows.length?rows.map(function(r){
-      return '<tr><td>'+(r.studentName||r.studentId)+'</td><td>'+r.courseCode+'</td><td>'+r.caScore+'</td><td>'+r.examScore+'</td><td>'+r.total+'</td><td><span class="badge '+getGradeBadgeClass(r.grade)+'">'+r.grade+'</span></td><td><button class="btn-sm btn-blue" onclick=\'editResult('+cacheForEdit(r)+')\'>Edit</button> <button class="btn-sm btn-red" onclick="deleteResult(\''+r.id+'\')">Delete</button></td></tr>';
+      return '<tr><td>'+(r.studentName||r.studentId)+'</td><td>'+r.courseCode+'</td><td>'+r.caScore+'</td><td>'+r.examScore+'</td><td>'+r.total+'</td><td><span class="badge '+getGradeBadgeClass(r.grade)+'">'+r.grade+'</span></td><td><button type="button" class="btn-sm btn-blue" onclick=\'editResult('+cacheForEdit(r)+')\'>Edit</button> <button type="button" class="btn-sm btn-red" onclick="deleteResult(\''+r.id+'\')">Delete</button></td></tr>';
     }).join(''):'<tr><td colspan="7" class="table-empty">No results yet.</td></tr>';
   }catch(e){tbody.innerHTML='<tr><td colspan="7" class="error-cell">Error: '+e.message+'</td></tr>';}
 }
@@ -973,14 +836,14 @@ async function loadNotices(){
   var pg=document.getElementById('page-notices');
   if(!pg){pg=document.createElement('div');pg.className='page';pg.id='page-notices';document.querySelector('.content').appendChild(pg);}
   pg.innerHTML='<div class="page-title">'+ta('notices')+'</div><div class="card calendar-card"><h3 class="calendar-heading">'+ta('post_announcement')+'</h3>'+
-    '<label for="n-title" class="label">Title *</label><input id="n-title" class="admin-modal-input">'+
+    '<label for="n-title" class="label">Title *</label><input type="text" id="n-title" class="admin-modal-input">'+
     '<label for="n-cat" class="label">Category</label><select id="n-cat" class="admin-modal-select"><option value="general">General</option><option value="exam">Exams</option><option value="fees">Fees</option><option value="event">Events</option><option value="urgent">Urgent</option></select>'+
     '<label for="n-body" class="label">Message *</label><textarea id="n-body" class="admin-modal-textarea"></textarea>'+
-    '<div class="msg" id="n-msg"></div><button class="btn-fill btn-wide" onclick="postNotice()">'+ta('post_all')+'</button></div>'+
+    '<div class="msg" id="n-msg"></div><button type="button" class="btn-fill btn-wide" onclick="postNotice()">'+ta('post_all')+'</button></div>'+
     '<h3 class="calendar-heading">'+ta('posted')+'</h3><div id="notices-list"><div class="calendar-loading">Loading...</div></div>';
   try{
     var notices=await CampusAPI.listNotices();
-    document.getElementById('notices-list').innerHTML=notices.length?notices.map(function(n){return '<div class="card notice-card"><div><div class="notice-title">'+n.title+' <span class="badge b-blue notice-badge-sm">'+(n.category||'general')+'</span></div><div class="notice-body">'+n.body+'</div><div class="notice-date">'+new Date(n.createdAt).toLocaleString()+'</div></div><button class="btn-sm btn-red" onclick="deleteNotice(\''+n.id+'\')">Delete</button></div>';}).join(''):'<div class="notice-empty">No notices posted yet.</div>';
+    document.getElementById('notices-list').innerHTML=notices.length?notices.map(function(n){return '<div class="card notice-card"><div><div class="notice-title">'+n.title+' <span class="badge b-blue notice-badge-sm">'+(n.category||'general')+'</span></div><div class="notice-body">'+n.body+'</div><div class="notice-date">'+new Date(n.createdAt).toLocaleString()+'</div></div><button type="button" class="btn-sm btn-red" onclick="deleteNotice(\''+n.id+'\')">Delete</button></div>';}).join(''):'<div class="notice-empty">No notices posted yet.</div>';
   }catch(e){console.warn(e)}
 }
 async function postNotice(){
@@ -1008,17 +871,17 @@ async function loadCalendar(){
   if(!pg){pg=document.createElement('div');pg.className='page';pg.id='page-calendar';document.querySelector('.content').appendChild(pg);}
   pg.innerHTML='<div class="page-title">'+ta('calendar')+'</div><div class="card calendar-card"><h3 class="calendar-heading">Add Calendar Event</h3>'+
     '<div class="calendar-grid">'+
-    '<div><label for="cal-title" class="label">Event Title *</label><input id="cal-title" class="admin-modal-input"></div>'+
+    '<div><label for="cal-title" class="label">Event Title *</label><input type="text" id="cal-title" class="admin-modal-input"></div>'+
     '<div><label for="cal-type" class="label">Type</label><select id="cal-type" class="admin-modal-select"><option value="event">Event</option><option value="exam">Exam</option><option value="semester">Semester</option><option value="holiday">Holiday</option></select></div>'+
     '<div><label for="cal-start" class="label">Start Date *</label><input id="cal-start" type="date" class="admin-modal-input"></div>'+
     '<div><label for="cal-end" class="label">End Date</label><input id="cal-end" type="date" class="admin-modal-input"></div></div>'+
-    '<div class="msg" id="cal-msg"></div><button class="btn-fill" onclick="addCalendarEvent()">Add Event</button></div>'+
+    '<div class="msg" id="cal-msg"></div><button type="button" class="btn-fill" onclick="addCalendarEvent()">Add Event</button></div>'+
     '<div id="cal-list"><div class="calendar-loading">Loading...</div></div>';
   try{
     var events=await CampusAPI.listCalendar();
     var typeColors={semester:'b-blue',exam:'b-red',holiday:'b-green',event:'b-gold'};
     document.getElementById('cal-list').innerHTML=events.length?'<div class="card alloc-card"><table><thead><tr><th>Event</th><th>Type</th><th>Start</th><th>End</th><th>Actions</th></tr></thead><tbody>'+
-      events.map(function(e){return '<tr><td>'+e.title+'</td><td><span class="badge '+(typeColors[e.type]||'b-blue')+'">'+e.type+'</span></td><td>'+e.startDate+'</td><td>'+(e.endDate||'—')+'</td><td><button class="btn-sm btn-blue" onclick=\'editCalEvent('+cacheForEdit(e)+')\'>Edit</button> <button class="btn-sm btn-red" onclick="deleteCalEvent(\''+e.id+'\')">Delete</button></td></tr>';}).join('')+
+      events.map(function(e){return '<tr><td>'+e.title+'</td><td><span class="badge '+(typeColors[e.type]||'b-blue')+'">'+e.type+'</span></td><td>'+e.startDate+'</td><td>'+(e.endDate||'—')+'</td><td><button type="button" class="btn-sm btn-blue" onclick=\'editCalEvent('+cacheForEdit(e)+')\'>Edit</button> <button type="button" class="btn-sm btn-red" onclick="deleteCalEvent(\''+e.id+'\')">Delete</button></td></tr>';}).join('')+
       '</tbody></table></div>':'<div class="calendar-empty">No calendar events yet.</div>';
   }catch(e){console.warn(e)}
 }
@@ -1081,7 +944,7 @@ async function loadAllocations(){
         let badgeClass='b-red';
         if(a.status==='approved') badgeClass='b-green';
         else if(a.status==='pending') badgeClass='b-gold';
-        const actions='<button class="btn-sm btn-blue" onclick=\'editAlloc('+cacheForEdit(a)+')\'>Edit</button> '+(a.status==='pending' ? '<button class="btn-sm btn-green" onclick="allocate(\''+a.id+'\')">Allocate</button> <button class="btn-sm btn-red" onclick="rejectAlloc(\''+a.id+'\')">Reject</button>' : '<span class="alloc-done">Done</span>');
+        const actions='<button type="button" class="btn-sm btn-blue" onclick=\'editAlloc('+cacheForEdit(a)+')\'>Edit</button> '+(a.status==='pending' ? '<button type="button" class="btn-sm btn-green" onclick="allocate(\''+a.id+'\')">Allocate</button> <button type="button" class="btn-sm btn-red" onclick="rejectAlloc(\''+a.id+'\')">Reject</button>' : '<span class="alloc-done">Done</span>');
         return '<tr><td>'+(a.studentName||a.studentId)+'</td><td>'+a.hostelName+'</td><td><span class="badge '+badgeClass+'">'+a.status+'</span></td><td>'+(a.roomNumber||'—')+'</td><td>'+actions+'</td></tr>';
       }).join('')+
       '</tbody></table></div>':'<div class="card notice-empty">No hostel applications yet.</div>';
@@ -1142,7 +1005,7 @@ async function loadPayments(){
       payments.map(function(p){
         const badgeClass=getPaymentStatusBadge(p.status);
         const statusLabel=getPaymentStatusLabel(p.status);
-        const actionMarkup='<button class="btn-sm btn-blue" onclick=\'editPay('+cacheForEdit(p)+')\'>Edit</button> '+(p.status==='pending_confirmation' ? '<button class="btn-sm btn-green" onclick="confirmPay(\''+p.id+'\')">Confirm</button>' : '<span class="alloc-done">Done</span>');
+        const actionMarkup='<button type="button" class="btn-sm btn-blue" onclick=\'editPay('+cacheForEdit(p)+')\'>Edit</button> '+(p.status==='pending_confirmation' ? '<button type="button" class="btn-sm btn-green" onclick="confirmPay(\''+p.id+'\')">Confirm</button>' : '<span class="alloc-done">Done</span>');
         return '<tr><td>'+p.studentId+'</td><td class="payment-amount">'+p.amount+'</td><td>'+(p.method||'—')+'</td><td><span class="badge '+badgeClass+'">'+statusLabel+'</span></td><td>'+actionMarkup+'</td></tr>';
       }).join('')+
       '</tbody></table></div>':'<div class="card notice-empty">No payment submissions yet.</div>';
@@ -1188,7 +1051,7 @@ function renderBulkPage(){
           Upload a CSV file with columns: <strong>name, email, role, [programme/studentID]</strong>
         </div>
         <input type="file" id="bulk-file" accept=".csv" class="file-input-mb">
-        <button class="btn-fill" onclick="processBulkImport()">Process Import</button>
+        <button type="button" class="btn-fill" onclick="processBulkImport()">Process Import</button>
           <div id="bulk-msg" class="bulk-msg"></div>
        </div>`;
   }
