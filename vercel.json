@@ -9,7 +9,12 @@
     { "src": "/frontend/(.*)", "dest": "/public/frontend/$1" },
     { "src": "/backend/(.*)", "dest": "/public/backend/$1" },
     { "src": "/shared/(.*)", "dest": "/public/shared/$1" },
-    { "src": "/data/(.*)", "statusCode": 404 },
-    { "src": "/", "dest": "/public/index.html" }
+    { "src": "/manifest.json", "dest": "/public/manifest.json" },
+    { "src": "/apple-touch-icon.png", "dest": "/public/apple-touch-icon.png" },
+    { "src": "/icon-192.png", "dest": "/public/icon-192.png" },
+    { "src": "/icon-512.png", "dest": "/public/icon-512.png" },
+    { "src": "/maskable-512.png", "dest": "/public/maskable-512.png" },
+    { "src": "/sw.js", "dest": "/public/sw.js" },
+    { "src": "/(.*)", "dest": "/public/index.html" }
   ]
 }
