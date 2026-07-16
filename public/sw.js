@@ -6,9 +6,12 @@
 const CACHE_NAME = 'campusiq-v4';
 const RUNTIME_CACHE = 'campusiq-runtime-v4';
 const STATIC_ASSETS = [
+  '/index.html',
   '/frontend/index.html',
   '/frontend/careers.html',
+  '/backend/admin.html',
   '/shared/api.js',
+  '/shared/styles.css',
   '/',
 ];
 
@@ -56,7 +59,7 @@ self.addEventListener('fetch', event => {
           caches.open(CACHE_NAME).then(c => c.put(event.request, clone));
           return res;
         })
-        .catch(() => caches.match(event.request).then(c => c || caches.match('/frontend/index.html')))
+        .catch(() => caches.match(event.request).then(c => c || caches.match('/index.html')))
     );
     return;
   }

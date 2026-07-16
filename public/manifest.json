@@ -3,12 +3,14 @@
   "name": "CampusIQ — KsTU",
   "short_name": "CampusIQ",
   "description": "Smart campus platform for Kumasi Technical University — Powered by Papi",
-  "start_url": "/frontend/index.html",
+  "start_url": "/index.html",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
   "background_color": "#0a0a0f",
   "theme_color": "#3b82f6",
   "orientation": "portrait-primary",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icon-192.png",
