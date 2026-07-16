@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "id": "9e64a714-f51b-4f51-a4e5-58fe351fed9b",
+    "createdAt": "2026-07-16T17:41:03.816Z",
+    "studentId": "2d116a8c-0711-4ffd-9da9-0ec1a08eb39e",
+    "studentName": "Kwame Owusu",
+    "courseCode": "CPT 301",
+    "caScore": 40,
+    "examScore": 45,
+    "total": 85,
+    "grade": "A"
+  }
+]

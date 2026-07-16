@@ -79,5 +79,19 @@
     "level": null,
     "department": "computer science",
     "title": "Dr."
+  },
+  {
+    "id": "2d116a8c-0711-4ffd-9da9-0ec1a08eb39e",
+    "createdAt": "2026-07-16T17:41:02.316Z",
+    "name": "Kwame Owusu",
+    "email": "kwame@kstu.edu.gh",
+    "password": "pass123",
+    "role": "student",
+    "studentId": "KS/21/001",
+    "staffId": null,
+    "programme": "BTech Computer Technology",
+    "level": "Level 300",
+    "department": null,
+    "title": null
   }
 ]

@@ -455,6 +455,11 @@ function getJobTypeBadgeClass(type){
   if(type==='graduate') return 'bp';
   return 'bb';
 }
+function getLevel(value, high, low){
+  if(value >= high) return 'high';
+  if(value >= low) return 'mid';
+  return 'low';
+}
 function getStatusBadgeMarkup(status){
   if(status==='applied') return '<span class="badge bg badge-sm">✓ Applied</span>';
   if(status==='saved') return '<span class="badge bgo badge-sm">🔖 Saved</span>';
@@ -1130,6 +1135,29 @@ initSkillGap();
 // Init CV preview
 initCV();
 </script>
-<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../sw.js").catch(()=>{});}</script>
+<script>
+// Register the service worker from the site root so it controls this page
+// (registering from ../shared/sw.js would only have scope /shared/ and could
+// not intercept requests for /frontend/careers.html). On update we skipWaiting
+// and reload so returning users always get the latest careers page instead of
+// a stale cached copy.
+(function(){
+  if(!('serviceWorker' in navigator)) return;
+  const sw = navigator.serviceWorker;
+  const reloadOnUpdate = () => {
+    if(sessionStorage.getItem('sw_reload')){ sessionStorage.removeItem('sw_reload'); location.reload(); }
+  };
+  sw.addEventListener('controllerchange', reloadOnUpdate);
+  sw.register('/sw.js',{scope:'/'}).then(reg=>{
+    if(reg.waiting){ sessionStorage.setItem('sw_reload','1'); reg.waiting.postMessage('skipWaiting'); }
+    reg.addEventListener('updatefound',()=>{
+      const nw=reg.installing; if(!nw) return;
+      nw.addEventListener('statechange',()=>{
+        if(nw.state==='installed' && sw.controller){ sessionStorage.setItem('sw_reload','1'); nw.postMessage('skipWaiting'); }
+      });
+    });
+  }).catch(()=>{});
+})();
+</script>
 </body>
 </html>

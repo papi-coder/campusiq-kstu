@@ -42,7 +42,7 @@ const CampusAPI = (() => {
     if (next === online) return;
     online = next;
     updateBanner();
-    statusListeners.forEach(cb => { try { cb(online); } catch (e) {} });
+    statusListeners.forEach(cb => { try { cb(online); } catch (e) { console.debug('[CampusAPI] Status listener error:', e); } });
   }
   function onStatus(cb) { if (typeof cb === 'function') statusListeners.push(cb); }
 
@@ -98,20 +98,23 @@ const CampusAPI = (() => {
       const order = (BASE ? [BASE, ...candidates] : candidates).filter(Boolean);
       console.log('[CampusAPI] Probing API endpoints:', order.slice(0, 5).join(', ') + (order.length > 5 ? '...' : ''));
       for (const candidate of order) {
+        const ctrl = new AbortController();
+        const tid = setTimeout(() => ctrl.abort(), 700);
         try {
-          const ctrl = new AbortController();
-          const tid = setTimeout(() => ctrl.abort(), 700);
           const r = await fetch(candidate + '/api/health', { method: 'GET', signal: ctrl.signal });
           clearTimeout(tid);
           if (r.ok) { BASE = candidate; console.log('[CampusAPI] API found at:', BASE); setStatus(true); return true; }
-        } catch (e) { /* try next candidate */ }
+        } catch {
+          clearTimeout(tid);
+          continue; // try next candidate on failure
+        }
       }
-      // Same-origin /api/health (static server that proxies the API)
-      if (!isFile) {
-        try {
-          const r = await fetch('/api/health', { method: 'GET' });
-          if (r.ok) { BASE = ''; console.log('[CampusAPI] API found at same-origin /api'); setStatus(true); return true; }
-        } catch (e) { /* offline */ }
+      // Same-origin /api/health (Vercel/production only; localhost always uses a
+      // different port for the backend, so skip the same-origin probe there to
+      // avoid needless 404s and service-worker noise).
+      if (!isFile && !isLocal) {
+        const r = await fetch('/api/health', { method: 'GET' }).catch(() => null);
+        if (r?.ok) { BASE = ''; console.log('[CampusAPI] API found at same-origin /api'); setStatus(true); return true; }
       }
       console.warn('[CampusAPI] API probe failed. No backend reachable at:', candidates.join(', '));
       setStatus(false);
@@ -129,74 +132,80 @@ const CampusAPI = (() => {
   window.addEventListener('online', safeProbe);
   window.addEventListener('offline', () => setStatus(false));
 
-  async function request(path, options = {}) {
-    // Fail fast with a clear message when we already know the API is down.
-    if (online === false) {
-      safeProbe(); // try to recover in the background
-      throw new Error('Offline — API unavailable. Connect the CampusIQ server or check your network.');
+  // ---- Helpers to keep request() flat ----
+  async function _discoverApi() {
+    console.log('[CampusAPI] Initial probe timed out, trying direct discovery...');
+    for (const candidate of candidates.filter(Boolean)) {
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 400);
+      try {
+        const r = await fetch(candidate + '/api/health', { method: 'GET', signal: ctrl.signal });
+        clearTimeout(tid);
+        if (r.ok) { BASE = candidate; console.log('[CampusAPI] API discovered at:', BASE); return true; }
+      } catch {
+        clearTimeout(tid);
+        continue; // try next candidate
+      }
     }
-    // If BASE hasn't resolved yet (probe still in flight), keep retrying
-    // until we have a base or we've waited long enough.
+    return false;
+  }
+
+  async function _waitForBase() {
     if (!BASE && (isLocal || isFile)) {
-      const start = Date.now();
-      while (!BASE && Date.now() - start < 8000) {
+      const deadline = Date.now() + 8000;
+      while (Date.now() < deadline) {
+        if (BASE) break;
         await sleep(100);
       }
-      // If the initial probe didn't resolve, try to discover the API ourselves
-      if (!BASE) {
-        console.log('[CampusAPI] Initial probe timed out, trying direct discovery...');
-        for (const candidate of candidates.filter(Boolean)) {
-          try {
-            const ctrl = new AbortController();
-            const tid = setTimeout(() => ctrl.abort(), 400);
-            const r = await fetch(candidate + '/api/health', { method: 'GET', signal: ctrl.signal });
-            clearTimeout(tid);
-            if (r.ok) { BASE = candidate; console.log('[CampusAPI] API discovered at:', BASE); break; }
-          } catch (e) { /* try next */ }
-        }
+      if (!BASE && !await _discoverApi()) {
+        if (!BASE) BASE = fallbackOrigin || candidates.at(-1);
+        console.log('[CampusAPI] Final BASE:', BASE);
       }
-      // Final fallback if nothing worked
-      if (!BASE) BASE = fallbackOrigin || candidates[candidates.length - 1];
-      console.log('[CampusAPI] Final BASE:', BASE);
     }
-    const url = BASE + path;
-    console.log('[CampusAPI] Request:', options.method || 'GET', url);
-    let res;
+  }
+
+  async function _fetchWithRetry(url, path, options) {
     try {
-      res = await fetch(url, {
+      return await fetch(url, {
         headers: { 'Content-Type': 'application/json' },
         ...options,
       });
     } catch (netErr) {
       console.error('[CampusAPI] Network error for', url, ':', netErr.message);
-      // A network-level failure means the API is unreachable (offline/server down).
-      // Try to rediscover the API in case it moved to a different port.
-      if (online !== false) {
-        safeProbe();
-        // Retry once with the newly discovered base
-        if (BASE && BASE !== url) {
-          const retryUrl = BASE + path;
-          console.log('[CampusAPI] Retrying with rediscovered base:', retryUrl);
-          try {
-            res = await fetch(retryUrl, {
-              headers: { 'Content-Type': 'application/json' },
-              ...options,
-            });
-          } catch (retryErr) {
-            console.error('[CampusAPI] Retry also failed:', retryErr.message);
-            throw new Error('Offline — API unavailable. Connect the CampusIQ server or check your network.');
-          }
-        } else {
-          throw new Error('Offline — API unavailable. Connect the CampusIQ server or check your network.');
-        }
-      } else {
+      if (online === false) {
         throw new Error('Offline — API unavailable. Connect the CampusIQ server or check your network.');
       }
+      safeProbe();
+      if (BASE && BASE !== url) {
+        const retryUrl = BASE + path;
+        console.log('[CampusAPI] Retrying with rediscovered base:', retryUrl);
+        try {
+          return await fetch(retryUrl, {
+            headers: { 'Content-Type': 'application/json' },
+            ...options,
+          });
+        } catch (retryErr) {
+          console.error('[CampusAPI] Retry also failed:', retryErr.message);
+          throw new Error('Offline — API unavailable. Connect the CampusIQ server or check your network.');
+        }
+      }
+      throw new Error('Offline — API unavailable. Connect the CampusIQ server or check your network.');
     }
+  }
+
+  async function request(path, options = {}) {
+    if (online === false) {
+      safeProbe();
+      throw new Error('Offline — API unavailable. Connect the CampusIQ server or check your network.');
+    }
+    await _waitForBase();
+    const url = BASE + path;
+    console.log('[CampusAPI] Request:', options.method || 'GET', url);
+    const res = await _fetchWithRetry(url, path, options);
     let json;
     try { json = await res.json(); }
     catch { throw new Error('Server returned an invalid response'); }
-    if (!res.ok || (json && json.success === false)) {
+    if (!res.ok || (json?.success === false)) {
       throw new Error(json?.message || `Request failed (${res.status})`);
     }
     return json.data;
@@ -345,6 +354,7 @@ Object.assign(CampusAPI, {
   getAlumniQuestions: (userId) => CampusAPI.get(`/api/alumni-questions/${userId}`),
   askAlumniQuestion: (q) => CampusAPI.post('/api/alumni-questions', q),
     getReferrals: (userId) => CampusAPI.get(`/api/referrals/${userId}`),
+    createReferral: (payload) => CampusAPI.post('/api/referrals', payload),
     useReferral: (id) => CampusAPI.put(`/api/referrals/${id}/use`, {}),
 
     // Papi AI
