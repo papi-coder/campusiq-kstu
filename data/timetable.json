@@ -25,5 +25,32 @@
     "courseCode": "CPT 301",
     "room": "Lab A-201",
     "lecturer": "Dr. Mensah K."
+  },
+  {
+    "id": "5864fbde-0cab-4fba-a669-f050a4178ff8",
+    "createdAt": "2026-07-16T21:27:01.420Z",
+    "day": "Monday",
+    "time": "7:30–9:30",
+    "courseCode": "CPT 301",
+    "room": "Lab A-201",
+    "lecturer": "Dr. Mensah K."
+  },
+  {
+    "id": "06943008-155d-4540-93be-91712c96c423",
+    "createdAt": "2026-07-16T21:27:01.426Z",
+    "day": "Monday",
+    "time": "10:00–12:00",
+    "courseCode": "MAT 201",
+    "room": "Room B-104",
+    "lecturer": "Mr. Asante C."
+  },
+  {
+    "id": "5d1a1e12-78f1-4b7a-8faa-5321cf1e0c7b",
+    "createdAt": "2026-07-16T21:27:01.436Z",
+    "day": "Wednesday",
+    "time": "10:00–12:00",
+    "courseCode": "CPT 301",
+    "room": "Lab A-201",
+    "lecturer": "Dr. Mensah K."
   }
 ]

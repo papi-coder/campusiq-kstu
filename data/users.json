@@ -93,5 +93,30 @@
     "level": "Level 300",
     "department": null,
     "title": null
+  },
+  {
+    "id": "7920cc67-8e3d-4fe1-9b76-7a9277ad9083",
+    "createdAt": "2026-07-16T21:27:01.339Z",
+    "name": "Super Admin",
+    "email": "admin@kstu.edu.gh",
+    "username": "admin",
+    "password": "admin123",
+    "role": "admin",
+    "department": "ICT",
+    "status": "active"
+  },
+  {
+    "id": "f73dfb7e-aa13-48c2-9f15-6439864d24d7",
+    "createdAt": "2026-07-16T21:27:04.403Z",
+    "name": "Test User",
+    "email": "test123@kstu.edu.gh",
+    "password": "pass123",
+    "role": "student",
+    "studentId": null,
+    "staffId": null,
+    "programme": null,
+    "level": null,
+    "department": null,
+    "title": null
   }
 ]

@@ -48,5 +48,35 @@
     "occupied": 50,
     "feePerSemester": 500,
     "status": "available"
+  },
+  {
+    "id": "0dbd6123-0425-4298-8e11-b7d002d1aaeb",
+    "createdAt": "2026-07-16T21:27:01.357Z",
+    "name": "Volta Hall (Block A)",
+    "type": "Mixed",
+    "capacity": 320,
+    "occupied": 262,
+    "feePerSemester": 800,
+    "status": "available"
+  },
+  {
+    "id": "075d27d9-8f08-443b-93f6-9cfd89d53e1f",
+    "createdAt": "2026-07-16T21:27:01.369Z",
+    "name": "Pra Hall (Block B)",
+    "type": "Male",
+    "capacity": 280,
+    "occupied": 280,
+    "feePerSemester": 950,
+    "status": "full"
+  },
+  {
+    "id": "eb561672-37f9-442c-bab3-96ab7d7a63c2",
+    "createdAt": "2026-07-16T21:27:01.374Z",
+    "name": "Komfo Hall (Block C)",
+    "type": "Female",
+    "capacity": 300,
+    "occupied": 213,
+    "feePerSemester": 650,
+    "status": "available"
   }
 ]
