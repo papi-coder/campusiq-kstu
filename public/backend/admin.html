@@ -108,6 +108,8 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
     <div class="sb-sec">Campus</div>
     <div class="sb-item" onclick="go('hostels',this)">🏠 Hostels</div>
     <div class="sb-item" onclick="go('fees',this)">💰 Fees & Finance</div>
+    <div class="sb-sec">Communication</div>
+    <div class="sb-item" onclick="go('notices',this)">📢 Notices & Announcements</div>
     <div class="sb-sec">System</div>
     <div class="sb-item" onclick="go('settings',this)">⚙️ Settings</div>
   </div>
@@ -208,11 +210,46 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
     <div class="page" id="page-fees">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
         <div class="page-title" style="margin:0">Fees & Finance</div>
-        <button class="btn-fill" onclick="openFeeModal()">+ Add Fee Structure</button>
+        <button class="btn-fill" onclick="openNoticeModal()">+ Add Fee Structure</button>
       </div>
       <div class="card" style="overflow-x:auto">
         <table><thead><tr><th>Programme</th><th>Level</th><th>Year</th><th>Tuition</th><th>Hostel</th><th>Exam</th><th>SRC</th><th>Total</th><th>Actions</th></tr></thead>
         <tbody id="fees-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- NOTICES & ANNOUNCEMENTS -->
+    <div class="page" id="page-notices">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <div class="page-title" style="margin:0">Notices & Announcements</div>
+        <button class="btn-fill" onclick="openNoticeModal()">📢 Post Announcement</button>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <table><thead><tr><th>Title</th><th>Category</th><th>Posted By</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody id="notices-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- NOTICE MODAL -->
+    <div class="modal" id="notice-modal">
+      <div class="modal-box">
+        <h2><span id="notice-modal-title">Post Announcement</span><button onclick="closeModal('notice-modal')">✕</button></h2>
+        <div style="display:flex;flex-direction:column;gap:0.6rem">
+          <div><label class="label">Title *</label><input id="notice-title" placeholder="e.g. Exam timetable released"></div>
+          <div><label class="label">Category</label>
+            <select id="notice-category">
+              <option value="general">General</option>
+              <option value="academic">Academic</option>
+              <option value="events">Events</option>
+              <option value="hostel">Hostel</option>
+              <option value="fees">Fees</option>
+              <option value="emergency">Emergency</option>
+            </select>
+          </div>
+          <div><label class="label">Message *</label><textarea id="notice-body" rows="5" placeholder="Write the announcement for all students, lecturers and HODs…"></textarea></div>
+          <div id="notice-msg" style="font-size:0.75rem;min-height:1rem"></div>
+          <button class="btn-fill" style="width:100%" onclick="submitNotice()">Publish to All Users</button>
+        </div>
       </div>
     </div>
 
@@ -362,6 +399,7 @@ function go(page,el){
   if(page==='results')loadResults();
   if(page==='hostels')loadHostels();
   if(page==='fees')loadFees();
+  if(page==='notices')loadNotices();
 }
 
 function closeModal(id){document.getElementById(id).classList.remove('open');}
@@ -559,6 +597,49 @@ async function deleteFee(id){
   if(!confirm('Delete this fee structure?'))return;
   try{await CampusAPI.deleteFeeStructure(id);loadFees();}catch(e){alert(e.message);}
 }
+
+// ---------- NOTICES & ANNOUNCEMENTS ----------
+async function loadNotices(){
+  const tbody=document.getElementById('notices-tbody');
+  tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#475569">Loading…</td></tr>';
+  try{
+    const rows=await CampusAPI.listNotices();
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#475569;padding:1.5rem">No announcements yet.</td></tr>';return;}
+    tbody.innerHTML=rows.map(n=>`<tr>
+      <td style="font-weight:600">${escapeHtml(n.title)}</td>
+      <td><span class="badge" style="background:rgba(59,130,246,0.15);color:#60c8ff">${escapeHtml(n.category||'general')}</span></td>
+      <td>${escapeHtml(n.adminName||'Admin')}</td>
+      <td>${new Date(n.createdAt).toLocaleString()}</td>
+      <td><button class="btn-sm btn-red" onclick="deleteNotice('${n.id}')">Delete</button></td>
+    </tr>`).join('');
+  }catch(e){tbody.innerHTML=`<tr><td colspan="5" style="color:#fca5a5">Error: ${e.message}</td></tr>`;}
+}
+function openNoticeModal(){
+  document.getElementById('notice-modal-title').textContent='Post Announcement';
+  document.getElementById('notice-title').value='';
+  document.getElementById('notice-category').value='general';
+  document.getElementById('notice-body').value='';
+  document.getElementById('notice-msg').textContent='';
+  document.getElementById('notice-modal').classList.add('open');
+}
+async function submitNotice(){
+  const title=document.getElementById('notice-title').value.trim();
+  const body=document.getElementById('notice-body').value.trim();
+  const category=document.getElementById('notice-category').value;
+  const msg=document.getElementById('notice-msg');
+  if(!title||!body){msg.style.color='#fca5a5';msg.textContent='Title and message are required.';return;}
+  msg.style.color='#34d399';msg.textContent='Publishing…';
+  try{
+    await CampusAPI.postNoticeAdmin({title,body,category});
+    closeModal('notice-modal');
+    loadNotices();
+  }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
+async function deleteNotice(id){
+  if(!confirm('Delete this announcement? It will remain in users’ notification history.'))return;
+  try{await CampusAPI.deleteNotice(id);loadNotices();}catch(e){alert(e.message);}
+}
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
 // ---------- TIMETABLE ----------
 async function loadTimetable(){
