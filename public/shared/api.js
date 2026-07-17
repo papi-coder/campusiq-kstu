@@ -357,6 +357,11 @@ Object.assign(CampusAPI, {
     createReferral: (payload) => CampusAPI.post('/api/referrals', payload),
     useReferral: (id) => CampusAPI.put(`/api/referrals/${id}/use`, {}),
 
-    // Papi AI
-    askAI: (payload) => CampusAPI.post('/api/ai/ask', payload),
+  // Papi AI
+  askAI: (payload) => CampusAPI.post('/api/ai/ask', payload),
+});
+
+// Bulk import
+Object.assign(CampusAPI, {
+  bulkImport: (collection, records) => CampusAPI.post('/api/bulk-import', { collection, records }),
 });

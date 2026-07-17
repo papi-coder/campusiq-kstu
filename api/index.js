@@ -561,6 +561,26 @@ app.delete('/api/notifications/:id', async (req, res) => {
 });
 
 // =====================================================================
+// BULK IMPORT — admin uploads many records at once (CSV/JSON -> rows)
+// =====================================================================
+const BULK_COLLECTIONS = ['users','hostels','feeStructure','timetable','results','exams','attendance','payments','registrations','assignments','materials','notices','calendar','hostelApplications','portfolios','alumniQuestions','referrals'];
+app.post('/api/bulk-import', async (req, res) => {
+  const { collection, records } = req.body || {};
+  if (!BULK_COLLECTIONS.includes(collection)) return fail(res, 400, 'Unknown or unsupported collection: ' + collection);
+  if (!Array.isArray(records) || !records.length) return fail(res, 400, 'records must be a non-empty array');
+  if (records.length > 2000) return fail(res, 400, 'Too many records (max 2000 per import)');
+  try {
+    const inserted = [];
+    for (const rec of records) {
+      if (rec && typeof rec === 'object') inserted.push(await db.insert(collection, rec));
+    }
+    ok(res, { imported: inserted.length, collection });
+  } catch (e) {
+    fail(res, 500, 'Import failed: ' + e.message);
+  }
+});
+
+// =====================================================================
 // FEES — PAYMENTS (student uploads receipt, admin confirms)
 // =====================================================================
 app.get('/api/fees/payments/:studentId', async (req, res) => {
@@ -579,6 +599,11 @@ app.put('/api/fees/payments/:id/confirm', async (req, res) => {
   const p = await db.update('payments', req.params.id, { status: 'confirmed', confirmedAt: new Date().toISOString() });
   if (!p) return fail(res, 404, 'Payment not found');
   ok(res, p);
+});
+app.delete('/api/fees/payments/:id', async (req, res) => {
+  const removed = await db.remove('payments', req.params.id);
+  if (!removed) return fail(res, 404, 'Payment not found');
+  ok(res, { id: req.params.id });
 });
 
 // =====================================================================
@@ -734,6 +759,11 @@ app.put('/api/hostel-applications/:id/allocate', async (req, res) => {
   const a = await db.update('hostelApplications', req.params.id, { roomNumber: roomNumber || null, status: status || 'approved', allocatedAt: new Date().toISOString() });
   if (!a) return fail(res, 404, 'Application not found');
   ok(res, a);
+});
+app.delete('/api/hostel-applications/:id', async (req, res) => {
+  const removed = await db.remove('hostelApplications', req.params.id);
+  if (!removed) return fail(res, 404, 'Application not found');
+  ok(res, { id: req.params.id });
 });
 
 // =====================================================================

@@ -108,8 +108,15 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
     <div class="sb-sec">Campus</div>
     <div class="sb-item" onclick="go('hostels',this)">🏠 Hostels</div>
     <div class="sb-item" onclick="go('fees',this)">💰 Fees & Finance</div>
+    <div class="sb-sec">Academic</div>
+    <div class="sb-item" onclick="go('calendar',this)">📆 Academic Calendar</div>
+    <div class="sb-item" onclick="go('allocations',this)">🛏 Hostel Allocations</div>
+    <div class="sb-sec">Finance</div>
+    <div class="sb-item" onclick="go('payments',this)">💳 Fees Payments</div>
     <div class="sb-sec">Communication</div>
     <div class="sb-item" onclick="go('notices',this)">📢 Notices & Announcements</div>
+    <div class="sb-sec">Data</div>
+    <div class="sb-item" onclick="go('bulk',this)">📥 Bulk Import</div>
     <div class="sb-sec">System</div>
     <div class="sb-item" onclick="go('settings',this)">⚙️ Settings</div>
   </div>
@@ -250,6 +257,95 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
           <div id="notice-msg" style="font-size:0.75rem;min-height:1rem"></div>
           <button class="btn-fill" style="width:100%" onclick="submitNotice()">Publish to All Users</button>
         </div>
+      </div>
+    </div>
+
+    <!-- ACADEMIC CALENDAR -->
+    <div class="page" id="page-calendar">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <div class="page-title" style="margin:0">Academic Calendar</div>
+        <button class="btn-fill" onclick="openCalendarModal()">📆 Add Event</button>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <table><thead><tr><th>Title</th><th>Type</th><th>Start</th><th>End</th><th>Actions</th></tr></thead>
+        <tbody id="calendar-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- HOSTEL ALLOCATIONS -->
+    <div class="page" id="page-allocations">
+      <div class="page-title">Hostel Allocations</div>
+      <div class="card" style="overflow-x:auto">
+        <table><thead><tr><th>Student</th><th>ID</th><th>Hostel</th><th>Room</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="allocations-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- FEES PAYMENTS -->
+    <div class="page" id="page-payments">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <div class="page-title" style="margin:0">Fees Payments</div>
+        <button class="btn-fill" onclick="openPaymentModal()">💳 Record Payment</button>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <table><thead><tr><th>Student ID</th><th>Amount (GHS)</th><th>Method</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody id="payments-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- BULK IMPORT -->
+    <div class="page" id="page-bulk">
+      <div class="page-title">Bulk Import</div>
+      <div class="card" style="max-width:620px">
+        <p style="color:var(--t2);font-size:0.78rem;margin-bottom:0.75rem">Paste CSV or JSON rows, choose a collection, and import them into the database. First row / keys are used as field names.</p>
+        <label class="label">Collection</label>
+        <select id="bulk-collection">
+          <option value="users">users (students/lecturers/hods)</option>
+          <option value="hostels">hostels</option>
+          <option value="feeStructure">feeStructure</option>
+          <option value="timetable">timetable</option>
+          <option value="results">results</option>
+          <option value="exams">exams</option>
+          <option value="attendance">attendance</option>
+          <option value="payments">payments</option>
+          <option value="registrations">registrations</option>
+          <option value="assignments">assignments</option>
+          <option value="materials">materials</option>
+          <option value="notices">notices</option>
+          <option value="calendar">calendar</option>
+          <option value="hostelApplications">hostelApplications</option>
+        </select>
+        <label class="label">Data (CSV or JSON)</label>
+        <textarea id="bulk-data" rows="10" placeholder="CSV:&#10;name,email,password,role&#10;John Doe,john@kstu.edu.gh,pass123,student&#10;&#10;OR JSON:&#10;[{&quot;name&quot;:&quot;John Doe&quot;,&quot;email&quot;:&quot;john@kstu.edu.gh&quot;,&quot;password&quot;:&quot;pass123&quot;,&quot;role&quot;:&quot;student&quot;}]"></textarea>
+        <div class="msg" id="bulk-msg"></div>
+        <button class="btn-fill" style="width:100%" onclick="submitBulk()">Import Records</button>
+      </div>
+    </div>
+
+    <!-- CALENDAR MODAL -->
+    <div class="modal-bg" id="calendar-modal">
+      <div class="modal">
+        <h2><span id="cal-title">Add Event</span><button onclick="closeModal('calendar-modal')">✕</button></h2>
+        <label class="label">Title *</label><input id="cal-title-input" placeholder="e.g. End of Semester Exams">
+        <label class="label">Type</label>
+        <select id="cal-type"><option value="event">Event</option><option value="exam">Exam</option><option value="holiday">Holiday</option><option value="registration">Registration</option></select>
+        <label class="label">Start Date *</label><input id="cal-start" type="date">
+        <label class="label">End Date</label><input id="cal-end" type="date">
+        <div class="msg" id="cal-msg"></div>
+        <button class="btn-fill" style="width:100%" onclick="submitCalendar()">Save Event</button>
+      </div>
+    </div>
+
+    <!-- PAYMENT MODAL -->
+    <div class="modal-bg" id="payment-modal">
+      <div class="modal">
+        <h2><span>Record Payment</span><button onclick="closeModal('payment-modal')">✕</button></h2>
+        <label class="label">Student ID *</label><input id="pay-student" placeholder="KsTU/2024/0042">
+        <label class="label">Amount (GHS) *</label><input id="pay-amount" type="number" placeholder="500">
+        <label class="label">Method</label>
+        <select id="pay-method"><option>Mobile Money</option><option>Bank</option><option>Cash</option><option>Card</option></select>
+        <div class="msg" id="pay-msg"></div>
+        <button class="btn-fill" style="width:100%" onclick="submitPayment()">Record Payment</button>
       </div>
     </div>
 
@@ -400,6 +496,9 @@ function go(page,el){
   if(page==='hostels')loadHostels();
   if(page==='fees')loadFees();
   if(page==='notices')loadNotices();
+  if(page==='calendar')loadCalendar();
+  if(page==='allocations')loadAllocations();
+  if(page==='payments')loadPayments();
 }
 
 function closeModal(id){document.getElementById(id).classList.remove('open');}
@@ -640,6 +739,152 @@ async function deleteNotice(id){
   try{await CampusAPI.deleteNotice(id);loadNotices();}catch(e){alert(e.message);}
 }
 function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+// ---------- ACADEMIC CALENDAR ----------
+async function loadCalendar(){
+  const tbody=document.getElementById('calendar-tbody');
+  tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#475569">Loading…</td></tr>';
+  try{
+    const rows=await CampusAPI.listCalendar();
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#475569;padding:1.5rem">No calendar events yet.</td></tr>';return;}
+    tbody.innerHTML=rows.map(c=>`<tr>
+      <td style="font-weight:600">${escapeHtml(c.title)}</td>
+      <td><span class="badge b-blue">${escapeHtml(c.type||'event')}</span></td>
+      <td>${new Date(c.startDate).toLocaleDateString()}</td>
+      <td>${new Date(c.endDate).toLocaleDateString()}</td>
+      <td><button class="btn-sm btn-red" onclick="deleteCalendar('${c.id}')">Delete</button></td>
+    </tr>`).join('');
+  }catch(e){tbody.innerHTML=`<tr><td colspan="5" style="color:#fca5a5">Error: ${e.message}</td></tr>`;}
+}
+function openCalendarModal(){
+  document.getElementById('cal-title').textContent='Add Event';
+  document.getElementById('cal-title-input').value='';
+  document.getElementById('cal-type').value='event';
+  document.getElementById('cal-start').value='';
+  document.getElementById('cal-end').value='';
+  document.getElementById('cal-msg').textContent='';
+  document.getElementById('calendar-modal').classList.add('open');
+}
+async function submitCalendar(){
+  const title=document.getElementById('cal-title-input').value.trim();
+  const type=document.getElementById('cal-type').value;
+  const startDate=document.getElementById('cal-start').value;
+  const endDate=document.getElementById('cal-end').value;
+  const msg=document.getElementById('cal-msg');
+  if(!title||!startDate){msg.style.color='#fca5a5';msg.textContent='Title and start date are required.';return;}
+  try{
+    await CampusAPI.createCalendarEvent({title,type,startDate,endDate:endDate||startDate});
+    closeModal('calendar-modal');loadCalendar();
+  }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
+async function deleteCalendar(id){
+  if(!confirm('Delete this calendar event?'))return;
+  try{await CampusAPI.deleteCalendarEvent(id);loadCalendar();}catch(e){alert(e.message);}
+}
+
+// ---------- HOSTEL ALLOCATIONS ----------
+const ALLOC_STATUS={pending:'b-gold',approved:'b-green',rejected:'b-red'};
+async function loadAllocations(){
+  const tbody=document.getElementById('allocations-tbody');
+  tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#475569">Loading…</td></tr>';
+  try{
+    const rows=await CampusAPI.listHostelApplications();
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#475569;padding:1.5rem">No hostel applications yet.</td></tr>';return;}
+    tbody.innerHTML=rows.map(a=>`<tr>
+      <td>${escapeHtml(a.studentName||'—')}</td>
+      <td>${escapeHtml(a.studentId||'—')}</td>
+      <td>${escapeHtml(a.hostelName||a.hostelId||'—')}</td>
+      <td>${escapeHtml(a.roomNumber||'—')}</td>
+      <td><span class="badge ${ALLOC_STATUS[a.status]||'b-gold'}">${escapeHtml(a.status||'pending')}</span></td>
+      <td><button class="btn-sm btn-green" onclick="allocateHostelPrompt('${a.id}','${escapeHtml(a.studentName||'')}')">Allocate</button> <button class="btn-sm btn-red" onclick="deleteAllocation('${a.id}')">Delete</button></td>
+    </tr>`).join('');
+  }catch(e){tbody.innerHTML=`<tr><td colspan="6" style="color:#fca5a5">Error: ${e.message}</td></tr>`;}
+}
+async function allocateHostelPrompt(id,name){
+  const room=prompt('Assign room number for '+(name||'this student')+':');
+  if(room===null)return;
+  try{await CampusAPI.allocateHostel(id,{roomNumber:room||null,status:'approved'});loadAllocations();}catch(e){alert(e.message);}
+}
+async function deleteAllocation(id){
+  if(!confirm('Delete this application?'))return;
+  try{await CampusAPI.del('/api/hostel-applications/'+id);loadAllocations();}catch(e){alert(e.message);}
+}
+
+// ---------- FEES PAYMENTS ----------
+async function loadPayments(){
+  const tbody=document.getElementById('payments-tbody');
+  tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#475569">Loading…</td></tr>';
+  try{
+    const rows=await CampusAPI.listPayments();
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#475569;padding:1.5rem">No payments recorded yet.</td></tr>';return;}
+    tbody.innerHTML=rows.slice().reverse().map(p=>`<tr>
+      <td>${escapeHtml(p.studentId||'—')}</td>
+      <td>${Number(p.amount).toFixed(2)}</td>
+      <td>${escapeHtml(p.method||'—')}</td>
+      <td><span class="badge ${p.status==='confirmed'?'b-green':(p.status==='pending_confirmation'?'b-gold':'b-blue')}">${escapeHtml(p.status||'completed')}</span></td>
+      <td>${new Date(p.createdAt).toLocaleDateString()}</td>
+      <td>${p.status!=='confirmed'?'<button class="btn-sm btn-green" onclick="confirmPayment(\''+p.id+'\')">Confirm</button> ':''}<button class="btn-sm btn-red" onclick="deletePayment(\''+p.id+'\')">Delete</button></td>
+    </tr>`).join('');
+  }catch(e){tbody.innerHTML=`<tr><td colspan="6" style="color:#fca5a5">Error: ${e.message}</td></tr>`;}
+}
+function openPaymentModal(){
+  document.getElementById('pay-student').value='';
+  document.getElementById('pay-amount').value='';
+  document.getElementById('pay-method').value='Mobile Money';
+  document.getElementById('pay-msg').textContent='';
+  document.getElementById('payment-modal').classList.add('open');
+}
+async function submitPayment(){
+  const studentId=document.getElementById('pay-student').value.trim();
+  const amount=document.getElementById('pay-amount').value;
+  const method=document.getElementById('pay-method').value;
+  const msg=document.getElementById('pay-msg');
+  if(!studentId||!amount){msg.style.color='#fca5a5';msg.textContent='Student ID and amount are required.';return;}
+  try{
+    await CampusAPI.recordPayment({studentId,amount:Number(amount),method});
+    closeModal('payment-modal');loadPayments();
+  }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
+async function confirmPayment(id){
+  try{await CampusAPI.confirmPayment(id);loadPayments();}catch(e){alert(e.message);}
+}
+async function deletePayment(id){
+  if(!confirm('Delete this payment record?'))return;
+  try{await CampusAPI.del('/api/fees/payments/'+id);loadPayments();}catch(e){alert(e.message);}
+}
+
+// ---------- BULK IMPORT ----------
+function parseBulk(text){
+  text=text.trim();
+  if(!text)return [];
+  if(text.startsWith('[')||text.startsWith('{')){
+    const data=JSON.parse(text);
+    return Array.isArray(data)?data:(data? [data]:[]);
+  }
+  const lines=text.split(/\r?\n/).filter(l=>l.trim());
+  if(lines.length<2)throw new Error('CSV needs a header row and at least one data row');
+  const headers=lines[0].split(',').map(h=>h.trim());
+  return lines.slice(1).map(line=>{
+    const vals=line.split(',').map(v=>v.trim());
+    const obj={};
+    headers.forEach((h,i)=>{obj[h]=vals[i]!==undefined?vals[i]:'';});
+    return obj;
+  });
+}
+async function submitBulk(){
+  const collection=document.getElementById('bulk-collection').value;
+  const msg=document.getElementById('bulk-msg');
+  let records;
+  try{ records=parseBulk(document.getElementById('bulk-data').value); }
+  catch(e){ msg.style.color='#fca5a5'; msg.textContent='Parse error: '+e.message; return; }
+  if(!records.length){ msg.style.color='#fca5a5'; msg.textContent='No records found.'; return; }
+  msg.style.color='#34d399'; msg.textContent='Importing '+records.length+' records…';
+  try{
+    const r=await CampusAPI.bulkImport(collection,records);
+    msg.style.color='#34d399'; msg.textContent='✅ Imported '+(r.imported||records.length)+' records into "'+collection+'".';
+    document.getElementById('bulk-data').value='';
+  }catch(e){ msg.style.color='#fca5a5'; msg.textContent=e.message; }
+}
 
 // ---------- TIMETABLE ----------
 async function loadTimetable(){
