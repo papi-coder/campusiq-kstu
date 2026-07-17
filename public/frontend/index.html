@@ -385,6 +385,8 @@ window.doLogin = async function () {
   </div>
   <div class="sh"><h2 id="t-materials">Course Materials</h2><div class="sh-line"></div></div>
   <div id="materials-list"></div>
+  <div class="sh mt-1"><h2>🏫 Virtual Classrooms (Tests & Quizzes)</h2><div class="sh-line"></div></div>
+  <div id="classrooms-list"></div>
 </section>
 
 <!-- ATTENDANCE -->
@@ -816,5 +818,11 @@ window.doLogin = async function () {
   };
 })();
 </script>
+
+<!-- CLASSROOM TEST MODAL -->
+<div class="modal-bg" id="cr-test-modal"><div class="modal"><div id="cr-test-box"></div></div></div>
+<!-- CLASSROOM RESULT MODAL -->
+<div class="modal-bg" id="cr-result-modal"><div class="modal"><div id="cr-result-box"></div><div class="mt-1"><button class="btn-p" onclick="closeM('cr-result-modal')">Close</button></div></div></div>
+
 </body>
 </html>

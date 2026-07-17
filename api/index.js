@@ -423,13 +423,159 @@ app.get('/api/exams/:id/submissions', async (req, res) => {
   ok(res, rows);
 });
 
-app.get('/api/students/:studentId/submissions', async (req, res) => {
-  const rows = await db.find('examSubmissions', s => s.studentId === req.params.studentId);
-  ok(res, rows);
+// =====================================================================
+// VIRTUAL CLASSROOMS — lecturers/HODs post objective + theory questions
+// with a time frame; system auto-grades when submitted or when time is up.
+// =====================================================================
+function gradeClassroom(classroom, answers) {
+  // answers: { objective: [selectedIndex,...], theory: { [qid]: "text" } }
+  const objective = classroom.questions.filter(q => q.type === 'objective');
+  const theory = classroom.questions.filter(q => q.type === 'theory');
+  let objScore = 0, objTotal = 0;
+  const objBreakdown = objective.map((q, i) => {
+    const sel = answers && answers.objective ? answers.objective[i] : undefined;
+    const correct = Number(sel) === Number(q.correctIndex);
+    const pts = Number(q.points || 1);
+    objTotal += pts;
+    if (correct) objScore += pts;
+    return { question: q.text, selected: sel, correctIndex: q.correctIndex, correct, points: correct ? pts : 0 };
+  });
+  // Theory: auto-grade by keyword coverage when model answers exist, else mark pending.
+  const theoryBreakdown = theory.map(q => {
+    const ans = (answers && answers.theory && answers.theory[q.id]) || '';
+    let auto = null;
+    if (q.modelAnswer && q.keywords && q.keywords.length) {
+      const hay = (ans || '').toLowerCase();
+      const hits = q.keywords.filter(k => hay.includes(String(k).toLowerCase())).length;
+      auto = Math.round((hits / q.keywords.length) * Number(q.points || 5));
+    }
+    return { question: q.text, answer: ans, modelAnswer: q.modelAnswer || '', autoScore: auto, points: Number(q.points || 5), status: auto === null ? 'pending' : 'auto' };
+  });
+  const theoryScore = theoryBreakdown.reduce((s, b) => s + (b.autoScore || 0), 0);
+  const theoryTotal = theoryBreakdown.reduce((s, b) => s + b.points, 0);
+  const score = objScore + theoryScore;
+  const totalPoints = objTotal + theoryTotal;
+  return {
+    objectiveBreakdown: objBreakdown, theoryBreakdown,
+    objScore, objTotal, theoryScore, theoryTotal, score, totalPoints,
+    percentage: totalPoints ? Math.round((score / totalPoints) * 100) : 0,
+    needsManualTheory: theoryBreakdown.some(b => b.status === 'pending')
+  };
+}
+
+app.get('/api/classrooms', async (req, res) => {
+  const { courseCode, lecturerId, status } = req.query;
+  let rows = await db.getAll('classrooms');
+  if (courseCode) rows = rows.filter(r => r.courseCode === courseCode);
+  if (lecturerId) rows = rows.filter(r => r.lecturerId === lecturerId);
+  if (status) rows = rows.filter(r => r.status === status);
+  ok(res, rows.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
 });
 
-// =====================================================================
+app.get('/api/classrooms/:id', async (req, res) => {
+  const c = await db.getById('classrooms', req.params.id);
+  if (!c) return fail(res, 404, 'Classroom not found');
+  ok(res, c);
+});
+
+app.post('/api/classrooms', async (req, res) => {
+  const { title, courseCode, lecturerId, lecturerName, durationMinutes, openAt, closeAt, questions } = req.body || {};
+  if (!title || !courseCode || !Array.isArray(questions) || !questions.length) {
+    return fail(res, 400, 'title, courseCode, and a non-empty questions array are required');
+  }
+  if (!lecturerId) return fail(res, 400, 'lecturerId is required');
+  const author = await db.getById('users', lecturerId);
+  if (!author || !['lecturer', 'admin', 'hod'].includes(author.role)) {
+    return fail(res, 403, 'Only lecturers, HODs, and admins can create classrooms');
+  }
+  // normalise question ids + types
+  const norm = questions.map((q, i) => ({
+    id: q.id || ('q' + Date.now() + '_' + i),
+    type: q.type === 'theory' ? 'theory' : 'objective',
+    text: q.text,
+    options: Array.isArray(q.options) ? q.options : [],
+    correctIndex: q.type === 'theory' ? null : Number(q.correctIndex),
+    points: Number(q.points || (q.type === 'theory' ? 5 : 1)),
+    modelAnswer: q.modelAnswer || '',
+    keywords: Array.isArray(q.keywords) ? q.keywords : (q.keywords ? String(q.keywords).split(',').map(s => s.trim()).filter(Boolean) : [])
+  }));
+  const record = await db.insert('classrooms', {
+    title, courseCode, lecturerId, lecturerName: lecturerName || author.name,
+    durationMinutes: Number(durationMinutes || 30),
+    openAt: openAt || null, closeAt: closeAt || null,
+    questions: norm, status: 'published', autoGraded: true
+  });
+  ok(res, record);
+});
+
+app.put('/api/classrooms/:id', async (req, res) => {
+  const updated = await db.update('classrooms', req.params.id, req.body);
+  if (!updated) return fail(res, 404, 'Classroom not found');
+  ok(res, updated);
+});
+
+app.delete('/api/classrooms/:id', async (req, res) => {
+  const removed = await db.remove('classrooms', req.params.id);
+  if (!removed) return fail(res, 404, 'Classroom not found');
+  ok(res, { id: req.params.id });
+});
+
+// Student (or auto on expiry) submission — auto-graded
+app.post('/api/classrooms/:id/submit', async (req, res) => {
+  const classroom = await db.getById('classrooms', req.params.id);
+  if (!classroom) return fail(res, 404, 'Classroom not found');
+  const { studentId, studentName, answers, auto } = req.body || {};
+  if (!studentId) return fail(res, 400, 'studentId is required');
+  const existing = await db.findOne('classroomSubmissions', s => s.classroomId === classroom.id && s.studentId === studentId);
+  if (existing && !auto) return fail(res, 409, 'You have already submitted this classroom');
+
+  const graded = gradeClassroom(classroom, answers || {});
+  const record = await db.insert('classroomSubmissions', {
+    classroomId: classroom.id, classroomTitle: classroom.title, courseCode: classroom.courseCode,
+    studentId, studentName: studentName || '', answers: answers || {},
+    ...graded, autoSubmitted: !!auto, submittedAt: new Date().toISOString()
+  });
+  ok(res, record);
+});
+
+// Auto-close expired classrooms: grade anyone who hasn't submitted as empty (0)
+async function autoCloseExpiredClassrooms() {
+  try {
+    const now = Date.now();
+    const rooms = await db.getAll('classrooms');
+    for (const room of rooms) {
+      if (!room.closeAt || room.status === 'closed') continue;
+      if (new Date(room.closeAt).getTime() <= now) {
+        const subs = await db.find('classroomSubmissions', s => s.classroomId === room.id);
+        const enrolled = await db.find('registrations', r => r.courseCode === room.courseCode);
+        const done = new Set(subs.map(s => s.studentId));
+        for (const e of enrolled) {
+          if (!done.has(e.studentId)) {
+            const g = gradeClassroom(room, { objective: [], theory: {} });
+            await db.insert('classroomSubmissions', {
+              classroomId: room.id, classroomTitle: room.title, courseCode: room.courseCode,
+              studentId: e.studentId, studentName: e.studentName || '', answers: { objective: [], theory: {} },
+              ...g, autoSubmitted: true, expired: true, submittedAt: new Date().toISOString()
+            });
+          }
+        }
+        await db.update('classrooms', room.id, { status: 'closed' });
+      }
+    }
+  } catch (e) {
+    console.warn('[CampusIQ] autoClose classrooms failed:', e.message);
+  }
+}
+// run periodically
+setInterval(autoCloseExpiredClassrooms, 60000);
+autoCloseExpiredClassrooms().catch(() => {});
+
+app.get('/api/classrooms/:id/submissions', async (req, res) => {
+  ok(res, await db.find('classroomSubmissions', s => s.classroomId === req.params.id));
+});
+
 // ATTENDANCE — Lecturer takes attendance per course/session
+
 // =====================================================================
 app.get('/api/attendance', async (req, res) => {
   const { courseCode, studentId, date } = req.query;
@@ -913,14 +1059,48 @@ app.put('/api/referrals/:id/use', async (req, res) => {
 // =====================================================================
 // PAPI AI — server-side proxy (keeps provider API keys secret)
 // Supports Anthropic, OpenAI, or OpenRouter depending on env vars.
+// Papi AI web search — DuckDuckGo HTML scrape (no key required). Returns
+// up to `limit` result snippets {title, url, snippet}. Used as a Google/ChatGPT
+// style web lookup when no LLM key is configured, or to ground LLM answers.
+async function papiWebSearch(query, limit = 5) {
+  try {
+    const url = 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(query);
+    const ctrl = new AbortController();
+    const to = setTimeout(() => ctrl.abort(), 8000);
+    const r = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; CampusIQPapi/1.0)' },
+      signal: ctrl.signal
+    });
+    clearTimeout(to);
+    const html = await r.text();
+    const results = [];
+    const re = /<a rel="nofollow" class="result__a" href="([^"]+)">([^<]+)<\/a>[\s\S]*?<a class="result__snippet"[^>]*>([\s\S]*?)<\/a>/g;
+    let m;
+    while ((m = re.exec(html)) && results.length < limit) {
+      results.push({
+        title: m[2].replace(/<[^>]+>/g, '').trim(),
+        url: m[1],
+        snippet: m[3].replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&amp;/g, '&').trim()
+      });
+    }
+    return results;
+  } catch (e) {
+    console.warn('[Papi] web search failed:', e.message);
+    return [];
+  }
+}
+
 // Returns { success:true, data:{ reply, provider } } or fail(501,'NO_AI_KEY')
 // when no provider key is configured (frontend then uses offline replies).
+// Supports web search grounding when webSearch:true or no key is present.
 // =====================================================================
 app.post('/api/ai/ask', async (req, res) => {
-  const { messages, system, fileContent } = req.body || {};
+  const { messages, system, fileContent, webSearch } = req.body || {};
   if (!Array.isArray(messages) || !messages.length) {
     return fail(res, 400, 'messages are required');
   }
+  const lastQuestion = [...messages].reverse().find(m => m.role === 'user');
+  const query = lastQuestion ? String(lastQuestion.content || '') : '';
 
   let convo = messages.slice(-20).map(m => ({ role: m.role, content: String(m.content || '') }));
   if (fileContent && String(fileContent).trim()) {
@@ -934,6 +1114,16 @@ app.post('/api/ai/ask', async (req, res) => {
   const openrouterKey = process.env.OPENROUTER_API_KEY;
 
   try {
+    // When web search is requested (or no LLM key) gather live web results.
+    let webResults = [];
+    if (webSearch || (!anthropicKey && !openaiKey && !openrouterKey)) {
+      webResults = await papiWebSearch(query, 5);
+    }
+    if (webResults.length) {
+      const ctx = webResults.map((w, i) => `Source ${i + 1} (${w.url}):\n${w.title}\n${w.snippet}`).join('\n\n');
+      convo.push({ role: 'user', content: 'Web search results to use when answering:\n' + ctx });
+    }
+
     if (anthropicKey) {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -964,9 +1154,15 @@ app.post('/api/ai/ask', async (req, res) => {
       const data = await r.json();
       const text = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
       if (!text) return fail(res, 502, 'Empty response from AI provider');
-      return ok(res, { reply: text, provider: openrouterKey ? 'openrouter' : 'openai' });
+      return ok(res, { reply: text, provider: openrouterKey ? 'openrouter' : 'openai', webResults });
     }
 
+    // No LLM key: answer Google-style from web search results (if any),
+    // otherwise signal the client to use its offline engine.
+    if (webResults.length) {
+      const answer = webResults.map((w, i) => `${i + 1}. ${w.title}\n${w.snippet}\n🔗 ${w.url}`).join('\n\n');
+      return ok(res, { reply: 'Here is what I found on the web:\n\n' + answer, provider: 'web', webResults });
+    }
     return fail(res, 501, 'NO_AI_KEY');
   } catch (err) {
     console.error('Papi AI error:', err);

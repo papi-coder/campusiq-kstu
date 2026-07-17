@@ -494,16 +494,23 @@ async function askPapi(prefill){
   const thinking = addAIMsg('Papi is thinking…', 'ai thinking');
   papiHistory.push({ role:'user', content: promptText });
   if(papiHistory.length > 20) papiHistory = papiHistory.slice(-20);
-  let reply = null;
+  let reply = null, webResults = null;
   try {
     const fileContent = files.map(f => f.text || '').filter(Boolean).join('\n\n');
-    const data = await CampusAPI.askAI({ messages: papiHistory, system: PAPI_SYSTEM, locale: currentLang, fileContent });
+    const data = await CampusAPI.askAI({ messages: papiHistory, system: PAPI_SYSTEM, locale: currentLang, fileContent, webSearch: true });
     if(data && data.reply) reply = data.reply;
+    if(data && data.webResults && data.webResults.length) webResults = data.webResults;
   } catch(err){ console.warn('Papi backend unavailable, using offline replies:', err); }
   if(!reply) reply = getPapiOffline(msg);
   thinking.textContent = reply;
   thinking.classList.remove('thinking');
   if(reply) papiHistory.push({ role:'assistant', content: reply });
+  if(webResults && webResults.length){
+    const wrap = document.createElement('div');
+    wrap.className = 'ai-att-list';
+    wrap.innerHTML = '<div class="ai-att-title">🌐 Sources (web)</div>' + webResults.map(w=>`<a class="ai-att" href="${escAttr(w.url)}" target="_blank" rel="noopener">${escAttr(w.title)}</a>`).join('');
+    thinking.appendChild(wrap);
+  }
   // Embed a live map when the question is about a location
   const mapQuery = detectLocationQuery(msg || (files.length ? files[0].name : ''));
   if(mapQuery) thinking.appendChild(renderMapEmbed(mapQuery));
@@ -799,7 +806,77 @@ async function loadClassroom(){
     ml.innerHTML = materials.length
       ? `<div class="gc"><div class="flex flex-col gap-05">${materials.map(m => renderMaterialRow(m, isLec)).join('')}</div></div>`
       : '<div class="text-quiet text-sm">No materials uploaded yet.</div>';
+    // VIRTUAL CLASSROOMS (tests/quizzes)
+    const cl = document.getElementById('classrooms-list');
+    const rooms = await CampusAPI.listClassrooms().catch(()=>[]);
+    if(!rooms.length){ cl.innerHTML = '<div class="text-quiet text-sm">No virtual classrooms posted yet.</div>'; }
+    else {
+      cl.innerHTML = `<div class="grid2">${rooms.map(r => {
+        const open = !r.openAt || new Date(r.openAt) <= new Date();
+        const closed = r.status === 'closed' || (r.closeAt && new Date(r.closeAt) < new Date());
+        const obj = r.questions.filter(q=>q.type==='objective').length;
+        const thy = r.questions.filter(q=>q.type==='theory').length;
+        let action;
+        if(closed) action = '<span class="badge b-red">Closed</span>';
+        else if(!open) action = '<span class="badge b-gold">Opens later</span>';
+        else action = `<button class="btn-p btn-sm" onclick="takeClassroom('${r.id}')">Take Test</button>`;
+        return `<div class="gc mb-75">
+          <div class="text-base fw-600">${escAttr(r.title)}</div>
+          <div class="text-072 text-t2 mb-05">${escAttr(r.courseCode)} · ${r.durationMinutes}min · ${obj} objective / ${thy} theory</div>
+          <div class="text-072 text-t2 mb-05">Closes: ${r.closeAt?new Date(r.closeAt).toLocaleString():'—'}</div>
+          ${action}
+        </div>`;
+      }).join('')}</div>`;
+    }
    } catch(err){ console.warn(err); console.error(err); }
+}
+
+// VIRTUAL CLASSROOM — student takes the test (objective auto-graded, theory submitted)
+let crTimer = null, crSeconds = 0, crId = null, crCloseTs = 0;
+async function takeClassroom(id){
+  try{
+    const r = await CampusAPI.getClassroom(id);
+    crId = id; crCloseTs = r.closeAt ? new Date(r.closeAt).getTime() : 0;
+    const obj = r.questions.filter(q=>q.type==='objective');
+    const thy = r.questions.filter(q=>q.type==='theory');
+    const objHtml = obj.map((q,i)=>`<div class="gc mt-05"><div class="fw-600 mb-05">${i+1}. ${escAttr(q.text)}</div>${q.options.map((o,oi)=>`<label class="flex gap-05 mb-05"><input type="radio" name="cro${i}" value="${oi}"> ${escAttr(o)}</label>`).join('')}</div>`).join('');
+    const thyHtml = thy.map((q,i)=>`<div class="gc mt-05"><div class="fw-600 mb-05">Theory ${i+1}. ${escAttr(q.text)}</div><textarea id="crt${i}" rows="4" class="fi2" placeholder="Write your answer…"></textarea></div>`).join('');
+    const box = document.getElementById('cr-test-box');
+    box.innerHTML = `<div class="sh"><h2>${escAttr(r.title)}</h2><div class="sh-line"></div><span class="badge b-blue" id="cr-timer">${r.durationMinutes}:00</span></div>
+      <div class="text-072 text-t2 mb-1">${escAttr(r.courseCode)} · auto-submits when time is up</div>
+      <div id="cr-objective">${objHtml||'<div class="text-quiet text-sm">No objective questions.</div>'}</div>
+      <div id="cr-theory">${thyHtml}</div>
+      <button class="btn-p mt-1" onclick="submitClassroomTest('${id}')">Submit Test</button>`;
+    document.getElementById('cr-test-modal').classList.add('open');
+    crSeconds = Number(r.durationMinutes||30)*60;
+    startCrTimer();
+  }catch(e){ alert(e.message); }
+}
+function startCrTimer(){
+  clearInterval(crTimer);
+  const tick = ()=>{
+    crSeconds--;
+    const t = document.getElementById('cr-timer'); if(t) t.textContent = Math.floor(crSeconds/60)+':'+String(crSeconds%60).padStart(2,'0');
+    if(crCloseTs && Date.now() >= crCloseTs){ clearInterval(crTimer); submitClassroomTest(crId, true); return; }
+    if(crSeconds<=0){ clearInterval(crTimer); submitClassroomTest(crId, true); }
+  };
+  crTimer = setInterval(tick, 1000);
+}
+async function submitClassroomTest(id, auto){
+  clearInterval(crTimer);
+  const r = await CampusAPI.getClassroom(id).catch(()=>({questions:[]}));
+  const objective = r.questions.filter(q=>q.type==='objective').map((q,i)=>{ const el=document.querySelector(`input[name="cro${i}"]:checked`); return el?Number(el.value):null; });
+  const theory = {}; r.questions.filter(q=>q.type==='theory').forEach((q,i)=>{ theory[q.id]=document.getElementById('crt'+i)?.value||''; });
+  try{
+    const res = await CampusAPI.submitClassroom(id, { studentId: currentUser.id, studentName: currentUser.name, answers: { objective, theory } });
+    document.getElementById('cr-test-modal').classList.remove('open');
+    document.getElementById('cr-result-box').innerHTML = `<div class="sh"><h2>Result</h2><div class="sh-line"></div></div>
+      <div class="gc"><div class="text-base fw-600">Score: ${res.score}/${res.totalPoints} (${res.percentage}%)</div>
+      <div class="text-072 text-t2">Objective ${res.objScore}/${res.objTotal} · Theory ${res.theoryScore}/${res.theoryTotal}</div>
+      ${res.needsManualTheory?'<div class="badge b-gold">Theory answers pending manual grading</div>':''}</div>`;
+    document.getElementById('cr-result-modal').classList.add('open');
+    loadClassroom();
+  }catch(e){ alert(e.message); }
 }
 
 // EXAM CREATE

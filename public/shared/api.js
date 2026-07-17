@@ -361,6 +361,17 @@ Object.assign(CampusAPI, {
   askAI: (payload) => CampusAPI.post('/api/ai/ask', payload),
 });
 
+// Virtual classrooms
+Object.assign(CampusAPI, {
+  listClassrooms: (params = {}) => { const q = new URLSearchParams(params).toString(); return CampusAPI.get('/api/classrooms' + (q ? '?' + q : '')); },
+  getClassroom: (id) => CampusAPI.get(`/api/classrooms/${id}`),
+  createClassroom: (c) => CampusAPI.post('/api/classrooms', c),
+  updateClassroom: (id, patch) => CampusAPI.put(`/api/classrooms/${id}`, patch),
+  deleteClassroom: (id) => CampusAPI.del(`/api/classrooms/${id}`),
+  submitClassroom: (id, body) => CampusAPI.post(`/api/classrooms/${id}/submit`, body),
+  listClassroomSubmissions: (id) => CampusAPI.get(`/api/classrooms/${id}/submissions`),
+});
+
 // Bulk import
 Object.assign(CampusAPI, {
   bulkImport: (collection, records) => CampusAPI.post('/api/bulk-import', { collection, records }),

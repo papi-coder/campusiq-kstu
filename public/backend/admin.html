@@ -110,6 +110,7 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
     <div class="sb-item" onclick="go('fees',this)">💰 Fees & Finance</div>
     <div class="sb-sec">Academic</div>
     <div class="sb-item" onclick="go('calendar',this)">📆 Academic Calendar</div>
+    <div class="sb-item" onclick="go('classrooms',this)">🏫 Virtual Classrooms</div>
     <div class="sb-item" onclick="go('allocations',this)">🛏 Hostel Allocations</div>
     <div class="sb-sec">Finance</div>
     <div class="sb-item" onclick="go('payments',this)">💳 Fees Payments</div>
@@ -349,6 +350,34 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
       </div>
     </div>
 
+    <!-- VIRTUAL CLASSROOMS -->
+    <div class="page" id="page-classrooms">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <div class="page-title" style="margin:0">Virtual Classrooms</div>
+        <button class="btn-fill" onclick="openClassroomModal()">🏫 Create Classroom</button>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <table><thead><tr><th>Title</th><th>Course</th><th>Duration</th><th>Opens</th><th>Closes</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="classrooms-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- CLASSROOM MODAL -->
+    <div class="modal-bg" id="classroom-modal">
+      <div class="modal">
+        <h2><span>Create Virtual Classroom</span><button onclick="closeModal('classroom-modal')">✕</button></h2>
+        <label class="label">Title *</label><input id="cr-title" placeholder="e.g. Week 3 — Data Structures">
+        <label class="label">Course Code *</label><input id="cr-course" placeholder="e.g. CPT 201">
+        <label class="label">Duration (minutes) *</label><input id="cr-duration" type="number" value="30" placeholder="30">
+        <label class="label">Opens At (optional)</label><input id="cr-open" type="datetime-local">
+        <label class="label">Closes At (deadline) *</label><input id="cr-close" type="datetime-local">
+        <label class="label">Questions (one per line). Prefix: [O] objective (options | correct), [T] theory</label>
+        <textarea id="cr-questions" rows="9" placeholder="[O] What is a stack? | Push,Pop,Queue,Tree | 0&#10;[O] Big-O of binary search? | O(n),O(log n),O(n^2),O(1) | 1&#10;[T] Explain recursion with an example. | keywords: base case, stack, function calls"></textarea>
+        <div class="msg" id="cr-msg"></div>
+        <button class="btn-fill" style="width:100%" onclick="submitClassroom()">Publish Classroom</button>
+      </div>
+    </div>
+
     <!-- SETTINGS -->
     <div class="page" id="page-settings">
       <div class="page-title">Settings</div>
@@ -472,7 +501,8 @@ function adminLogin(){
   const username=document.getElementById('a-user').value.trim();
   const password=document.getElementById('a-pass').value;
   const err=document.getElementById('a-err');
-  CampusAPI.adminLogin(username,password).then(()=>{
+  CampusAPI.adminLogin(username,password).then((u)=>{
+    window.__adminUser={id:u.id,name:u.name,role:u.role};
     document.getElementById('login-screen').style.display='none';
     document.getElementById('topbar').style.display='flex';
     document.getElementById('layout').style.display='flex';
@@ -499,6 +529,7 @@ function go(page,el){
   if(page==='calendar')loadCalendar();
   if(page==='allocations')loadAllocations();
   if(page==='payments')loadPayments();
+  if(page==='classrooms')loadClassrooms();
 }
 
 function closeModal(id){document.getElementById(id).classList.remove('open');}
@@ -884,6 +915,93 @@ async function submitBulk(){
     msg.style.color='#34d399'; msg.textContent='✅ Imported '+(r.imported||records.length)+' records into "'+collection+'".';
     document.getElementById('bulk-data').value='';
   }catch(e){ msg.style.color='#fca5a5'; msg.textContent=e.message; }
+}
+
+// ---------- VIRTUAL CLASSROOMS ----------
+async function loadClassrooms(){
+  const tbody=document.getElementById('classrooms-tbody');
+  tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#475569">Loading…</td></tr>';
+  try{
+    const rows=await CampusAPI.listClassrooms();
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#475569;padding:1.5rem">No classrooms yet.</td></tr>';return;}
+    tbody.innerHTML=rows.map(c=>`<tr>
+      <td style="font-weight:600">${escapeHtml(c.title)}</td>
+      <td>${escapeHtml(c.courseCode)}</td>
+      <td>${c.durationMinutes||30} min</td>
+      <td>${c.openAt?new Date(c.openAt).toLocaleString():'Now'}</td>
+      <td>${c.closeAt?new Date(c.closeAt).toLocaleString():'—'}</td>
+      <td><span class="badge ${c.status==='closed'?'b-red':'b-green'}">${escapeHtml(c.status||'published')}</span></td>
+      <td><button class="btn-sm btn-blue" onclick="viewClassroom('${c.id}')">View</button> <button class="btn-sm btn-red" onclick="deleteClassroom('${c.id}')">Delete</button></td>
+    </tr>`).join('');
+  }catch(e){tbody.innerHTML=`<tr><td colspan="7" style="color:#fca5a5">Error: ${e.message}</td></tr>`;}
+}
+function openClassroomModal(){
+  ['cr-title','cr-course','cr-questions'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('cr-duration').value='30';
+  document.getElementById('cr-open').value='';
+  document.getElementById('cr-close').value='';
+  document.getElementById('cr-msg').textContent='';
+  document.getElementById('classroom-modal').classList.add('open');
+}
+function parseClassroomQuestions(text){
+  const lines=text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  const questions=[];
+  for(const line of lines){
+    if(line.startsWith('[O]')||line.startsWith('[o]')){
+      const body=line.slice(3).trim();
+      const parts=body.split('|').map(s=>s.trim());
+      if(parts.length<2)continue;
+      const opts=parts[1].split(',').map(s=>s.trim());
+      const correct=parseInt(parts[2],10);
+      questions.push({type:'objective',text:parts[0],options:opts,correctIndex:isNaN(correct)?0:correct,points:1});
+    }else if(line.startsWith('[T]')||line.startsWith('[t]')){
+      const body=line.slice(3).trim();
+      const parts=body.split('|').map(s=>s.trim());
+      const kw=parts[1]?parts[1].split(',').map(s=>s.trim()).filter(Boolean):[];
+      questions.push({type:'theory',text:parts[0],modelAnswer:'',keywords:kw,points:5});
+    }
+  }
+  return questions;
+}
+async function submitClassroom(){
+  const title=document.getElementById('cr-title').value.trim();
+  const courseCode=document.getElementById('cr-course').value.trim();
+  const durationMinutes=document.getElementById('cr-duration').value;
+  const openAt=document.getElementById('cr-open').value;
+  const closeAt=document.getElementById('cr-close').value;
+  const msg=document.getElementById('cr-msg');
+  if(!title||!courseCode){msg.style.color='#fca5a5';msg.textContent='Title and course code are required.';return;}
+  if(!closeAt){msg.style.color='#fca5a5';msg.textContent='A closing deadline is required (system auto-grades when it passes).';return;}
+  let questions;
+  try{ questions=parseClassroomQuestions(document.getElementById('cr-questions').value); }
+  catch(e){ msg.style.color='#fca5a5'; msg.textContent='Question parse error: '+e.message; return; }
+  if(!questions.length){msg.style.color='#fca5a5';msg.textContent='Add at least one question ([O] objective or [T] theory).';return;}
+  // Lecturer context: use current admin/login. Fallback to admin.
+  const me=window.__adminUser||{id:'admin',name:'Admin'};
+  msg.style.color='#34d399';msg.textContent='Publishing…';
+  try{
+    await CampusAPI.createClassroom({
+      title,courseCode,durationMinutes:Number(durationMinutes||30),
+      openAt:openAt?new Date(openAt).toISOString():null,
+      closeAt:new Date(closeAt).toISOString(),
+      lecturerId:me.id||'admin',lecturerName:me.name||'Admin',
+      questions
+    });
+    closeModal('classroom-modal');loadClassrooms();
+  }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
+}
+async function viewClassroom(id){
+  try{
+    const c=await CampusAPI.getClassroom(id);
+    const subs=await CampusAPI.listClassroomSubmissions(id);
+    const lines=c.questions.map((q,i)=>`${i+1}. [${q.type==='theory'?'Theory':'Objective'}] ${q.text}`).join('\n');
+    const graded=subs.map(s=>`${s.studentName||s.studentId}: ${s.score}/${s.totalPoints} (${s.percentage}%)`).join('\n');
+    alert('Classroom: '+c.title+'\nCourse: '+c.courseCode+'\n\nQuestions:\n'+lines+'\n\nSubmissions ('+subs.length+'):\n'+(graded||'None yet'));
+  }catch(e){alert(e.message);}
+}
+async function deleteClassroom(id){
+  if(!confirm('Delete this classroom?'))return;
+  try{await CampusAPI.deleteClassroom(id);loadClassrooms();}catch(e){alert(e.message);}
 }
 
 // ---------- TIMETABLE ----------
