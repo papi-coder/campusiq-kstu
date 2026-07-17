@@ -509,6 +509,7 @@ app.get('/api/attendance/summary/:studentId', async (req, res) => {
 // =====================================================================
 app.get('/api/health', async (req, res) => ok(res, { status: 'CampusIQ API running', time: new Date().toISOString() }));
 
+
 app.get('/', async (req, res) => {
   res.sendFile(path.join(publicDir, 'index.html'));
 });
