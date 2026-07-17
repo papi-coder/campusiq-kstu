@@ -20,10 +20,14 @@ app.use(cors({
 app.use(express.json());
 app.use(express.static(publicDir));
 
+// One-time migration from JSON files to PostgreSQL (Supabase)
+// Fire-and-forget so it doesn't block server startup.
+const migrationPromise = db.migrateFromJson().catch(e => console.error('[CampusIQ] Migration failed:', e));
+
 // Seed default data on first run (admin account, sample hostels, etc.)
 // Wrapped so a seeding failure does not crash the serverless function
 // and take down /api/health and every other route.
-const seedPromise = (async () => { await db.seedIfEmpty(); })();
+const seedPromise = (async () => { await migrationPromise; await db.seedIfEmpty(); })();
 seedPromise.catch((e) => console.error('[CampusIQ] Seed failed:', e));
 
 // ---------- helpers ----------
