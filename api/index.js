@@ -1063,31 +1063,48 @@ app.put('/api/referrals/:id/use', async (req, res) => {
 // up to `limit` result snippets {title, url, snippet}. Used as a Google/ChatGPT
 // style web lookup when no LLM key is configured, or to ground LLM answers.
 async function papiWebSearch(query, limit = 5) {
-  try {
-    const url = 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(query);
-    const ctrl = new AbortController();
-    const to = setTimeout(() => ctrl.abort(), 8000);
-    const r = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; CampusIQPapi/1.0)' },
-      signal: ctrl.signal
-    });
-    clearTimeout(to);
-    const html = await r.text();
-    const results = [];
-    const re = /<a rel="nofollow" class="result__a" href="([^"]+)">([^<]+)<\/a>[\s\S]*?<a class="result__snippet"[^>]*>([\s\S]*?)<\/a>/g;
-    let m;
-    while ((m = re.exec(html)) && results.length < limit) {
-      results.push({
-        title: m[2].replace(/<[^>]+>/g, '').trim(),
-        url: m[1],
-        snippet: m[3].replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&amp;/g, '&').trim()
+  const endpoints = [
+    'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(query),
+    'https://lite.duckduckgo.com/lite/?q=' + encodeURIComponent(query)
+  ];
+  for (const url of endpoints) {
+    try {
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), 8000);
+      const r = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml'
+        },
+        signal: ctrl.signal
       });
+      clearTimeout(to);
+      const html = await r.text();
+      const results = [];
+      const re = /<a[^>]+class="[^"]*result__a[^"]*"[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>|class="result__snippet"[^>]*>([\s\S]*?)<\/a>/g;
+      const titleRe = /class="[^"]*result__a[^"]*"[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g;
+      let tm;
+      while ((tm = titleRe.exec(html)) && results.length < limit) {
+        results.push({
+          title: tm[2].replace(/<[^>]+>/g, '').trim(),
+          url: tm[1],
+          snippet: ''
+        });
+      }
+      // snippet pass
+      const snipRe = /class="result__snippet"[^>]*>([\s\S]*?)<\/a>/g;
+      let si = 0, sm;
+      while ((sm = snipRe.exec(html)) && si < results.length) {
+        results[si].snippet = sm[1].replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&#x27;|&#39;/g, "'").trim();
+        si++;
+      }
+      const clean = results.filter(x => x.title).map(x => ({ ...x, url: x.url.replace(/^\/\//, 'https://') }));
+      if (clean.length) return clean.slice(0, limit);
+    } catch (e) {
+      console.warn('[Papi] web search endpoint failed:', url, e.message);
     }
-    return results;
-  } catch (e) {
-    console.warn('[Papi] web search failed:', e.message);
-    return [];
   }
+  return [];
 }
 
 // Returns { success:true, data:{ reply, provider } } or fail(501,'NO_AI_KEY')
