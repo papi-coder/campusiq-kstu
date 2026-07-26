@@ -73,6 +73,38 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 .msg{font-size:0.78rem;min-height:1rem;margin-bottom:0.5rem;text-align:center}
 .cred-box{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:0.875rem;font-size:0.8rem;line-height:1.9}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+
+/* COPYRIGHT FOOTER */
+.copyright-footer{margin-top:2rem;padding:1.25rem 1rem;border-top:1px solid rgba(255,255,255,0.08);text-align:center}
+.copyright-line{font-size:.62rem;color:#475569;letter-spacing:.08em;line-height:1.8}
+.copyright-footer strong{color:#64748b}
+
+@media (max-width:768px){
+  .layout{flex-direction:column}
+  .sidebar{position:relative;top:auto;width:100%;border-right:none;border-bottom:1px solid rgba(255,255,255,0.06);padding:.5rem 0;max-height:300px;overflow-y:auto}
+  .content{margin-left:0;padding:1rem .75rem;max-width:100%}
+  .grid2{grid-template-columns:1fr!important}
+  table{font-size:.7rem;min-width:400px}
+  th,td{padding:.35rem .25rem}
+  .card{padding:.75rem;margin-bottom:.65rem;border-radius:10px}
+  .page-title{font-size:.85rem}
+  .copyright-line{font-size:.55rem}
+}
+@media (max-width:480px){
+  .content{padding:1rem .5rem}
+  .card{padding:.65rem;border-radius:8px}
+  table{min-width:320px;font-size:.65rem}
+  .btn-fill{padding:.4rem .75rem;font-size:.72rem;border-radius:14px}
+  .login-box{padding:1.5rem 1rem;border-radius:16px}
+  .copyright-line{font-size:.5rem}
+}
+@media (max-width:360px){
+  .content{padding:.875rem .4rem}
+  .card{padding:.55rem;border-radius:6px}
+  table{min-width:280px;font-size:.6rem}
+  .btn-fill{padding:.35rem .6rem;font-size:.68rem;border-radius:12px}
+  .login-box{padding:1.25rem .75rem}
+}
 </style>
 </head>
 <body>
@@ -373,6 +405,9 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
         <label class="label">Closes At (deadline) *</label><input id="cr-close" type="datetime-local">
         <label class="label">Questions (one per line). Prefix: [O] objective (options | correct), [T] theory</label>
         <textarea id="cr-questions" rows="9" placeholder="[O] What is a stack? | Push,Pop,Queue,Tree | 0&#10;[O] Big-O of binary search? | O(n),O(log n),O(n^2),O(1) | 1&#10;[T] Explain recursion with an example. | keywords: base case, stack, function calls"></textarea>
+        <label class="label">Or upload a questions file from your device (CSV or JSON)</label>
+        <input id="cr-file" type="file" accept=".csv,.json,.txt" style="margin-bottom:0.5rem">
+        <button type="button" class="btn-sm btn-blue" style="width:100%;margin-bottom:0.5rem" onclick="loadClassroomFile()">📂 Load Questions from File</button>
         <div class="msg" id="cr-msg"></div>
         <button class="btn-fill" style="width:100%" onclick="submitClassroom()">Publish Classroom</button>
       </div>
@@ -491,9 +526,15 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
     <div class="msg" id="rm-msg"></div>
     <button class="btn-fill" style="width:100%" onclick="submitResult()">Save Result</button>
   </div>
-</div>
+ </div>
 
-<script src="../shared/api.js"></script>
+ <!-- COPYRIGHT FOOTER -->
+ <footer class="copyright-footer">
+   <div class="copyright-line">© 2026 CampusIQ · Kumasi Technical University. All rights reserved.</div>
+   <div class="copyright-line">Designed &amp; Developed by <strong>Papi</strong> · Built with ❤️ for KsTU</div>
+ </footer>
+
+ <script src="../shared/api.js"></script>
 <script>
 let currentRole='student';
 
@@ -943,6 +984,37 @@ function openClassroomModal(){
   document.getElementById('cr-msg').textContent='';
   document.getElementById('classroom-modal').classList.add('open');
 }
+function parseClassroomFile(text){
+  // Supports: [O]/[T] line format, JSON array, or CSV (type,text,options,correctIndex,keywords)
+  text=text.trim();
+  if(text.startsWith('[')||text.startsWith('{')){
+    const data=JSON.parse(text);
+    const arr=Array.isArray(data)?data:(data&&data.questions?data.questions:[data]);
+    return arr.map((q,i)=>{
+      if(q.type==='theory'||q.theory) return {type:'theory',text:q.text||q.question,q:id++,modelAnswer:q.modelAnswer||'',keywords:Array.isArray(q.keywords)?q.keywords:String(q.keywords||'').split(',').map(s=>s.trim()).filter(Boolean),points:Number(q.points||5)};
+      return {type:'objective',text:q.text||q.question,options:Array.isArray(q.options)?q.options:String(q.options||'').split(',').map(s=>s.trim()),correctIndex:Number(q.correctIndex!=null?q.correctIndex:0),points:Number(q.points||1)};
+    });
+  }
+  return parseClassroomQuestions(text);
+}
+function loadClassroomFile(){
+  const input=document.getElementById('cr-file');
+  const msg=document.getElementById('cr-msg');
+  const file=input.files&&input.files[0];
+  if(!file){msg.style.color='#fca5a5';msg.textContent='Choose a CSV or JSON file first.';return;}
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const questions=parseClassroomFile(String(reader.result||''));
+      if(!questions.length){msg.style.color='#fca5a5';msg.textContent='No questions found in file.';return;}
+      const preview=questions.map((q,i)=>`[${q.type==='theory'?'T':'O'}] ${q.text}`).join('\n');
+      document.getElementById('cr-questions').value=preview;
+      msg.style.color='#34d399';msg.textContent='✅ Loaded '+questions.length+' questions from '+file.name;
+    }catch(e){msg.style.color='#fca5a5';msg.textContent='File parse error: '+e.message;}
+  };
+  reader.onerror=()=>{msg.style.color='#fca5a5';msg.textContent='Could not read file.';};
+  reader.readAsText(file);
+}
 function parseClassroomQuestions(text){
   const lines=text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
   const questions=[];
@@ -973,8 +1045,14 @@ async function submitClassroom(){
   if(!title||!courseCode){msg.style.color='#fca5a5';msg.textContent='Title and course code are required.';return;}
   if(!closeAt){msg.style.color='#fca5a5';msg.textContent='A closing deadline is required (system auto-grades when it passes).';return;}
   let questions;
-  try{ questions=parseClassroomQuestions(document.getElementById('cr-questions').value); }
-  catch(e){ msg.style.color='#fca5a5'; msg.textContent='Question parse error: '+e.message; return; }
+  const rawText=document.getElementById('cr-questions').value;
+  const fileInput=document.getElementById('cr-file');
+  const file=fileInput&&fileInput.files&&fileInput.files[0];
+  try{
+    if(rawText.trim()) questions=parseClassroomQuestions(rawText);
+    else if(file) questions=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{try{res(parseClassroomFile(String(r.result||'')));}catch(e){rej(e);}};r.onerror=()=>rej(new Error('read failed'));r.readAsText(file);});
+    else questions=[];
+  }catch(e){ msg.style.color='#fca5a5'; msg.textContent='Question parse error: '+e.message; return; }
   if(!questions.length){msg.style.color='#fca5a5';msg.textContent='Add at least one question ([O] objective or [T] theory).';return;}
   // Lecturer context: use current admin/login. Fallback to admin.
   const me=window.__adminUser||{id:'admin',name:'Admin'};
