@@ -271,10 +271,13 @@ window.doLogin = async function () {
   const email = document.getElementById('l-email').value.trim();
   const pass = document.getElementById('l-pass').value;
   const loginMessage = document.getElementById('l-err');
+  if (!email || !pass) {
+    if (loginMessage) loginMessage.textContent = 'Please enter both email and password.';
+    return;
+  }
   try {
     const user = await CampusAPI.login(email, pass, window.loginRole || 'student');
     window.currentUser = user;
-    if (window.showLogin) { window.showLogin(); }
     if (window.launchApp) { window.launchApp(); }
   } catch (err) {
     if (loginMessage) loginMessage.textContent = err.message || 'Login failed';
