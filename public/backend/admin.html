@@ -7,33 +7,33 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0a0f;--panel:#0d1117;--blue:#3b82f6;--cyan:#06b6d4;--gold:#f59e0b;--green:#10b981;--red:#ef4444;--t1:#f0f4ff;--t2:#94a3b8;--t3:#475569}
+:root{--bg:#0a0a0f;--panel:#0d1117;--blue:#3b82f6;--cyan:#06b6d4;--gold:#f59e0b;--green:#10b981;--red:#ef4444;--t1:#f0f4ff;--t2:#cbd5e1;--t3:#94a3b8}
 html{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--t1)}
 body{min-height:100vh;background:linear-gradient(135deg,#0a0a0f 0%,#0d1117 60%,#0a0f1a 100%)}
 #login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;background:rgba(0,0,0,0.96)}
 .login-box{background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;width:100%;max-width:380px}
-.login-box h1{font-family:'Orbitron',sans-serif;font-size:1.3rem;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:0.3rem}
+.login-box h1{font-family:'Orbitron',sans-serif;font-size:1.3rem;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:0.3rem}
 .login-box .sub{text-align:center;color:var(--t3);font-size:0.72rem;letter-spacing:0.15em;margin-bottom:1.5rem}
 input,select,textarea{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--t1);padding:0.6rem 0.9rem;border-radius:10px;font-family:inherit;font-size:0.85rem;outline:none;margin-bottom:0.75rem}
 input:focus,select:focus,textarea:focus{border-color:var(--blue)}
 button{cursor:pointer;font-family:inherit;border:none;border-radius:20px;font-weight:500;transition:opacity .15s}
-.btn-primary{background:linear-gradient(135deg,#ef4444,#f59e0b);color:#fff;padding:0.7rem;width:100%;font-size:0.85rem}
+.btn-primary{background:linear-gradient(135deg,#b91c1c,#b45309);color:#fff;padding:0.7rem;width:100%;font-size:0.85rem}
 .btn-primary:hover{opacity:0.88}
 .err{color:#fca5a5;font-size:0.78rem;text-align:center;margin-top:0.5rem;min-height:1.1rem}
-.hint{margin-top:0.875rem;padding:0.6rem;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;font-size:0.7rem;color:var(--t3);text-align:center}
+.hint{margin-top:0.875rem;padding:0.6rem;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;font-size:0.7rem;color:#334155;text-align:center}
 
 .topbar{height:50px;display:flex;align-items:center;padding:0 1rem;gap:0.75rem;background:rgba(10,10,15,0.95);border-bottom:1px solid rgba(255,255,255,0.07);position:sticky;top:0;z-index:50}
-.tb-logo{font-family:'Orbitron',sans-serif;font-size:0.9rem;font-weight:700;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tb-logo{font-family:'Orbitron',sans-serif;font-size:0.9rem;font-weight:700;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .tb-r{margin-left:auto;display:flex;align-items:center;gap:0.75rem;font-size:0.72rem;color:var(--t3)}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:blink 2s infinite}
 @keyframes blink{50%{opacity:0.3}}
-.logout{padding:0.25rem 0.7rem;border:1px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.1);color:#fca5a5;border-radius:20px;font-size:0.7rem}
+.logout{padding:0.25rem 0.7rem;border:1px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.1);color:#dc2626;border-radius:20px;font-size:0.7rem}
 
 .layout{display:flex;min-height:calc(100vh - 50px)}
 .sidebar{width:190px;background:rgba(13,17,23,0.7);border-right:1px solid rgba(255,255,255,0.06);padding:0.75rem 0;flex-shrink:0}
-.sb-item{display:flex;align-items:center;gap:0.55rem;padding:0.5rem 0.875rem;cursor:pointer;font-size:0.78rem;color:var(--t2);border-left:2px solid transparent}
+.sb-item{display:flex;align-items:center;gap:0.55rem;padding:0.5rem 0.875rem;cursor:pointer;font-size:0.78rem;color:var(--t2);border-left:2px solid transparent;background:none;border-top:none;border-right:none;border-bottom:none;font-family:inherit;text-align:left;width:100%}
 .sb-item:hover{background:rgba(255,255,255,0.04)}
-.sb-item.active{background:rgba(239,68,68,0.1);color:#fca5a5;border-left-color:var(--red)}
+.sb-item.active{background:rgba(239,68,68,0.15);color:#ef4444;border-left-color:var(--red)}
 .sb-sec{font-size:0.6rem;color:var(--t3);text-transform:uppercase;letter-spacing:0.1em;padding:0.7rem 0.875rem 0.2rem}
 
 .content{flex:1;padding:1.25rem;overflow-x:hidden}
@@ -53,16 +53,17 @@ table{width:100%;border-collapse:collapse;font-size:0.78rem}
 th{text-align:left;padding:0.5rem;color:var(--t2);font-size:0.65rem;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08)}
 td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 .badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:20px;font-size:0.6rem;font-weight:600;text-transform:uppercase}
-.b-green{background:rgba(16,185,129,0.18);color:#34d399}
-.b-red{background:rgba(239,68,68,0.18);color:#fca5a5}
-.b-gold{background:rgba(245,158,11,0.18);color:#fcd34d}
-.b-blue{background:rgba(59,130,246,0.18);color:#60c8ff}
+.b-green{background:rgba(16,185,129,0.25);color:#6ee7b7}
+.b-red{background:rgba(239,68,68,0.25);color:#fecaca}
+.b-gold{background:rgba(245,158,11,0.25);color:#fde68a}
+.b-blue{background:rgba(59,130,246,0.25);color:#93c5fd}
 
 .btn-sm{padding:0.25rem 0.6rem;font-size:0.68rem;border-radius:14px}
-.btn-blue{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60c8ff}
-.btn-green{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#34d399}
-.btn-red{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#fca5a5}
-.btn-fill{background:linear-gradient(135deg,#3b82f6,#06b6d4);color:#fff;padding:0.5rem 1rem;font-size:0.8rem}
+.btn-blue{background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.35);color:#93c5fd}
+.btn-green{background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.35);color:#6ee7b7}
+.btn-red{background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.35);color:#fecaca}
+.btn-grad-green{background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;padding:0.7rem;width:100%;font-size:0.85rem;border:none;border-radius:20px;font-weight:500;cursor:pointer;font-family:inherit;margin-bottom:0.5rem}
+.btn-grad-gold{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;padding:0.7rem;width:100%;font-size:0.85rem;border:none;border-radius:20px;font-weight:500;cursor:pointer;font-family:inherit}
 
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;align-items:center;justify-content:center;padding:1rem}
 .modal-bg.open{display:flex}
@@ -76,12 +77,74 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
 /* COPYRIGHT FOOTER */
 .copyright-footer{margin-top:2rem;padding:1.25rem 1rem;border-top:1px solid rgba(255,255,255,0.08);text-align:center}
-.copyright-line{font-size:.62rem;color:#475569;letter-spacing:.08em;line-height:1.8}
-.copyright-footer strong{color:#64748b}
+.copyright-line{font-size:.62rem;color:var(--t3);letter-spacing:.08em;line-height:1.8}
+.copyright-footer strong{color:var(--t3)}
+
+.u-flex-between{display:flex;justify-content:space-between;align-items:center}
+.u-w-full{width:100%}
+.u-mb-05{margin-bottom:0.5rem}
+.u-mb-075{margin-bottom:0.75rem}
+.u-mb-1{margin-bottom:1rem}
+.u-mt-1{margin-top:1rem}
+.u-mt-75{margin-top:0.75rem}
+.u-overflow-auto{overflow-x:auto}
+.u-hidden{display:none}
+.u-text-center{text-align:center}
+.u-text-t2{color:var(--t2)}
+.u-text-muted{color:#64748b}
+.u-fw-600{font-weight:600}
+.u-fs-085{font-size:0.85rem}
+.u-fs-078{font-size:0.78rem}
+.u-fs-072{font-size:0.72rem}
+.u-fs-075{font-size:0.75rem}
+.u-min-h-1{min-height:1rem}
+.u-flex-col{display:flex;flex-direction:column}
+.u-gap-05{gap:0.5rem}
+.u-gap-06{gap:0.6rem}
+.u-p-05{padding:0.5rem}
+.u-p-075{padding:0.75rem}
+.u-p-1{padding:1rem}
+.u-px-1{padding-left:1rem;padding-right:1rem}
+.u-py-05{padding-top:0.5rem;padding-bottom:0.5rem}
+.u-bg-panel{background:var(--panel)}
+.u-border-b-light{border-bottom:1px solid rgba(255,255,255,0.05)}
+.u-border-t{border-top:1px solid rgba(255,255,255,0.06)}
+.u-badge-blue{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#93c5fd}
+.u-badge-green{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#6ee7b7}
+.u-badge-red{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#fecaca}
+.u-badge-gold{background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);color:#fde68a}
+.u-stat-students{color:#93c5fd}
+.u-stat-lecturers{color:#6ee7b7}
+.u-stat-hods{color:#fde68a}
+.u-stat-total{color:#c4b5fd}
+.u-row-hover:hover{background:rgba(255,255,255,0.03)}
+.u-success-box{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:0.875rem;font-size:0.8rem;line-height:1.9}
+.u-error-text{color:#fca5a5}
+.u-empty-text{color:#64748b;font-size:0.8rem;text-align:center;padding:1.5rem}
+.u-loading-text{color:#64748b;text-align:center}
+.u-divider{border-bottom:1px solid rgba(255,255,255,0.05);padding:0.4rem 0;font-size:0.78rem}
+.u-admin-green{color:#34d399;font-weight:600}
+.u-fee-total{color:#34d399;font-weight:600}
+.u-admin-title{font-size:0.85rem;margin-bottom:0.75rem}
+.u-admin-subtitle{font-size:0.78rem;margin-bottom:0.75rem}
+.u-card-actions{display:flex;gap:0.5rem;justify-content:flex-end}
+.u-card-section-title{font-size:0.85rem;margin-bottom:0.75rem;font-weight:600}
+.u-flex-gap-sm{display:flex;gap:0.5rem;flex-wrap:wrap}
+.u-modal-success{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:0.875rem;font-size:0.8rem;line-height:1.9;color:#6ee7b7}
+.u-mw-420{max-width:420px}
+.u-mw-620{max-width:620px}
+.u-preview-img{max-width:100%;max-height:180px;border-radius:10px;border:1px solid rgba(255,255,255,0.1)}
+.u-preview-caption{font-size:0.72rem;color:var(--t2);margin-top:0.4rem}
+
+.hamburger{display:none;background:none;border:none;color:var(--t1);font-size:1.4rem;cursor:pointer;padding:0.2rem 0.5rem}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:49}
 
 @media (max-width:768px){
+  .hamburger{display:block}
   .layout{flex-direction:column}
-  .sidebar{position:relative;top:auto;width:100%;border-right:none;border-bottom:1px solid rgba(255,255,255,0.06);padding:.5rem 0;max-height:300px;overflow-y:auto}
+  .sidebar{position:fixed;top:50px;left:-190px;width:190px;height:calc(100vh - 50px);border-right:1px solid rgba(255,255,255,0.06);padding:0.75rem 0;overflow-y:auto;transition:left .25s ease;z-index:50;background:rgba(13,17,23,0.95)}
+  .sidebar.open{left:0}
+  .sidebar-overlay.open{display:block}
   .content{margin-left:0;padding:1rem .75rem;max-width:100%}
   .grid2{grid-template-columns:1fr!important}
   table{font-size:.7rem;min-width:400px}
@@ -113,62 +176,66 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
   <div class="login-box">
     <h1>🛡 Admin Portal</h1>
     <div class="sub">CAMPUSIQ · KSTU BACKEND</div>
-    <input id="a-user" placeholder="Username">
-    <input id="a-pass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')adminLogin()">
+     <label for="a-user" class="u-hidden">Username</label>
+     <input id="a-user" placeholder="Username">
+     <label for="a-pass" class="u-hidden">Password</label>
+     <input id="a-pass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')adminLogin()">
     <button class="btn-primary" onclick="adminLogin()">Sign In</button>
     <div class="err" id="a-err"></div>
     <div class="hint">Default: <strong>admin</strong> / <strong>admin123</strong></div>
   </div>
 </div>
 
-<div class="topbar" id="topbar" style="display:none">
+<div class="topbar" id="topbar" class="u-hidden">
+  <button type="button" class="hamburger" id="hamburger-btn" onclick="toggleSidebar()">☰</button>
   <span>🛡</span><span class="tb-logo">CampusIQ Admin</span>
   <div class="tb-r"><span class="dot"></span> API Connected <button class="logout" onclick="logout()">Sign Out</button></div>
 </div>
 
-<div class="layout" id="layout" style="display:none">
+<div class="layout" id="layout" class="u-hidden">
   <div class="sidebar">
     <div class="sb-sec">Overview</div>
-    <div class="sb-item active" onclick="go('dash',this)">📊 Dashboard</div>
+    <button type="button" class="sb-item" onclick="go('dash',this)">📊 Dashboard</button>
     <div class="sb-sec">Accounts</div>
-    <div class="sb-item" onclick="go('students',this)">🎓 Students</div>
-    <div class="sb-item" onclick="go('lecturers',this)">👨‍🏫 Lecturers</div>
-    <div class="sb-item" onclick="go('hods',this)">🏛 HODs</div>
+    <button type="button" class="sb-item" onclick="go('students',this)">🎓 Students</button>
+    <button type="button" class="sb-item" onclick="go('lecturers',this)">👨‍🏫 Lecturers</button>
+    <button type="button" class="sb-item" onclick="go('hods',this)">🏛 HODs</button>
     <div class="sb-sec">Academic</div>
-    <div class="sb-item" onclick="go('timetable',this)">📅 Timetable</div>
-    <div class="sb-item" onclick="go('results',this)">🏆 Results & Grading</div>
+    <button type="button" class="sb-item" onclick="go('timetable',this)">📅 Timetable</button>
+    <button type="button" class="sb-item" onclick="go('results',this)">🏆 Results & Grading</button>
     <div class="sb-sec">Campus</div>
-    <div class="sb-item" onclick="go('hostels',this)">🏠 Hostels</div>
-    <div class="sb-item" onclick="go('fees',this)">💰 Fees & Finance</div>
+    <button type="button" class="sb-item" onclick="go('hostels',this)">🏠 Hostels</button>
+    <button type="button" class="sb-item" onclick="go('fees',this)">💰 Fees & Finance</button>
     <div class="sb-sec">Academic</div>
-    <div class="sb-item" onclick="go('calendar',this)">📆 Academic Calendar</div>
-    <div class="sb-item" onclick="go('classrooms',this)">🏫 Virtual Classrooms</div>
-    <div class="sb-item" onclick="go('allocations',this)">🛏 Hostel Allocations</div>
+    <button type="button" class="sb-item" onclick="go('calendar',this)">📆 Academic Calendar</button>
+    <button type="button" class="sb-item" onclick="go('classrooms',this)">🏫 Virtual Classrooms</button>
+    <button type="button" class="sb-item" onclick="go('allocations',this)">🛏 Hostel Allocations</button>
     <div class="sb-sec">Finance</div>
-    <div class="sb-item" onclick="go('payments',this)">💳 Fees Payments</div>
+    <button type="button" class="sb-item" onclick="go('payments',this)">💳 Fees Payments</button>
     <div class="sb-sec">Communication</div>
-    <div class="sb-item" onclick="go('notices',this)">📢 Notices & Announcements</div>
+    <button type="button" class="sb-item" onclick="go('notices',this)">📢 Notices & Announcements</button>
     <div class="sb-sec">Data</div>
-    <div class="sb-item" onclick="go('bulk',this)">📥 Bulk Import</div>
+    <button type="button" class="sb-item" onclick="go('bulk',this)">📥 Bulk Import</button>
     <div class="sb-sec">System</div>
-    <div class="sb-item" onclick="go('settings',this)">⚙️ Settings</div>
+    <button type="button" class="sb-item" onclick="go('settings',this)">⚙️ Settings</button>
   </div>
+  <div class="sidebar-overlay" id="sidebar-overlay" role="presentation" onclick="toggleSidebar()"></div>
 
   <div class="content">
 
     <!-- DASHBOARD -->
     <div class="page active" id="page-dash">
       <div class="page-title">Dashboard</div>
-      <div class="grid4" id="dash-stats" style="margin-bottom:1rem"></div>
+      <div class="grid4" id="dash-stats" class="u-mb-1"></div>
       <div class="grid2">
         <div class="card">
-          <h3 style="font-size:0.85rem;margin-bottom:0.75rem">Quick Create</h3>
-          <button class="btn-fill" style="width:100%;margin-bottom:0.5rem" onclick="openUserModal('student')">+ Add Student</button>
-          <button class="btn-fill" style="width:100%;margin-bottom:0.5rem;background:linear-gradient(135deg,#10b981,#06b6d4)" onclick="openUserModal('lecturer')">+ Add Lecturer</button>
-          <button class="btn-fill" style="width:100%;background:linear-gradient(135deg,#f59e0b,#ef4444)" onclick="openUserModal('hod')">+ Add HOD</button>
+          <h3 class="u-admin-title">Quick Create</h3>
+          <button class="btn-fill u-w-full u-mb-05" onclick="openUserModal('student')">+ Add Student</button>
+          <button class="btn-grad-green" onclick="openUserModal('lecturer')">+ Add Lecturer</button>
+          <button class="btn-grad-gold" onclick="openUserModal('hod')">+ Add HOD</button>
         </div>
         <div class="card">
-          <h3 style="font-size:0.85rem;margin-bottom:0.75rem">Recently Created</h3>
+          <h3 class="u-admin-title">Recently Created</h3>
           <div id="recent-users"></div>
         </div>
       </div>
@@ -176,11 +243,11 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <!-- STUDENTS -->
     <div class="page" id="page-students">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <div class="page-title" style="margin:0">Students</div>
+      <div class="u-flex-between u-mb-1">
+        <div class="page-title u-mt-1">Students</div>
         <button class="btn-fill" onclick="openUserModal('student')">+ Add Student</button>
       </div>
-      <div class="card" style="overflow-x:auto">
+      <div class="card u-overflow-auto">
         <table><thead><tr><th>Name</th><th>Email</th><th>Programme</th><th>Level</th><th>Student ID</th><th>Actions</th></tr></thead>
         <tbody id="students-tbody"></tbody></table>
       </div>
@@ -188,11 +255,11 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <!-- LECTURERS -->
     <div class="page" id="page-lecturers">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <div class="page-title" style="margin:0">Lecturers</div>
+      <div class="u-flex-between u-mb-1">
+        <div class="page-title u-mt-1">Lecturers</div>
         <button class="btn-fill" onclick="openUserModal('lecturer')">+ Add Lecturer</button>
       </div>
-      <div class="card" style="overflow-x:auto">
+      <div class="card u-overflow-auto">
         <table><thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Staff ID</th><th>Actions</th></tr></thead>
         <tbody id="lecturers-tbody"></tbody></table>
       </div>
@@ -200,11 +267,11 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <!-- HODs -->
     <div class="page" id="page-hods">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <div class="page-title" style="margin:0">HODs</div>
+      <div class="u-flex-between u-mb-1">
+        <div class="page-title u-mt-1">HODs</div>
         <button class="btn-fill" onclick="openUserModal('hod')">+ Add HOD</button>
       </div>
-      <div class="card" style="overflow-x:auto">
+      <div class="card u-overflow-auto">
         <table><thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Staff ID</th><th>Actions</th></tr></thead>
         <tbody id="hods-tbody"></tbody></table>
       </div>
@@ -212,11 +279,11 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <!-- TIMETABLE -->
     <div class="page" id="page-timetable">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <div class="page-title" style="margin:0">University Timetable</div>
+      <div class="u-flex-between u-mb-1">
+        <div class="page-title u-mt-1">University Timetable</div>
         <button class="btn-fill" onclick="openTimetableModal()">+ Add Entry</button>
       </div>
-      <div class="card" style="overflow-x:auto">
+      <div class="card u-overflow-auto">
         <table><thead><tr><th>Day</th><th>Time</th><th>Course</th><th>Room</th><th>Lecturer</th><th>Actions</th></tr></thead>
         <tbody id="timetable-tbody"></tbody></table>
       </div>
@@ -224,11 +291,11 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <!-- RESULTS -->
     <div class="page" id="page-results">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <div class="page-title" style="margin:0">Results & Grading</div>
+      <div class="u-flex-between u-mb-1">
+        <div class="page-title u-mt-1">Results & Grading</div>
         <button class="btn-fill" onclick="openResultModal()">+ Add Result</button>
       </div>
-      <div class="card" style="overflow-x:auto">
+      <div class="card u-overflow-auto">
         <table><thead><tr><th>Student</th><th>Course</th><th>CA</th><th>Exam</th><th>Total</th><th>Grade</th><th>Actions</th></tr></thead>
         <tbody id="results-tbody"></tbody></table>
       </div>
@@ -236,11 +303,11 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <!-- HOSTELS -->
     <div class="page" id="page-hostels">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <div class="page-title" style="margin:0">Hostel Management</div>
+      <div class="u-flex-between u-mb-1">
+        <div class="page-title u-mt-1">Hostel Management</div>
         <button class="btn-fill" onclick="openHostelModal()">+ Add Hostel</button>
       </div>
-      <div class="card" style="overflow-x:auto">
+      <div class="card u-overflow-auto">
         <table><thead><tr><th>Name</th><th>Type</th><th>Capacity</th><th>Occupied</th><th>Fee/Sem</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody id="hostels-tbody"></tbody></table>
       </div>
@@ -248,11 +315,11 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <!-- FEES -->
     <div class="page" id="page-fees">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <div class="page-title" style="margin:0">Fees & Finance</div>
+      <div class="u-flex-between u-mb-1">
+        <div class="page-title u-mt-1">Fees & Finance</div>
         <button class="btn-fill" onclick="openNoticeModal()">+ Add Fee Structure</button>
       </div>
-      <div class="card" style="overflow-x:auto">
+      <div class="card u-overflow-auto">
         <table><thead><tr><th>Programme</th><th>Level</th><th>Year</th><th>Tuition</th><th>Hostel</th><th>Exam</th><th>SRC</th><th>Total</th><th>Actions</th></tr></thead>
         <tbody id="fees-tbody"></tbody></table>
       </div>
@@ -260,11 +327,11 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <!-- NOTICES & ANNOUNCEMENTS -->
     <div class="page" id="page-notices">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <div class="page-title" style="margin:0">Notices & Announcements</div>
+      <div class="u-flex-between u-mb-1">
+        <div class="page-title u-mt-1">Notices & Announcements</div>
         <button class="btn-fill" onclick="openNoticeModal()">📢 Post Announcement</button>
       </div>
-      <div class="card" style="overflow-x:auto">
+      <div class="card u-overflow-auto">
         <table><thead><tr><th>Title</th><th>Category</th><th>Posted By</th><th>Date</th><th>Actions</th></tr></thead>
         <tbody id="notices-tbody"></tbody></table>
       </div>
@@ -274,9 +341,9 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
     <div class="modal" id="notice-modal">
       <div class="modal-box">
         <h2><span id="notice-modal-title">Post Announcement</span><button onclick="closeModal('notice-modal')">✕</button></h2>
-        <div style="display:flex;flex-direction:column;gap:0.6rem">
-          <div><label class="label">Title *</label><input id="notice-title" placeholder="e.g. Exam timetable released"></div>
-          <div><label class="label">Category</label>
+        <div class="u-flex-col u-gap-06">
+          <div><label class="label" for="notice-title">Title *</label><input id="notice-title" placeholder="e.g. Exam timetable released"></div>
+          <div><label class="label" for="notice-category">Category</label>
             <select id="notice-category">
               <option value="general">General</option>
               <option value="academic">Academic</option>
@@ -286,20 +353,20 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
               <option value="emergency">Emergency</option>
             </select>
           </div>
-          <div><label class="label">Message *</label><textarea id="notice-body" rows="5" placeholder="Write the announcement for all students, lecturers and HODs…"></textarea></div>
-          <div id="notice-msg" style="font-size:0.75rem;min-height:1rem"></div>
-          <button class="btn-fill" style="width:100%" onclick="submitNotice()">Publish to All Users</button>
+          <div><label class="label" for="notice-body">Message *</label><textarea id="notice-body" rows="5" placeholder="Write the announcement for all students, lecturers and HODs…"></textarea></div>
+          <div id="notice-msg" class="u-fs-075 u-min-h-1"></div>
+          <button class="btn-fill u-w-full" onclick="submitNotice()">Publish to All Users</button>
         </div>
       </div>
     </div>
 
     <!-- ACADEMIC CALENDAR -->
     <div class="page" id="page-calendar">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <div class="page-title" style="margin:0">Academic Calendar</div>
+      <div class="u-flex-between u-mb-1">
+        <div class="page-title u-mt-1">Academic Calendar</div>
         <button class="btn-fill" onclick="openCalendarModal()">📆 Add Event</button>
       </div>
-      <div class="card" style="overflow-x:auto">
+      <div class="card u-overflow-auto">
         <table><thead><tr><th>Title</th><th>Type</th><th>Start</th><th>End</th><th>Actions</th></tr></thead>
         <tbody id="calendar-tbody"></tbody></table>
       </div>
@@ -308,7 +375,7 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
     <!-- HOSTEL ALLOCATIONS -->
     <div class="page" id="page-allocations">
       <div class="page-title">Hostel Allocations</div>
-      <div class="card" style="overflow-x:auto">
+      <div class="card u-overflow-auto">
         <table><thead><tr><th>Student</th><th>ID</th><th>Hostel</th><th>Room</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody id="allocations-tbody"></tbody></table>
       </div>
@@ -316,11 +383,11 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
     <!-- FEES PAYMENTS -->
     <div class="page" id="page-payments">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <div class="page-title" style="margin:0">Fees Payments</div>
+      <div class="u-flex-between u-mb-1">
+        <div class="page-title u-mt-1">Fees Payments</div>
         <button class="btn-fill" onclick="openPaymentModal()">💳 Record Payment</button>
       </div>
-      <div class="card" style="overflow-x:auto">
+      <div class="card u-overflow-auto">
         <table><thead><tr><th>Student ID</th><th>Amount (GHS)</th><th>Method</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
         <tbody id="payments-tbody"></tbody></table>
       </div>
@@ -329,9 +396,9 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
     <!-- BULK IMPORT -->
     <div class="page" id="page-bulk">
       <div class="page-title">Bulk Import</div>
-      <div class="card" style="max-width:620px">
-        <p style="color:var(--t2);font-size:0.78rem;margin-bottom:0.75rem">Paste CSV or JSON rows, choose a collection, and import them into the database. First row / keys are used as field names.</p>
-        <label class="label">Collection</label>
+      <div class="card u-mw-620">
+        <p class="u-text-t2 u-fs-078 u-mb-075">Paste CSV or JSON rows, choose a collection, and import them into the database. First row / keys are used as field names.</p>
+        <label class="label" for="bulk-collection">Collection</label>
         <select id="bulk-collection">
           <option value="users">users (students/lecturers/hods)</option>
           <option value="hostels">hostels</option>
@@ -348,10 +415,10 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
           <option value="calendar">calendar</option>
           <option value="hostelApplications">hostelApplications</option>
         </select>
-        <label class="label">Data (CSV or JSON)</label>
+        <label class="label" for="bulk-data">Data (CSV or JSON)</label>
         <textarea id="bulk-data" rows="10" placeholder="CSV:&#10;name,email,password,role&#10;John Doe,john@kstu.edu.gh,pass123,student&#10;&#10;OR JSON:&#10;[{&quot;name&quot;:&quot;John Doe&quot;,&quot;email&quot;:&quot;john@kstu.edu.gh&quot;,&quot;password&quot;:&quot;pass123&quot;,&quot;role&quot;:&quot;student&quot;}]"></textarea>
         <div class="msg" id="bulk-msg"></div>
-        <button class="btn-fill" style="width:100%" onclick="submitBulk()">Import Records</button>
+        <button class="btn-fill u-w-full" onclick="submitBulk()">Import Records</button>
       </div>
     </div>
 
@@ -359,13 +426,13 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
     <div class="modal-bg" id="calendar-modal">
       <div class="modal">
         <h2><span id="cal-title">Add Event</span><button onclick="closeModal('calendar-modal')">✕</button></h2>
-        <label class="label">Title *</label><input id="cal-title-input" placeholder="e.g. End of Semester Exams">
-        <label class="label">Type</label>
+        <label class="label" for="cal-title-input">Title *</label><input id="cal-title-input" placeholder="e.g. End of Semester Exams">
+        <label class="label" for="cal-type">Type</label>
         <select id="cal-type"><option value="event">Event</option><option value="exam">Exam</option><option value="holiday">Holiday</option><option value="registration">Registration</option></select>
-        <label class="label">Start Date *</label><input id="cal-start" type="date">
-        <label class="label">End Date</label><input id="cal-end" type="date">
+        <label class="label" for="cal-start">Start Date *</label><input id="cal-start" type="date">
+        <label class="label" for="cal-end">End Date</label><input id="cal-end" type="date">
         <div class="msg" id="cal-msg"></div>
-        <button class="btn-fill" style="width:100%" onclick="submitCalendar()">Save Event</button>
+        <button class="btn-fill u-w-full" onclick="submitCalendar()">Save Event</button>
       </div>
     </div>
 
@@ -373,22 +440,22 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
     <div class="modal-bg" id="payment-modal">
       <div class="modal">
         <h2><span>Record Payment</span><button onclick="closeModal('payment-modal')">✕</button></h2>
-        <label class="label">Student ID *</label><input id="pay-student" placeholder="KsTU/2024/0042">
-        <label class="label">Amount (GHS) *</label><input id="pay-amount" type="number" placeholder="500">
-        <label class="label">Method</label>
+        <label class="label" for="pay-student">Student ID *</label><input id="pay-student" placeholder="KsTU/2024/0042">
+        <label class="label" for="pay-amount">Amount (GHS) *</label><input id="pay-amount" type="number" placeholder="500">
+        <label class="label" for="pay-method">Method</label>
         <select id="pay-method"><option>Mobile Money</option><option>Bank</option><option>Cash</option><option>Card</option></select>
         <div class="msg" id="pay-msg"></div>
-        <button class="btn-fill" style="width:100%" onclick="submitPayment()">Record Payment</button>
+        <button class="btn-fill u-w-full" onclick="submitPayment()">Record Payment</button>
       </div>
     </div>
 
     <!-- VIRTUAL CLASSROOMS -->
     <div class="page" id="page-classrooms">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <div class="page-title" style="margin:0">Virtual Classrooms</div>
+      <div class="u-flex-between u-mb-1">
+        <div class="page-title u-mt-1">Virtual Classrooms</div>
         <button class="btn-fill" onclick="openClassroomModal()">🏫 Create Classroom</button>
       </div>
-      <div class="card" style="overflow-x:auto">
+      <div class="card u-overflow-auto">
         <table><thead><tr><th>Title</th><th>Course</th><th>Duration</th><th>Opens</th><th>Closes</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody id="classrooms-tbody"></tbody></table>
       </div>
@@ -398,29 +465,36 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
     <div class="modal-bg" id="classroom-modal">
       <div class="modal">
         <h2><span>Create Virtual Classroom</span><button onclick="closeModal('classroom-modal')">✕</button></h2>
-        <label class="label">Title *</label><input id="cr-title" placeholder="e.g. Week 3 — Data Structures">
-        <label class="label">Course Code *</label><input id="cr-course" placeholder="e.g. CPT 201">
-        <label class="label">Duration (minutes) *</label><input id="cr-duration" type="number" value="30" placeholder="30">
-        <label class="label">Opens At (optional)</label><input id="cr-open" type="datetime-local">
-        <label class="label">Closes At (deadline) *</label><input id="cr-close" type="datetime-local">
-        <label class="label">Questions (one per line). Prefix: [O] objective (options | correct), [T] theory</label>
+        <label class="label" for="cr-title">Title *</label><input id="cr-title" placeholder="e.g. Week 3 — Data Structures">
+        <label class="label" for="cr-course">Course Code *</label><input id="cr-course" placeholder="e.g. CPT 201">
+        <label class="label" for="cr-duration">Duration (minutes) *</label><input id="cr-duration" type="number" value="30" placeholder="30">
+        <label class="label" for="cr-open">Opens At (optional)</label><input id="cr-open" type="datetime-local">
+        <label class="label" for="cr-close">Closes At (deadline) *</label><input id="cr-close" type="datetime-local">
+        <label class="label" for="cr-questions">Questions (one per line). Prefix: [O] objective (options | correct), [T] theory</label>
         <textarea id="cr-questions" rows="9" placeholder="[O] What is a stack? | Push,Pop,Queue,Tree | 0&#10;[O] Big-O of binary search? | O(n),O(log n),O(n^2),O(1) | 1&#10;[T] Explain recursion with an example. | keywords: base case, stack, function calls"></textarea>
-        <label class="label">Or upload a questions file from your device (CSV or JSON)</label>
-        <input id="cr-file" type="file" accept=".csv,.json,.txt" style="margin-bottom:0.5rem">
-        <button type="button" class="btn-sm btn-blue" style="width:100%;margin-bottom:0.5rem" onclick="loadClassroomFile()">📂 Load Questions from File</button>
+        <div class="label">Upload Questions</div>
+        <div class="u-flex-gap-sm u-mb-05">
+          <input id="cr-file" type="file" accept=".csv,.json,.txt,image/*" class="u-hidden" onchange="loadClassroomFile()">
+          <input id="cr-camera" type="file" accept="image/*" capture="environment" class="u-hidden" onchange="loadClassroomFile()">
+          <button type="button" class="btn-sm btn-blue" onclick="document.getElementById('cr-file').click()">📂 Upload File</button>
+          <button type="button" class="btn-sm btn-green" onclick="document.getElementById('cr-camera').click()">📷 Take Photo</button>
+        </div>
+        <div id="cr-image-preview" class="u-hidden u-mb-05 u-text-center"></div>
         <div class="msg" id="cr-msg"></div>
-        <button class="btn-fill" style="width:100%" onclick="submitClassroom()">Publish Classroom</button>
+        <button class="btn-fill u-w-full" onclick="submitClassroom()">Publish Classroom</button>
       </div>
     </div>
 
     <!-- SETTINGS -->
     <div class="page" id="page-settings">
       <div class="page-title">Settings</div>
-      <div class="card" style="max-width:420px">
-        <h3 style="font-size:0.85rem;margin-bottom:0.75rem">Change Admin Password</h3>
+      <div class="card u-mw-420">
+        <h3 class="u-admin-title">Change Admin Password</h3>
+        <label class="label" for="set-oldpw">Current password</label>
         <input id="set-oldpw" type="password" placeholder="Current password">
+        <label class="label" for="set-newpw">New password (min 6 chars)</label>
         <input id="set-newpw" type="password" placeholder="New password (min 6 chars)">
-        <button class="btn-fill" style="width:100%" onclick="changeAdminPw()">Update Password</button>
+        <button class="btn-fill u-w-full" onclick="changeAdminPw()">Update Password</button>
         <div class="msg" id="set-msg"></div>
       </div>
     </div>
@@ -433,33 +507,33 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
   <div class="modal">
     <h2><span id="um-title">Add Student</span><button onclick="closeModal('user-modal')">✕</button></h2>
     <div id="um-form">
-      <label class="label">Full Name *</label><input id="um-name">
-      <label class="label">Email *</label><input id="um-email" type="email">
-      <label class="label">Password *</label><input id="um-pass">
+      <label class="label" for="um-name">Full Name *</label><input id="um-name">
+      <label class="label" for="um-email">Email *</label><input id="um-email" type="email">
+      <label class="label" for="um-pass">Password *</label><input id="um-pass">
       <div id="um-student-fields">
-        <label class="label">Student ID</label><input id="um-studentid" placeholder="KsTU/2024/0042">
-        <label class="label">Programme</label><input id="um-programme" placeholder="BTech Computer Technology">
-        <label class="label">Level</label>
+        <label class="label" for="um-studentid">Student ID</label><input id="um-studentid" placeholder="KsTU/2024/0042">
+        <label class="label" for="um-programme">Programme</label><input id="um-programme" placeholder="BTech Computer Technology">
+        <label class="label" for="um-level">Level</label>
         <select id="um-level"><option value="">Select…</option><option>Level 100</option><option>Level 200</option><option>Level 300</option><option>Level 400</option></select>
       </div>
-      <div id="um-staff-fields" style="display:none">
-        <label class="label">Title</label>
+      <div id="um-staff-fields" class="u-hidden">
+        <label class="label" for="um-title-field">Title</label>
         <select id="um-title-field"><option>Dr.</option><option>Prof.</option><option>Mr.</option><option>Mrs.</option><option>Ms.</option><option>Engr.</option></select>
-        <label class="label">Staff ID</label><input id="um-staffid">
-        <label class="label">Department</label><input id="um-department">
+        <label class="label" for="um-staffid">Staff ID</label><input id="um-staffid">
+        <label class="label" for="um-department">Department</label><input id="um-department">
       </div>
       <div class="msg" id="um-msg"></div>
-      <button class="btn-fill" style="width:100%" onclick="submitUser()">Create Account</button>
+      <button class="btn-fill u-w-full" onclick="submitUser()">Create Account</button>
     </div>
-    <div id="um-success" style="display:none">
+    <div id="um-success" class="u-hidden">
       <div class="cred-box">
         ✅ <strong>Account created!</strong><br>
         Name: <span id="cred-name"></span><br>
         Email: <span id="cred-email"></span><br>
         Password: <span id="cred-pw"></span><br>
-        <span style="color:#94a3b8;font-size:0.72rem">This account can log in immediately at the student/lecturer app.</span>
+        <span class="u-fs-072">This account can log in immediately at the student/lecturer app.</span>
       </div>
-      <button class="btn-fill" style="width:100%;margin-top:0.75rem" onclick="closeModal('user-modal')">Done</button>
+      <button class="btn-fill u-w-full u-mt-75" onclick="closeModal('user-modal')">Done</button>
     </div>
   </div>
 </div>
@@ -469,14 +543,14 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
   <div class="modal">
     <h2><span id="hm-title">Add Hostel</span><button onclick="closeModal('hostel-modal')">✕</button></h2>
     <input type="hidden" id="hm-id">
-    <label class="label">Hostel Name *</label><input id="hm-name" placeholder="e.g. Volta Hall (Block A)">
-    <label class="label">Type</label>
+    <label class="label" for="hm-name">Hostel Name *</label><input id="hm-name" placeholder="e.g. Volta Hall (Block A)">
+    <label class="label" for="hm-type">Type</label>
     <select id="hm-type"><option>Mixed</option><option>Male</option><option>Female</option></select>
-    <label class="label">Capacity *</label><input id="hm-capacity" type="number">
-    <label class="label">Currently Occupied</label><input id="hm-occupied" type="number" value="0">
-    <label class="label">Fee per Semester (GHS) *</label><input id="hm-fee" type="number">
+    <label class="label" for="hm-capacity">Capacity *</label><input id="hm-capacity" type="number">
+    <label class="label" for="hm-occupied">Currently Occupied</label><input id="hm-occupied" type="number" value="0">
+    <label class="label" for="hm-fee">Fee per Semester (GHS) *</label><input id="hm-fee" type="number">
     <div class="msg" id="hm-msg"></div>
-    <button class="btn-fill" style="width:100%" onclick="submitHostel()">Save Hostel</button>
+    <button class="btn-fill u-w-full" onclick="submitHostel()">Save Hostel</button>
   </div>
 </div>
 
@@ -485,16 +559,16 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
   <div class="modal">
     <h2><span id="fm-title">Add Fee Structure</span><button onclick="closeModal('fee-modal')">✕</button></h2>
     <input type="hidden" id="fm-id">
-    <label class="label">Programme *</label><input id="fm-programme" placeholder="BTech Computer Technology">
-    <label class="label">Level *</label>
+    <label class="label" for="fm-programme">Programme *</label><input id="fm-programme" placeholder="BTech Computer Technology">
+    <label class="label" for="fm-level">Level *</label>
     <select id="fm-level"><option>Level 100</option><option>Level 200</option><option>Level 300</option><option>Level 400</option></select>
-    <label class="label">Academic Year *</label><input id="fm-year" placeholder="2025/2026">
-    <label class="label">Tuition (GHS) *</label><input id="fm-tuition" type="number">
-    <label class="label">Hostel (GHS)</label><input id="fm-hostel" type="number" value="0">
-    <label class="label">Exam Fee (GHS)</label><input id="fm-exam" type="number" value="0">
-    <label class="label">SRC Dues (GHS)</label><input id="fm-src" type="number" value="0">
+    <label class="label" for="fm-year">Academic Year *</label><input id="fm-year" placeholder="2025/2026">
+    <label class="label" for="fm-tuition">Tuition (GHS) *</label><input id="fm-tuition" type="number">
+    <label class="label" for="fm-hostel">Hostel (GHS)</label><input id="fm-hostel" type="number" value="0">
+    <label class="label" for="fm-exam">Exam Fee (GHS)</label><input id="fm-exam" type="number" value="0">
+    <label class="label" for="fm-src">SRC Dues (GHS)</label><input id="fm-src" type="number" value="0">
     <div class="msg" id="fm-msg"></div>
-    <button class="btn-fill" style="width:100%" onclick="submitFee()">Save Fee Structure</button>
+    <button class="btn-fill u-w-full" onclick="submitFee()">Save Fee Structure</button>
   </div>
 </div>
 
@@ -503,14 +577,14 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
   <div class="modal">
     <h2><span id="tm-title">Add Timetable Entry</span><button onclick="closeModal('timetable-modal')">✕</button></h2>
     <input type="hidden" id="tm-id">
-    <label class="label">Day *</label>
+    <label class="label" for="tm-day">Day *</label>
     <select id="tm-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
-    <label class="label">Time *</label><input id="tm-time" placeholder="e.g. 7:30–9:30">
-    <label class="label">Course Code *</label><input id="tm-course" placeholder="e.g. CPT 301">
-    <label class="label">Room *</label><input id="tm-room" placeholder="e.g. Lab A-201">
-    <label class="label">Lecturer</label><input id="tm-lecturer" placeholder="e.g. Dr. Mensah K.">
+    <label class="label" for="tm-time">Time *</label><input id="tm-time" placeholder="e.g. 7:30–9:30">
+    <label class="label" for="tm-course">Course Code *</label><input id="tm-course" placeholder="e.g. CPT 301">
+    <label class="label" for="tm-room">Room *</label><input id="tm-room" placeholder="e.g. Lab A-201">
+    <label class="label" for="tm-lecturer">Lecturer</label><input id="tm-lecturer" placeholder="e.g. Dr. Mensah K.">
     <div class="msg" id="tm-msg"></div>
-    <button class="btn-fill" style="width:100%" onclick="submitTimetable()">Save Entry</button>
+    <button class="btn-fill u-w-full" onclick="submitTimetable()">Save Entry</button>
   </div>
 </div>
 
@@ -518,13 +592,13 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 <div class="modal-bg" id="result-modal">
   <div class="modal">
     <h2><span>Add Result</span><button onclick="closeModal('result-modal')">✕</button></h2>
-    <label class="label">Student ID *</label><input id="rm-studentid" placeholder="KsTU/24/042">
-    <label class="label">Student Name</label><input id="rm-studentname">
-    <label class="label">Course Code *</label><input id="rm-course" placeholder="CPT 301">
-    <label class="label">CA Score (out of 40) *</label><input id="rm-ca" type="number">
-    <label class="label">Exam Score (out of 60) *</label><input id="rm-exam" type="number">
+    <label class="label" for="rm-studentid">Student ID *</label><input id="rm-studentid" placeholder="KsTU/24/042">
+    <label class="label" for="rm-studentname">Student Name</label><input id="rm-studentname">
+    <label class="label" for="rm-course">Course Code *</label><input id="rm-course" placeholder="CPT 301">
+    <label class="label" for="rm-ca">CA Score (out of 40) *</label><input id="rm-ca" type="number">
+    <label class="label" for="rm-exam">Exam Score (out of 60) *</label><input id="rm-exam" type="number">
     <div class="msg" id="rm-msg"></div>
-    <button class="btn-fill" style="width:100%" onclick="submitResult()">Save Result</button>
+    <button class="btn-fill u-w-full" onclick="submitResult()">Save Result</button>
   </div>
  </div>
 
@@ -552,12 +626,20 @@ function adminLogin(){
 }
 document.getElementById('a-pass').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin();});
 function logout(){location.reload();}
-
+function toggleSidebar(){
+  const sidebar=document.querySelector('.sidebar');
+  const overlay=document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+}
 function go(page,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
   document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('active'));
   if(el)el.classList.add('active');
+  const sidebar=document.querySelector('.sidebar');
+  const overlay=document.getElementById('sidebar-overlay');
+  if(sidebar.classList.contains('open')){sidebar.classList.remove('open');overlay.classList.remove('open');}
   if(page==='dash')loadDashboard();
   if(page==='students')loadUsers('student','students-tbody');
   if(page==='lecturers')loadUsers('lecturer','lecturers-tbody');
@@ -582,32 +664,36 @@ async function loadDashboard(){
       CampusAPI.listUsers('student'),CampusAPI.listUsers('lecturer'),CampusAPI.listUsers('hod')
     ]);
     document.getElementById('dash-stats').innerHTML=`
-      <div class="card stat"><div class="v" style="color:#60c8ff">${students.length}</div><div class="l">Students</div></div>
-      <div class="card stat"><div class="v" style="color:#34d399">${lecturers.length}</div><div class="l">Lecturers</div></div>
-      <div class="card stat"><div class="v" style="color:#fcd34d">${hods.length}</div><div class="l">HODs</div></div>
-      <div class="card stat"><div class="v" style="color:#c4b5fd">${students.length+lecturers.length+hods.length}</div><div class="l">Total Accounts</div></div>
+      <div class="card stat"><div class="v u-stat-students">${students.length}</div><div class="l">Students</div></div>
+      <div class="card stat"><div class="v u-stat-lecturers">${lecturers.length}</div><div class="l">Lecturers</div></div>
+      <div class="card stat"><div class="v u-stat-hods">${hods.length}</div><div class="l">HODs</div></div>
+      <div class="card stat"><div class="v u-stat-total">${students.length+lecturers.length+hods.length}</div><div class="l">Total Accounts</div></div>
     `;
     const all=[...students,...lecturers,...hods].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,8);
+    let badgeClass;
+    if (u.role === 'student') badgeClass = 'b-blue';
+    else if (u.role === 'lecturer') badgeClass = 'b-green';
+    else badgeClass = 'b-gold';
     document.getElementById('recent-users').innerHTML=all.length?all.map(u=>`
-      <div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.78rem">
-        <span>${u.name}</span><span class="badge ${u.role==='student'?'b-blue':u.role==='lecturer'?'b-green':'b-gold'}">${u.role}</span>
-      </div>`).join(''):'<div style="color:#475569;font-size:0.8rem">No accounts created yet.</div>';
+      <div class="u-flex-between u-border-b-light">
+        <span>${u.name}</span><span class="badge ${badgeClass}">${u.role}</span>
+      </div>`).join(''):'<div class="u-empty-text">No accounts created yet.</div>';
   }catch(e){console.error(e);}
 }
 
 // ---------- USERS ----------
 async function loadUsers(role,tbodyId){
   const tbody=document.getElementById(tbodyId);
-  tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#475569">Loading…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="6" class="u-text-center u-loading-text">Loading…</td></tr>';
   try{
     const users=await CampusAPI.listUsers(role);
-    if(!users.length){tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;color:#475569;padding:1.5rem">No ${role}s yet.</td></tr>`;return;}
+    if(!users.length){tbody.innerHTML=`<tr><td colspan="6" class="u-empty-text">No ${role}s yet.</td></tr>`;return;}
     if(role==='student'){
       tbody.innerHTML=users.map(u=>`<tr><td>${u.name}</td><td>${u.email}</td><td>${u.programme||'—'}</td><td>${u.level||'—'}</td><td>${u.studentId||'—'}</td><td><button class="btn-sm btn-red" onclick="deleteUser('${u.id}','${role}')">Delete</button></td></tr>`).join('');
     }else{
       tbody.innerHTML=users.map(u=>`<tr><td>${u.title?u.title+' ':''}${u.name}</td><td>${u.email}</td><td>${u.department||'—'}</td><td>${u.staffId||'—'}</td><td><button class="btn-sm btn-red" onclick="deleteUser('${u.id}','${role}')">Delete</button></td></tr>`).join('');
     }
-  }catch(e){tbody.innerHTML=`<tr><td colspan="6" style="color:#fca5a5">Error: ${e.message}</td></tr>`;}
+  }catch(e){tbody.innerHTML=`<tr><td colspan="6" class="u-error-text">Error: ${e.message}</td></tr>`;}
 }
 async function deleteUser(id,role){
   if(!confirm('Delete this account permanently?'))return;
@@ -664,15 +750,17 @@ async function submitUser(){
 // ---------- HOSTELS ----------
 async function loadHostels(){
   const tbody=document.getElementById('hostels-tbody');
-  tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#475569">Loading…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="7" class="u-text-center u-loading-text">Loading…</td></tr>';
   try{
     const rows=await CampusAPI.listHostels();
+    const hostelBadge = h.occupied >= h.capacity ? 'b-red' : 'b-green';
+    const hostelStatus = h.occupied >= h.capacity ? 'Full' : 'Available';
     tbody.innerHTML=rows.length?rows.map(h=>`<tr>
       <td>${h.name}</td><td>${h.type}</td><td>${h.capacity}</td><td>${h.occupied}</td><td>GHS ${h.feePerSemester}</td>
-      <td><span class="badge ${h.occupied>=h.capacity?'b-red':'b-green'}">${h.occupied>=h.capacity?'Full':'Available'}</span></td>
+      <td><span class="badge ${hostelBadge}">${hostelStatus}</span></td>
       <td><button class="btn-sm btn-blue" onclick='editHostel(${JSON.stringify(h)})'>Edit</button> <button class="btn-sm btn-red" onclick="deleteHostel('${h.id}')">Delete</button></td>
-    </tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:#475569;padding:1.5rem">No hostels yet.</td></tr>';
-  }catch(e){tbody.innerHTML=`<tr><td colspan="7" style="color:#fca5a5">Error: ${e.message}</td></tr>`;}
+    </tr>`).join(''):'<tr><td colspan="7" class="u-empty-text">No hostels yet.</td></tr>';
+  }catch(e){tbody.innerHTML=`<tr><td colspan="7" class="u-error-text">Error: ${e.message}</td></tr>`;}
 }
 function openHostelModal(){
   document.getElementById('hm-title').textContent='Add Hostel';
@@ -716,15 +804,15 @@ async function deleteHostel(id){
 // ---------- FEES ----------
 async function loadFees(){
   const tbody=document.getElementById('fees-tbody');
-  tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:#475569">Loading…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="9" class="u-text-center u-loading-text">Loading…</td></tr>';
   try{
     const rows=await CampusAPI.listFeeStructures();
     tbody.innerHTML=rows.length?rows.map(f=>`<tr>
       <td>${f.programme}</td><td>${f.level}</td><td>${f.academicYear}</td><td>${f.tuition}</td><td>${f.hostel}</td><td>${f.examFee}</td><td>${f.srcDues}</td>
-      <td style="color:#34d399;font-weight:600">GHS ${f.total}</td>
+      <td class="u-admin-green u-fw-600">GHS ${f.total}</td>
       <td><button class="btn-sm btn-blue" onclick='editFee(${JSON.stringify(f)})'>Edit</button> <button class="btn-sm btn-red" onclick="deleteFee('${f.id}')">Delete</button></td>
-    </tr>`).join(''):'<tr><td colspan="9" style="text-align:center;color:#475569;padding:1.5rem">No fee structures yet.</td></tr>';
-  }catch(e){tbody.innerHTML=`<tr><td colspan="9" style="color:#fca5a5">Error: ${e.message}</td></tr>`;}
+    </tr>`).join(''):'<tr><td colspan="9" class="u-empty-text">No fee structures yet.</td></tr>';
+  }catch(e){tbody.innerHTML=`<tr><td colspan="9" class="u-error-text">Error: ${e.message}</td></tr>`;}
 }
 function openFeeModal(){
   document.getElementById('fm-title').textContent='Add Fee Structure';
@@ -772,18 +860,18 @@ async function deleteFee(id){
 // ---------- NOTICES & ANNOUNCEMENTS ----------
 async function loadNotices(){
   const tbody=document.getElementById('notices-tbody');
-  tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#475569">Loading…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="5" class="u-text-center u-loading-text">Loading…</td></tr>';
   try{
     const rows=await CampusAPI.listNotices();
-    if(!rows.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#475569;padding:1.5rem">No announcements yet.</td></tr>';return;}
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="5" class="u-empty-text">No announcements yet.</td></tr>';return;}
     tbody.innerHTML=rows.map(n=>`<tr>
-      <td style="font-weight:600">${escapeHtml(n.title)}</td>
-      <td><span class="badge" style="background:rgba(59,130,246,0.15);color:#60c8ff">${escapeHtml(n.category||'general')}</span></td>
+      <td class="u-fw-600">${escapeHtml(n.title)}</td>
+      <td><span class="badge u-badge-blue">${escapeHtml(n.category||'general')}</span></td>
       <td>${escapeHtml(n.adminName||'Admin')}</td>
       <td>${new Date(n.createdAt).toLocaleString()}</td>
       <td><button class="btn-sm btn-red" onclick="deleteNotice('${n.id}')">Delete</button></td>
     </tr>`).join('');
-  }catch(e){tbody.innerHTML=`<tr><td colspan="5" style="color:#fca5a5">Error: ${e.message}</td></tr>`;}
+  }catch(e){tbody.innerHTML=`<tr><td colspan="5" class="u-error-text">Error: ${e.message}</td></tr>`;}
 }
 function openNoticeModal(){
   document.getElementById('notice-modal-title').textContent='Post Announcement';
@@ -815,18 +903,18 @@ function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;',
 // ---------- ACADEMIC CALENDAR ----------
 async function loadCalendar(){
   const tbody=document.getElementById('calendar-tbody');
-  tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#475569">Loading…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="5" class="u-text-center u-loading-text">Loading…</td></tr>';
   try{
     const rows=await CampusAPI.listCalendar();
-    if(!rows.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#475569;padding:1.5rem">No calendar events yet.</td></tr>';return;}
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="5" class="u-empty-text">No calendar events yet.</td></tr>';return;}
     tbody.innerHTML=rows.map(c=>`<tr>
-      <td style="font-weight:600">${escapeHtml(c.title)}</td>
+      <td class="u-fw-600">${escapeHtml(c.title)}</td>
       <td><span class="badge b-blue">${escapeHtml(c.type||'event')}</span></td>
       <td>${new Date(c.startDate).toLocaleDateString()}</td>
       <td>${new Date(c.endDate).toLocaleDateString()}</td>
       <td><button class="btn-sm btn-red" onclick="deleteCalendar('${c.id}')">Delete</button></td>
     </tr>`).join('');
-  }catch(e){tbody.innerHTML=`<tr><td colspan="5" style="color:#fca5a5">Error: ${e.message}</td></tr>`;}
+  }catch(e){tbody.innerHTML=`<tr><td colspan="5" class="u-error-text">Error: ${e.message}</td></tr>`;}
 }
 function openCalendarModal(){
   document.getElementById('cal-title').textContent='Add Event';
@@ -858,10 +946,10 @@ async function deleteCalendar(id){
 const ALLOC_STATUS={pending:'b-gold',approved:'b-green',rejected:'b-red'};
 async function loadAllocations(){
   const tbody=document.getElementById('allocations-tbody');
-  tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#475569">Loading…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="6" class="u-text-center u-loading-text">Loading…</td></tr>';
   try{
     const rows=await CampusAPI.listHostelApplications();
-    if(!rows.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#475569;padding:1.5rem">No hostel applications yet.</td></tr>';return;}
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="u-empty-text">No hostel applications yet.</td></tr>';return;}
     tbody.innerHTML=rows.map(a=>`<tr>
       <td>${escapeHtml(a.studentName||'—')}</td>
       <td>${escapeHtml(a.studentId||'—')}</td>
@@ -870,7 +958,7 @@ async function loadAllocations(){
       <td><span class="badge ${ALLOC_STATUS[a.status]||'b-gold'}">${escapeHtml(a.status||'pending')}</span></td>
       <td><button class="btn-sm btn-green" onclick="allocateHostelPrompt('${a.id}','${escapeHtml(a.studentName||'')}')">Allocate</button> <button class="btn-sm btn-red" onclick="deleteAllocation('${a.id}')">Delete</button></td>
     </tr>`).join('');
-  }catch(e){tbody.innerHTML=`<tr><td colspan="6" style="color:#fca5a5">Error: ${e.message}</td></tr>`;}
+  }catch(e){tbody.innerHTML=`<tr><td colspan="6" class="u-error-text">Error: ${e.message}</td></tr>`;}
 }
 async function allocateHostelPrompt(id,name){
   const room=prompt('Assign room number for '+(name||'this student')+':');
@@ -885,19 +973,26 @@ async function deleteAllocation(id){
 // ---------- FEES PAYMENTS ----------
 async function loadPayments(){
   const tbody=document.getElementById('payments-tbody');
-  tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#475569">Loading…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="6" class="u-text-center u-loading-text">Loading…</td></tr>';
   try{
     const rows=await CampusAPI.listPayments();
-    if(!rows.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#475569;padding:1.5rem">No payments recorded yet.</td></tr>';return;}
-    tbody.innerHTML=rows.slice().reverse().map(p=>`<tr>
-      <td>${escapeHtml(p.studentId||'—')}</td>
-      <td>${Number(p.amount).toFixed(2)}</td>
-      <td>${escapeHtml(p.method||'—')}</td>
-      <td><span class="badge ${p.status==='confirmed'?'b-green':(p.status==='pending_confirmation'?'b-gold':'b-blue')}">${escapeHtml(p.status||'completed')}</span></td>
-      <td>${new Date(p.createdAt).toLocaleDateString()}</td>
-      <td>${p.status!=='confirmed'?'<button class="btn-sm btn-green" onclick="confirmPayment(\''+p.id+'\')">Confirm</button> ':''}<button class="btn-sm btn-red" onclick="deletePayment(\''+p.id+'\')">Delete</button></td>
-    </tr>`).join('');
-  }catch(e){tbody.innerHTML=`<tr><td colspan="6" style="color:#fca5a5">Error: ${e.message}</td></tr>`;}
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="u-empty-text">No payments recorded yet.</td></tr>';return;}
+    tbody.innerHTML=rows.slice().reverse().map(p=>{
+      let statusBadge;
+      if (p.status === 'confirmed') statusBadge = 'b-green';
+      else if (p.status === 'pending_confirmation') statusBadge = 'b-gold';
+      else statusBadge = 'b-blue';
+      const confirmBtn = p.status !== 'confirmed' ? `<button class="btn-sm btn-green" onclick="confirmPayment('${p.id}')">Confirm</button> ` : '';
+      return `<tr>
+        <td>${escapeHtml(p.studentId||'—')}</td>
+        <td>${Number(p.amount).toFixed(2)}</td>
+        <td>${escapeHtml(p.method||'—')}</td>
+        <td><span class="badge ${statusBadge}">${escapeHtml(p.status||'completed')}</span></td>
+        <td>${new Date(p.createdAt).toLocaleDateString()}</td>
+        <td>${confirmBtn}<button class="btn-sm btn-red" onclick="deletePayment('${p.id}')">Delete</button></td>
+      </tr>`;
+    }).join('');
+  }catch(e){tbody.innerHTML=`<tr><td colspan="6" class="u-error-text">Error: ${e.message}</td></tr>`;}
 }
 function openPaymentModal(){
   document.getElementById('pay-student').value='';
@@ -931,7 +1026,11 @@ function parseBulk(text){
   if(!text)return [];
   if(text.startsWith('[')||text.startsWith('{')){
     const data=JSON.parse(text);
-    return Array.isArray(data)?data:(data? [data]:[]);
+    let bulkData;
+    if (Array.isArray(data)) bulkData = data;
+    else if (data) bulkData = [data];
+    else bulkData = [];
+    return bulkData;
   }
   const lines=text.split(/\r?\n/).filter(l=>l.trim());
   if(lines.length<2)throw new Error('CSV needs a header row and at least one data row');
@@ -961,12 +1060,12 @@ async function submitBulk(){
 // ---------- VIRTUAL CLASSROOMS ----------
 async function loadClassrooms(){
   const tbody=document.getElementById('classrooms-tbody');
-  tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#475569">Loading…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="7" class="u-text-center u-loading-text">Loading…</td></tr>';
   try{
     const rows=await CampusAPI.listClassrooms();
-    if(!rows.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#475569;padding:1.5rem">No classrooms yet.</td></tr>';return;}
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="7" class="u-empty-text">No classrooms yet.</td></tr>';return;}
     tbody.innerHTML=rows.map(c=>`<tr>
-      <td style="font-weight:600">${escapeHtml(c.title)}</td>
+      <td class="u-fw-600">${escapeHtml(c.title)}</td>
       <td>${escapeHtml(c.courseCode)}</td>
       <td>${c.durationMinutes||30} min</td>
       <td>${c.openAt?new Date(c.openAt).toLocaleString():'Now'}</td>
@@ -974,7 +1073,7 @@ async function loadClassrooms(){
       <td><span class="badge ${c.status==='closed'?'b-red':'b-green'}">${escapeHtml(c.status||'published')}</span></td>
       <td><button class="btn-sm btn-blue" onclick="viewClassroom('${c.id}')">View</button> <button class="btn-sm btn-red" onclick="deleteClassroom('${c.id}')">Delete</button></td>
     </tr>`).join('');
-  }catch(e){tbody.innerHTML=`<tr><td colspan="7" style="color:#fca5a5">Error: ${e.message}</td></tr>`;}
+  }catch(e){tbody.innerHTML=`<tr><td colspan="7" class="u-error-text">Error: ${e.message}</td></tr>`;}
 }
 function openClassroomModal(){
   ['cr-title','cr-course','cr-questions'].forEach(id=>document.getElementById(id).value='');
@@ -982,6 +1081,10 @@ function openClassroomModal(){
   document.getElementById('cr-open').value='';
   document.getElementById('cr-close').value='';
   document.getElementById('cr-msg').textContent='';
+  document.getElementById('cr-image-preview').classList.add('u-hidden');
+  document.getElementById('cr-image-preview').innerHTML='';
+  document.getElementById('cr-file').value='';
+  document.getElementById('cr-camera').value='';
   document.getElementById('classroom-modal').classList.add('open');
 }
 function parseClassroomFile(text){
@@ -989,7 +1092,11 @@ function parseClassroomFile(text){
   text=text.trim();
   if(text.startsWith('[')||text.startsWith('{')){
     const data=JSON.parse(text);
-    const arr=Array.isArray(data)?data:(data&&data.questions?data.questions:[data]);
+    let arr;
+    if (Array.isArray(data)) arr = data;
+    else if (data && data.questions) arr = data.questions;
+    else arr = [data];
+    let id = 0;
     return arr.map((q,i)=>{
       if(q.type==='theory'||q.theory) return {type:'theory',text:q.text||q.question,q:id++,modelAnswer:q.modelAnswer||'',keywords:Array.isArray(q.keywords)?q.keywords:String(q.keywords||'').split(',').map(s=>s.trim()).filter(Boolean),points:Number(q.points||5)};
       return {type:'objective',text:q.text||q.question,options:Array.isArray(q.options)?q.options:String(q.options||'').split(',').map(s=>s.trim()),correctIndex:Number(q.correctIndex!=null?q.correctIndex:0),points:Number(q.points||1)};
@@ -998,22 +1105,34 @@ function parseClassroomFile(text){
   return parseClassroomQuestions(text);
 }
 function loadClassroomFile(){
-  const input=document.getElementById('cr-file');
+  const fileInput=document.getElementById('cr-file');
+  const cameraInput=document.getElementById('cr-camera');
+  const input=cameraInput.files&&cameraInput.files[0]?cameraInput:fileInput;
   const msg=document.getElementById('cr-msg');
+  const preview=document.getElementById('cr-image-preview');
   const file=input.files&&input.files[0];
-  if(!file){msg.style.color='#fca5a5';msg.textContent='Choose a CSV or JSON file first.';return;}
-  const reader=new FileReader();
-  reader.onload=()=>{
+  if(!file){msg.style.color='#fca5a5';msg.textContent='Choose a file or take a photo first.';return;}
+  if(file.type.startsWith('image/')){
+    const reader=new FileReader();
+    reader.onload=()=>{
+      preview.innerHTML=`<img src="${reader.result}" class="u-preview-img"><div class="u-preview-caption">${escapeHtml(file.name)} — Type or paste questions below</div>`;
+      preview.classList.remove('u-hidden');
+      msg.style.color='#34d399';msg.textContent='📷 Photo attached. Add questions in the text area below.';
+    };
+    reader.readAsDataURL(file);
+    input.value='';
+    return;
+  }
+  file.text().then(text=>{
     try{
-      const questions=parseClassroomFile(String(reader.result||''));
+      const questions=parseClassroomFile(text);
       if(!questions.length){msg.style.color='#fca5a5';msg.textContent='No questions found in file.';return;}
-      const preview=questions.map((q,i)=>`[${q.type==='theory'?'T':'O'}] ${q.text}`).join('\n');
-      document.getElementById('cr-questions').value=preview;
+      const qpreview=questions.map((q,i)=>`[${q.type==='theory'?'T':'O'}] ${q.text}`).join('\n');
+      document.getElementById('cr-questions').value=qpreview;
+      preview.classList.add('u-hidden');preview.innerHTML='';
       msg.style.color='#34d399';msg.textContent='✅ Loaded '+questions.length+' questions from '+file.name;
     }catch(e){msg.style.color='#fca5a5';msg.textContent='File parse error: '+e.message;}
-  };
-  reader.onerror=()=>{msg.style.color='#fca5a5';msg.textContent='Could not read file.';};
-  reader.readAsText(file);
+  }).catch(()=>{msg.style.color='#fca5a5';msg.textContent='Could not read file.';});
 }
 function parseClassroomQuestions(text){
   const lines=text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
@@ -1024,8 +1143,8 @@ function parseClassroomQuestions(text){
       const parts=body.split('|').map(s=>s.trim());
       if(parts.length<2)continue;
       const opts=parts[1].split(',').map(s=>s.trim());
-      const correct=parseInt(parts[2],10);
-      questions.push({type:'objective',text:parts[0],options:opts,correctIndex:isNaN(correct)?0:correct,points:1});
+      const correct=Number.parseInt(parts[2],10);
+      questions.push({type:'objective',text:parts[0],options:opts,correctIndex:Number.isNaN(correct)?0:correct,points:1});
     }else if(line.startsWith('[T]')||line.startsWith('[t]')){
       const body=line.slice(3).trim();
       const parts=body.split('|').map(s=>s.trim());
@@ -1049,9 +1168,9 @@ async function submitClassroom(){
   const fileInput=document.getElementById('cr-file');
   const file=fileInput&&fileInput.files&&fileInput.files[0];
   try{
-    if(rawText.trim()) questions=parseClassroomQuestions(rawText);
-    else if(file) questions=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{try{res(parseClassroomFile(String(r.result||'')));}catch(e){rej(e);}};r.onerror=()=>rej(new Error('read failed'));r.readAsText(file);});
-    else questions=[];
+     if(rawText.trim()) questions=parseClassroomQuestions(rawText);
+     else if(file) questions=await file.text().then(text=>parseClassroomFile(text)).catch(()=>{throw new Error('read failed');});
+     else questions=[];
   }catch(e){ msg.style.color='#fca5a5'; msg.textContent='Question parse error: '+e.message; return; }
   if(!questions.length){msg.style.color='#fca5a5';msg.textContent='Add at least one question ([O] objective or [T] theory).';return;}
   // Lecturer context: use current admin/login. Fallback to admin.
@@ -1085,14 +1204,14 @@ async function deleteClassroom(id){
 // ---------- TIMETABLE ----------
 async function loadTimetable(){
   const tbody=document.getElementById('timetable-tbody');
-  tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#475569">Loading…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="6" class="u-text-center u-loading-text">Loading…</td></tr>';
   try{
     const rows=await CampusAPI.listTimetable();
     tbody.innerHTML=rows.length?rows.map(t=>`<tr>
       <td>${t.day}</td><td>${t.time}</td><td>${t.courseCode}</td><td>${t.room}</td><td>${t.lecturer||'—'}</td>
       <td><button class="btn-sm btn-blue" onclick='editTimetable(${JSON.stringify(t)})'>Edit</button> <button class="btn-sm btn-red" onclick="deleteTimetable('${t.id}')">Delete</button></td>
-    </tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:#475569;padding:1.5rem">No timetable entries yet.</td></tr>';
-  }catch(e){tbody.innerHTML=`<tr><td colspan="6" style="color:#fca5a5">Error: ${e.message}</td></tr>`;}
+    </tr>`).join(''):'<tr><td colspan="6" class="u-empty-text">No timetable entries yet.</td></tr>';
+  }catch(e){tbody.innerHTML=`<tr><td colspan="6" class="u-error-text">Error: ${e.message}</td></tr>`;}
 }
 function openTimetableModal(){
   document.getElementById('tm-title').textContent='Add Timetable Entry';
@@ -1134,15 +1253,23 @@ async function deleteTimetable(id){
 // ---------- RESULTS ----------
 async function loadResults(){
   const tbody=document.getElementById('results-tbody');
-  tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#475569">Loading…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="7" class="u-text-center u-loading-text">Loading…</td></tr>';
   try{
     const rows=await CampusAPI.listResults();
-    tbody.innerHTML=rows.length?rows.map(r=>`<tr>
-      <td>${r.studentName||r.studentId}</td><td>${r.courseCode}</td><td>${r.caScore}</td><td>${r.examScore}</td><td>${r.total}</td>
-      <td><span class="badge ${r.grade==='F'?'b-red':r.grade==='A'?'b-green':'b-blue'}">${r.grade}</span></td>
-      <td><button class="btn-sm btn-red" onclick="deleteResult('${r.id}')">Delete</button></td>
-    </tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:#475569;padding:1.5rem">No results yet.</td></tr>';
-  }catch(e){tbody.innerHTML=`<tr><td colspan="7" style="color:#fca5a5">Error: ${e.message}</td></tr>`;}
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="7" class="u-empty-text">No results yet.</td></tr>';return;}
+    const html=rows.map(r=>{
+      let gradeBadge;
+      if (r.grade === 'F') gradeBadge = 'b-red';
+      else if (r.grade === 'A') gradeBadge = 'b-green';
+      else gradeBadge = 'b-blue';
+      return `<tr>
+        <td>${r.studentName||r.studentId}</td><td>${r.courseCode}</td><td>${r.caScore}</td><td>${r.examScore}</td><td>${r.total}</td>
+        <td><span class="badge ${gradeBadge}">${r.grade}</span></td>
+        <td><button class="btn-sm btn-red" onclick="deleteResult('${r.id}')">Delete</button></td>
+      </tr>`;
+    }).join('');
+    tbody.innerHTML=html;
+  }catch(e){tbody.innerHTML=`<tr><td colspan="7" class="u-error-text">Error: ${e.message}</td></tr>`;}
 }
 function openResultModal(){
   ['rm-studentid','rm-studentname','rm-course','rm-ca','rm-exam'].forEach(id=>document.getElementById(id).value='');

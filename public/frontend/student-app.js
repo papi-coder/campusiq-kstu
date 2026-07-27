@@ -683,10 +683,10 @@ async function loadNotifications(){
     badge.classList.toggle('show', unread.length > 0);
     const list = document.getElementById('notif-list');
     list.innerHTML = notifs.length ? notifs.slice(0,15).map(n=>`
-      <div class="np-item ${n.read?'':'unread'}" onclick="markRead('${n.id}',this)">
+      <button type="button" class="np-item ${n.read?'':'unread'}" onclick="markRead('${n.id}',this)">
         <div class="np-item-title">${n.title}</div>
         <div class="np-item-msg">${n.message}</div>
-      </div>`).join('') : '<div class="p-1 text-center text-quiet text-sm">No notifications</div>';
+      </button>`).join('') : '<div class="p-1 text-center text-quiet text-sm">No notifications</div>';
   } catch(err){console.warn(err);}
 }
 async function markRead(id, el){
@@ -1117,7 +1117,7 @@ async function loadResults(){
           const badgeClass = getGradeBadgeClassByLetter(g);
           const markerColor = getGradeMarkerColor(g);
           const fillClass = g==='A'?'grade-fill-high':g==='F'?'grade-fill-low':'grade-fill-mid';
-          return `<div class="grade-row"><span class="badge ${badgeClass}">${g}</span><div class="grade-bar-wrap"><div class="prog-bar"><div class="grade-fill ${fillClass}" style="width:${(c/results.length)*100}%"></div></div></div><span class="grade-count">${c}</span></div>`;
+          return `<div class="grade-row"><span class="badge ${badgeClass}">${g}</span><div class="grade-bar-wrap"><div class="prog-bar"><div class="grade-fill ${fillClass}" style="--width:${(c/results.length)*100}%"></div></div></div><span class="grade-count">${c}</span></div>`;
         }).join('');
       }
       const resultRows = results.map(r => `<tr><td>${r.courseCode}</td><td>${r.caScore}</td><td>${r.examScore}</td><td>${r.total}</td><td><span class="badge ${getGradeBadgeClassByLetter(r.grade)}">${r.grade}</span></td></tr>`).join('');
@@ -1400,7 +1400,7 @@ function loadBusyAreas(){
     {name:'Business School',count:12,color:'#f59e0b'},
     {name:'Sports Field',count:18,color:'#10b981'},
   ];
-  document.getElementById('loc-busy-areas').innerHTML = areas.map(a=>`<div class="map-busy-row"><span>${a.name}</span><span class="map-busy-count" style="color:${a.color}">${a.count} students</span></div>`).join('');
+  document.getElementById('loc-busy-areas').innerHTML = areas.map(a=>`<div class="map-busy-row"><span>${a.name}</span><span class="map-busy-count" style="--color:${a.color}">${a.count} students</span></div>`).join('');
 }
 
 async function toggleLocationSharing(){

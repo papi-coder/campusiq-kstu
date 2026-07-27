@@ -87,7 +87,7 @@ select.fi option{background:#0d1117}
 
 /* PROGRESS */
 .prog-bar{height:8px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden}
-.prog-fill{height:100%;border-radius:4px;transition:width 1s ease}
+.prog-fill{height:100%;border-radius:4px;transition:width 1s ease;width:var(--width,0%)}
 
 /* MODALS */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;align-items:center;justify-content:center;padding:1rem}
@@ -118,7 +118,7 @@ select.fi option{background:#0d1117}
 
 /* SEARCH */
 .search-wrap{position:relative}
-.search-icon{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:#475569;pointer-events:none}
+.search-icon{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:#334155;pointer-events:none}
 .search-box{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--t1);padding:.65rem 1rem .65rem 2.5rem;border-radius:24px;font-family:inherit;font-size:.84rem;outline:none;width:100%}
 .search-box:focus{border-color:#3b82f6}
 
@@ -126,13 +126,16 @@ select.fi option{background:#0d1117}
 .fchip{padding:.3rem .7rem;border-radius:20px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:var(--t2);cursor:pointer;font-size:.73rem;font-family:inherit;transition:all .2s;white-space:nowrap}
 .fchip:hover{border-color:rgba(59,130,246,0.4);color:#60c8ff}
 .fchip.active{background:#1d4ed8;color:#f8fbff;border-color:#60a5fa}
+.u-fw-600{font-weight:600}
+.u-w-35{width:35px}
+.u-dynamic-color{color:var(--color,inherit)}
 
 /* HEATMAP TABLE */
 .hm-table{width:100%;border-collapse:collapse;font-size:.78rem}
 .hm-table th{padding:.45rem .6rem;text-align:left;color:var(--t2);font-size:.62rem;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08)}
 .hm-table td{padding:.5rem .6rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 .hm-bar{height:10px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden}
-.hm-fill{height:100%;border-radius:5px}
+.hm-fill{height:100%;border-radius:5px;width:var(--width,0%)}
 
 /* ALUMNI CARD */
 .alumni-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:1rem;transition:all .2s}
@@ -157,10 +160,7 @@ table{width:100%;border-collapse:collapse;font-size:.78rem}
 th{text-align:left;padding:.45rem;color:var(--t2);font-size:.62rem;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08)}
 td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
-/* COPYRIGHT FOOTER */
-.copyright-footer{margin-top:2rem;padding:1.25rem 1rem;border-top:1px solid rgba(255,255,255,0.08);text-align:center}
-.copyright-line{font-size:.62rem;color:#475569;letter-spacing:.08em;line-height:1.8}
-.copyright-footer strong{color:#64748b}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
 
 @media (max-width:768px){
   nav{flex-wrap:wrap;height:auto;min-height:50px;padding:.6rem .75rem;gap:.4rem}
@@ -174,25 +174,6 @@ td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
   th,td{padding:.35rem .25rem}
   .gc{padding:.75rem;margin-bottom:.65rem;border-radius:10px}
   .search-wrap{min-width:100%!important}
-  .copyright-line{font-size:.55rem}
-}
-@media (max-width:480px){
-  nav{padding:.5rem .6rem}
-  .section{padding:78px .5rem 1rem}
-  .gc{padding:.65rem;border-radius:8px}
-  table{min-width:320px;font-size:.65rem}
-  .btn{padding:.4rem .75rem;font-size:.72rem;border-radius:14px}
-  .fi{padding:.5rem .65rem;font-size:.78rem;border-radius:8px}
-  .search-box{padding:.5rem .75rem .5rem 2.2rem;font-size:.78rem}
-  .fchip{padding:.25rem .55rem;font-size:.68rem}
-  .copyright-line{font-size:.5rem}
-}
-@media (max-width:360px){
-  .section{padding:72px .4rem .875rem}
-  .gc{padding:.55rem;border-radius:6px}
-  table{min-width:280px;font-size:.6rem}
-  .btn{padding:.35rem .6rem;font-size:.68rem;border-radius:12px}
-  .fi{padding:.45rem .55rem;font-size:.72rem;border-radius:6px}
 }
 </style>
 </head>
@@ -395,12 +376,6 @@ td{padding:.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 
 </main>
 
-<!-- COPYRIGHT FOOTER -->
-<footer class="copyright-footer">
-  <div class="copyright-line">© 2026 CampusIQ · Kumasi Technical University. All rights reserved.</div>
-  <div class="copyright-line">Designed &amp; Developed by <strong>Papi</strong> · Built with ❤️ for KsTU</div>
-</footer>
-
 <!-- JOB DETAIL MODAL -->
 <div class="modal-bg" id="job-modal">
   <div class="modal u-mw-640">
@@ -566,7 +541,7 @@ function buildJobCard(job, status, daysLeft){
     </div>
     <div class="mb-65">
       <div class="match-row"><span class="text-t2">Match</span><span class="text-match-${getLevel(job.match,90,75)}">${job.match}%</span></div>
-      <div class="prog-bar prog-bar-sm"><div class="prog-fill prog-fill-${getLevel(job.match,90,75)}" style="width:${job.match}%"></div></div>
+      <div class="prog-bar prog-bar-sm"><div class="prog-fill prog-fill-${getLevel(job.match,90,75)}" style="--width:${job.match}%"></div></div>
     </div>
     <div class="pay-row">
       <span class="text-lg fw-600 text-green">${job.pay}</span>
@@ -874,7 +849,7 @@ function runSkillGap(){
   result.innerHTML=`
     <div class="gc mb-1">
       <div class="sh"><h2>${j.role} at ${j.company}</h2><div class="sh-line"></div><span class="badge ${matchBadgeClass}">${pct}% Match</span></div>
-       <div class="prog-bar prog-bar-sm mb-1"><div class="prog-fill prog-fill-${getLevel(pct,90,75)}" style="width:${pct}%"></div></div>
+       <div class="prog-bar prog-bar-sm mb-1"><div class="prog-fill prog-fill-${getLevel(pct,90,75)}" style="--width:${pct}%"></div></div>
       <div class="g2 gap-75">
         <div>
            <div class="section-title">✓ Skills You Have (${have.length}/${required.length})</div>
@@ -1026,7 +1001,7 @@ function renderHeatmap(){
       <td class="text-072 text-t2">${m.name}</td>
       <td class="heatmap-amount">${m.min.toLocaleString()}</td>
       <td class="heatmap-amount-bold">${m.max.toLocaleString()}</td>
-        <td><div class="flex items-center gap-1"><div class="hm-bar hm-bar-flex"><div class="hm-fill heatmap-fill-${getLevel(heat,80,60)}" style="width:${heat}%"></div></div><span class="text-072" style="color:${hc};font-weight:600;width:35px">${heat}%</span></div></td>
+        <td><div class="flex items-center gap-1"><div class="hm-bar hm-bar-flex"><div class="hm-fill heatmap-fill-${getLevel(heat,80,60)}" style="--width:${heat}%"></div></div><span class="text-072 u-fw-600 u-w-35 u-dynamic-color" style="--color:${hc}">${heat}%</span></div></td>
        <td><span class="badge bb">${m.openJobs}</span></td>
      </tr>`;
     }).join('');
