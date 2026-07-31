@@ -10,6 +10,7 @@ let isDark = true;
 let locationInterval = null;
 let chatInterval = null;
 let examResultCache = {};
+let screenHistory = [];
 
 // Replace with your actual Google Maps API key from https://console.cloud.google.com/apis/credentials
 const MAPS_API_KEY = 'YOUR_API_KEY';
@@ -314,42 +315,46 @@ async function doLogin(){
 document.getElementById('l-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
 
 function launchApp(){
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('nav').classList.remove('hidden');
-  document.getElementById('notice-ticker').classList.remove('hidden');
-  document.getElementById('main').classList.remove('hidden');
-  const navText = document.getElementById('nav-av-text');
-  const navImg = document.getElementById('nav-av-img');
-  if(currentUser.passportDataUrl){
-    navImg.src = currentUser.passportDataUrl;
-    navImg.style.display = 'block';
-    if(navText) navText.style.display = 'none';
-  } else {
-    navImg.style.display = 'none';
-    if(navText){ navText.style.display = 'flex'; navText.textContent = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
-  }
-  buildNav();
-  applyTranslations();
-  showScreen('home');
-  loadNoticeTicker();
-  loadNotifications();
-  notifInterval = setInterval(loadNotifications, 30000);
-}
+   document.getElementById('login-screen').style.display = 'none';
+   document.getElementById('nav').classList.remove('hidden');
+   document.getElementById('notice-ticker').classList.remove('hidden');
+   document.getElementById('main').classList.remove('hidden');
+   const navText = document.getElementById('nav-av-text');
+   const navImg = document.getElementById('nav-av-img');
+   if(currentUser.passportDataUrl){
+     navImg.src = currentUser.passportDataUrl;
+     navImg.style.display = 'block';
+     if(navText) navText.style.display = 'none';
+   } else {
+     navImg.style.display = 'none';
+     if(navText){ navText.style.display = 'flex'; navText.textContent = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+   }
+   buildNav();
+   applyTranslations();
+   screenHistory = [];
+   updateBackButton();
+   showScreen('home');
+   loadNoticeTicker();
+   loadNotifications();
+   notifInterval = setInterval(loadNotifications, 30000);
+ }
 function logout(){
-  if(locationInterval){ clearInterval(locationInterval); CampusAPI.stopSharing(currentUser.id).catch(()=>{}); }
-  clearInterval(notifInterval); clearInterval(chatInterval);
-  currentUser = null; location.reload();
-}
+   if(locationInterval){ clearInterval(locationInterval); CampusAPI.stopSharing(currentUser.id).catch(()=>{}); }
+   clearInterval(notifInterval); clearInterval(chatInterval);
+   currentUser = null; screenHistory = []; location.reload();
+ }
 function hidePublicProfile(){
-  const el = document.getElementById('public-profile-screen');
-  if(el){ el.classList.add('hidden'); el.style.display = 'none'; }
-}
+   const el = document.getElementById('public-profile-screen');
+   if(el){ el.classList.add('hidden'); el.style.display = 'none'; }
+   screenHistory = [];
+ }
 function showLogin(){
-  const el = document.getElementById('login-screen');
-  if(el){ el.classList.remove('hidden'); el.style.display = ''; }
-  const pub = document.getElementById('public-profile-screen');
-  if(pub){ pub.classList.add('hidden'); pub.style.display = 'none'; }
-}
+   const el = document.getElementById('login-screen');
+   if(el){ el.classList.remove('hidden'); el.style.display = ''; }
+   const pub = document.getElementById('public-profile-screen');
+   if(pub){ pub.classList.add('hidden'); pub.style.display = 'none'; }
+   screenHistory = [];
+ }
 
 // NAV CONFIG
 const NAV = {
@@ -388,11 +393,15 @@ function buildNav(){
     tabs.appendChild(b);
   });
 }
-function showScreen(id){
+function showScreen(id, skipHistory){
+  if (currentUser && id !== 'home' && !skipHistory) {
+    screenHistory.push(id);
+  }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-'+id).classList.add('active');
   const tabs = document.querySelectorAll('.ntab');
   (NAV[currentUser.role]||[]).forEach((t,i) => { if(tabs[i]) tabs[i].classList.toggle('active', t.id===id); });
+  updateBackButton();
   if(id==='home') loadHome();
   if(id==='classroom') loadClassroom();
   if(id==='attendance') loadAttendanceScreen();
@@ -405,6 +414,29 @@ function showScreen(id){
   if(id==='idcard') renderIDCard();
   if(id==='calendar') loadCalendar();
   if(id==='chat'){ clearInterval(chatInterval); }
+}
+function goBack(){
+  if (screenHistory.length > 0) {
+    screenHistory.pop();
+    const prev = screenHistory.length > 0 ? screenHistory[screenHistory.length - 1] : null;
+    if (prev) {
+      showScreen(prev, true);
+    } else {
+      showScreen('home', true);
+    }
+  } else {
+    showScreen('home', true);
+  }
+}
+function updateBackButton(){
+  const backBtn = document.getElementById('back-btn');
+  const homeBtn = document.getElementById('home-btn');
+  if (backBtn) {
+    backBtn.style.display = (screenHistory.length > 0) ? '' : 'none';
+  }
+  if (homeBtn) {
+    homeBtn.style.display = (screenHistory.length > 0) ? '' : 'none';
+  }
 }
 function closeM(id){ document.getElementById(id).classList.remove('open'); }
 

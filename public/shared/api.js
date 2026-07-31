@@ -10,7 +10,6 @@ const CampusAPI = (() => {
   const isFile = protocol === 'file:';
   const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-  // For file:// we must use an absolute http(s) origin, never file://
   const originFor = () => {
     if (isLocal) return `${protocol}//${hostname}`;
     return 'http://localhost';
@@ -20,23 +19,16 @@ const CampusAPI = (() => {
   let fallbackOrigin = '';
   if (isLocal || isFile) {
     const base = originFor();
-    // The API server auto-retries ports 3001..3010 on EADDRINUSE, so probe the
-    // same range to discover whichever port it actually bound to.
     for (let p = 3001; p <= 3010; p++) candidates.push(`${base}:${p}`);
-    fallbackOrigin = candidates[0]; // e.g. http://localhost:3001
+    fallbackOrigin = candidates[0];
   }
-  // Same-origin fallback (Vercel/production, or when a static server proxies /api)
   if (!isFile) {
     candidates.push(`${protocol}//${hostname}`);
   } else {
     candidates.push(fallbackOrigin);
   }
 
-  // ---- Connectivity monitoring --------------------------------------------
-  // Tracks whether the backend API is reachable and shows a clear status banner
-  // on every page (all pages load this module). Pages can also subscribe via
-  // CampusAPI.onStatus(cb) to react to online/offline transitions.
-  let online = null; // null = unknown, true = reachable, false = offline
+  let online = null;
   const statusListeners = [];
   function setStatus(next) {
     if (next === online) return;
@@ -67,11 +59,24 @@ const CampusAPI = (() => {
     const dot = document.getElementById('api-status-dot');
     const label = document.getElementById('api-status-label');
     if (online === false) {
-      el.textContent = '⚠ Offline — API unavailable. Connect the CampusIQ server or check your network.';
+      el.textContent = '⚠ API Offline ';
+      el.appendChild(document.createTextNode('— The CampusIQ backend is not reachable. '));
+      const retryBtn = document.createElement('button');
+      retryBtn.textContent = 'Retry';
+      retryBtn.style.cssText = 'background:#2563eb;color:#fff;border:none;border-radius:10px;padding:2px 10px;font-size:0.7rem;cursor:pointer;font-family:inherit;margin-left:6px';
+      retryBtn.onclick = () => { safeProbe(); updateBanner(); };
+      el.appendChild(retryBtn);
+      if (isFile) {
+        const hint = document.createElement('span');
+        hint.textContent = ' You are opening the app as a file. Use "npm start" to serve it.';
+        hint.style.cssText = 'display:block;margin-top:2px;font-size:0.65rem';
+        el.appendChild(hint);
+      }
       el.style.background = '#7f1d1d';
       el.style.color = '#fecaca';
       el.style.borderBottom = '1px solid #b91c1c';
       el.style.display = '';
+      el.style.pointerEvents = 'auto';
       if (dot) { dot.style.background = '#ef4444'; dot.style.animation = 'none'; }
       if (label) label.textContent = 'Offline — API unavailable';
     } else if (online === true) {
@@ -80,6 +85,7 @@ const CampusAPI = (() => {
       el.style.color = '#a7f3d0';
       el.style.borderBottom = '1px solid #047857';
       el.style.display = '';
+      el.style.pointerEvents = 'none';
       if (dot) { dot.style.background = '#22c55e'; dot.style.animation = 'blink 2s infinite'; }
       if (label) label.textContent = 'API Connected';
       clearTimeout(ensureBanner._hideT);
@@ -106,12 +112,9 @@ const CampusAPI = (() => {
           if (r.ok) { BASE = candidate; console.log('[CampusAPI] API found at:', BASE); setStatus(true); return true; }
         } catch {
           clearTimeout(tid);
-          continue; // try next candidate on failure
+          continue;
         }
       }
-      // Same-origin /api/health (Vercel/production only; localhost always uses a
-      // different port for the backend, so skip the same-origin probe there to
-      // avoid needless 404s and service-worker noise).
       if (!isFile && !isLocal) {
         const r = await fetch('/api/health', { method: 'GET' }).catch(() => null);
         if (r?.ok) { BASE = ''; console.log('[CampusAPI] API found at same-origin /api'); setStatus(true); return true; }
@@ -125,14 +128,11 @@ const CampusAPI = (() => {
   }
   function safeProbe() { return probe(); }
 
-  // Initial probe, periodic monitoring, and reconnect when the browser reports
-  // connectivity changes.
   safeProbe();
   setInterval(safeProbe, 15000);
   window.addEventListener('online', safeProbe);
   window.addEventListener('offline', () => setStatus(false));
 
-  // ---- Helpers to keep request() flat ----
   async function _discoverApi() {
     console.log('[CampusAPI] Initial probe timed out, trying direct discovery...');
     for (const candidate of candidates.filter(Boolean)) {
@@ -144,7 +144,7 @@ const CampusAPI = (() => {
         if (r.ok) { BASE = candidate; console.log('[CampusAPI] API discovered at:', BASE); return true; }
       } catch {
         clearTimeout(tid);
-        continue; // try next candidate
+        continue;
       }
     }
     return false;
@@ -196,15 +196,24 @@ const CampusAPI = (() => {
   async function request(path, options = {}) {
     if (online === false) {
       safeProbe();
-      throw new Error('Offline — API unavailable. Connect the CampusIQ server or check your network.');
+      if (isFile) {
+        throw new Error('Cannot connect to the server. Please open the app using a web server (e.g. "npm start" or "npx serve") instead of opening the HTML file directly.');
+      }
+      throw new Error('Offline — API unavailable. Make sure the CampusIQ backend server is running. Try running "npm start" in the project folder, or check your network connection.');
     }
     await _waitForBase();
     const url = BASE + path;
     console.log('[CampusAPI] Request:', options.method || 'GET', url);
     const res = await _fetchWithRetry(url, path, options);
     let json;
+    const contentType = res.headers.get('content-type') || '';
     try { json = await res.json(); }
-    catch { throw new Error('Server returned an invalid response'); }
+    catch {
+      if (contentType.includes('text/html') || contentType.includes('text/plain')) {
+        throw new Error('The server returned a web page instead of data. Make sure the CampusIQ backend server is running. Try running "npm start" in the project folder.');
+      }
+      throw new Error('The server returned an unexpected response. Make sure the CampusIQ backend server is running.');
+    }
     if (!res.ok || (json?.success === false)) {
       throw new Error(json?.message || `Request failed (${res.status})`);
     }
@@ -221,7 +230,6 @@ const CampusAPI = (() => {
     put: (path, body) => request(path, { method: 'PUT', body: JSON.stringify(body) }),
     del: (path) => request(path, { method: 'DELETE' }),
 
-    // ---- convenience wrappers ----
     adminLogin: (email, password) =>
     CampusAPI.post('/api/admin/login', { email, password }),
     adminChangePassword: (username, oldPassword, newPassword) =>

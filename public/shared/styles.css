@@ -336,7 +336,7 @@
   border: 1px solid rgba(255,255,255,0.1);
 }
 .ai-msg-thinking {
-  color: #475569;
+  color: var(--t3);
   font-style: italic;
 }
 
@@ -348,7 +348,7 @@
   margin-bottom: 0.875rem;
 }
 .id-card-label {
-  color: #475569;
+  color: var(--t3);
 }
 .id-card-value {
   color: #60c8ff;
@@ -713,7 +713,7 @@
   color: #0f172a;
 }
 .cv-contact {
-  color: #64748b;
+  color: var(--t3);
   font-size: 0.82rem;
   margin: 0.3rem 0 0;
 }
@@ -892,7 +892,7 @@
 .reg-item-sub { font-size: 0.75rem; color: var(--t2); }
 .table-empty-center { text-align: center; color: var(--t3); }
 .table-empty-state { text-align: center; color: var(--t3); padding: 1.5rem; font-size: 0.8rem; }
-.text-quiet { color: #475569; }
+.text-quiet { color: var(--t3); }
 .hostel-item-title { font-size: 0.88rem; font-weight: 600; color: #34d399; margin-bottom: 0.75rem; }
 
 /* Exam question block */
@@ -1284,7 +1284,7 @@
 }
 .public-id-label {
   font-size: 0.6rem;
-  color: #64748b;
+  color: var(--t3);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -1294,7 +1294,7 @@
 }
 .public-id-powered {
   font-size: 0.6rem;
-  color: #64748b;
+  color: var(--t3);
   margin-top: 0.75rem;
 }
 
@@ -1319,7 +1319,7 @@
 /* Notice item meta */
 .notice-meta {
   font-size: 0.68rem;
-  color: #334155;
+  color: var(--t3);
   margin-top: 4px;
 }
 .notice-badge {
@@ -1339,18 +1339,18 @@
 /* Loading / empty states */
 .loading-cell {
   text-align: center;
-  color: #475569;
+  color: var(--t3);
 }
 .error-cell {
   color: #fca5a5;
 }
 .empty-text {
-  color: #475569;
+  color: var(--t3);
   font-size: 0.82rem;
 }
 .text-center-quiet {
   text-align: center;
-  color: #475569;
+  color: var(--t3);
   padding: 1rem;
 }
 
@@ -1362,7 +1362,7 @@
 
 /* Allocation actions */
 .alloc-done {
-  color: #334155;
+  color: var(--t3);
 }
 
 /* Payment amount */
@@ -1393,7 +1393,7 @@
 }
 .notice-meta {
   font-size: 0.68rem;
-  color: #334155;
+  color: var(--t3);
   margin-top: 4px;
 }
 .notice-card {
@@ -1415,11 +1415,11 @@
 }
 .notice-date {
   font-size: 0.68rem;
-  color: #334155;
+  color: var(--t3);
   margin-top: 4px;
 }
 .notice-empty {
-  color: #475569;
+  color: var(--t3);
   font-size: 0.82rem;
 }
 
@@ -1439,24 +1439,24 @@
 }
 .calendar-loading {
   text-align: center;
-  color: #475569;
+  color: var(--t3);
   padding: 1rem;
 }
 .calendar-empty {
-  color: #475569;
+  color: var(--t3);
   font-size: 0.82rem;
 }
 
 /* Allocation / Payment pages */
 .alloc-loading {
   text-align: center;
-  color: #475569;
+  color: var(--t3);
 }
 .alloc-card {
   overflow-x: auto;
 }
 .alloc-done {
-  color: #334155;
+  color: var(--t3);
 }
 
 /* Bulk import */
@@ -1602,7 +1602,7 @@
 }
 .public-id-label {
   font-size: 0.6rem;
-  color: #64748b;
+  color: var(--t3);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -1612,7 +1612,7 @@
 }
 .public-id-powered {
   font-size: 0.6rem;
-  color: #64748b;
+  color: var(--t3);
   margin-top: 0.75rem;
 }
 
@@ -1632,7 +1632,7 @@
 .heatmap-fill-mid { background: #f59e0b; }
 .heatmap-fill-low { background: #ef4444; }
 .portfolio-badge-inline { display: inline-block; }
-.empty-state-text { color: #475569; font-size: 0.82rem; }
+.empty-state-text { color: var(--t3); font-size: 0.82rem; }
 .public-id-avatar-img {
   width: 100%;
   height: 100%;
@@ -1817,7 +1817,7 @@
   font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #475569;
+  color: var(--t3);
   font-weight: 600;
 }
 .sb-item {
@@ -1992,7 +1992,7 @@
   line-height: 1.7;
 }
 .text-muted {
-  color: #64748b;
+  color: var(--t3);
 }
 .text-xs {
   font-size: 0.68rem;
@@ -2023,12 +2023,12 @@ td {
 }
 .loading-cell {
   text-align: center;
-  color: #475569;
+  color: var(--t3);
   padding: 1rem;
 }
 .table-empty {
   text-align: center;
-  color: #475569;
+  color: var(--t3);
   font-size: 0.82rem;
   padding: 1rem;
 }

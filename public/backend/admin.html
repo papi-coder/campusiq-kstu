@@ -14,20 +14,20 @@ body{min-height:100vh;background:linear-gradient(135deg,#0a0a0f 0%,#0d1117 60%,#
 .login-box{background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;width:100%;max-width:380px}
 .login-box h1{font-family:'Orbitron',sans-serif;font-size:1.3rem;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:0.3rem}
 .login-box .sub{text-align:center;color:var(--t3);font-size:0.72rem;letter-spacing:0.15em;margin-bottom:1.5rem}
-input,select,textarea{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--t1);padding:0.6rem 0.9rem;border-radius:10px;font-family:inherit;font-size:0.85rem;outline:none;margin-bottom:0.75rem}
+input,select,textarea{width:100%;background:var(--panel);border:1px solid rgba(255,255,255,0.1);color:var(--t1);padding:0.6rem 0.9rem;border-radius:10px;font-family:inherit;font-size:0.85rem;outline:none;margin-bottom:0.75rem}
 input:focus,select:focus,textarea:focus{border-color:var(--blue)}
 button{cursor:pointer;font-family:inherit;border:none;border-radius:20px;font-weight:500;transition:opacity .15s}
 .btn-primary{background:linear-gradient(135deg,#b91c1c,#b45309);color:#fff;padding:0.7rem;width:100%;font-size:0.85rem}
 .btn-primary:hover{opacity:0.88}
 .err{color:#fca5a5;font-size:0.78rem;text-align:center;margin-top:0.5rem;min-height:1.1rem}
-.hint{margin-top:0.875rem;padding:0.6rem;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;font-size:0.7rem;color:#334155;text-align:center}
+.hint{margin-top:0.875rem;padding:0.6rem;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;font-size:0.7rem;color:#ef4444;text-align:center}
 
 .topbar{height:50px;display:flex;align-items:center;padding:0 1rem;gap:0.75rem;background:rgba(10,10,15,0.95);border-bottom:1px solid rgba(255,255,255,0.07);position:sticky;top:0;z-index:50}
 .tb-logo{font-family:'Orbitron',sans-serif;font-size:0.9rem;font-weight:700;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .tb-r{margin-left:auto;display:flex;align-items:center;gap:0.75rem;font-size:0.72rem;color:var(--t3)}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:blink 2s infinite}
 @keyframes blink{50%{opacity:0.3}}
-.logout{padding:0.25rem 0.7rem;border:1px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.1);color:#dc2626;border-radius:20px;font-size:0.7rem}
+.logout{padding:0.25rem 0.7rem;border:1px solid rgba(239,68,68,0.4);background:rgba(239,68,68,0.5);color:#fff;border-radius:20px;font-size:0.7rem}
 
 .layout{display:flex;min-height:calc(100vh - 50px)}
 .sidebar{width:190px;background:rgba(13,17,23,0.7);border-right:1px solid rgba(255,255,255,0.06);padding:0.75rem 0;flex-shrink:0}
@@ -53,15 +53,15 @@ table{width:100%;border-collapse:collapse;font-size:0.78rem}
 th{text-align:left;padding:0.5rem;color:var(--t2);font-size:0.65rem;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08)}
 td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 .badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:20px;font-size:0.6rem;font-weight:600;text-transform:uppercase}
-.b-green{background:rgba(16,185,129,0.25);color:#6ee7b7}
-.b-red{background:rgba(239,68,68,0.25);color:#fecaca}
-.b-gold{background:rgba(245,158,11,0.25);color:#fde68a}
-.b-blue{background:rgba(59,130,246,0.25);color:#93c5fd}
+.b-green{background:rgba(16,185,129,0.35);color:#6ee7b7}
+.b-red{background:rgba(239,68,68,0.35);color:#fca5a5}
+.b-gold{background:rgba(245,158,11,0.35);color:#fde68a}
+.b-blue{background:rgba(59,130,246,0.35);color:#93c5fd}
 
 .btn-sm{padding:0.25rem 0.6rem;font-size:0.68rem;border-radius:14px}
-.btn-blue{background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.35);color:#93c5fd}
-.btn-green{background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.35);color:#6ee7b7}
-.btn-red{background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.35);color:#fecaca}
+.btn-blue{background:rgba(59,130,246,0.3);border:1px solid rgba(59,130,246,0.5);color:#93c5fd}
+.btn-green{background:rgba(16,185,129,0.3);border:1px solid rgba(16,185,129,0.5);color:#6ee7b7}
+.btn-red{background:rgba(239,68,68,0.3);border:1px solid rgba(239,68,68,0.5);color:#fca5a5}
 .btn-grad-green{background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;padding:0.7rem;width:100%;font-size:0.85rem;border:none;border-radius:20px;font-weight:500;cursor:pointer;font-family:inherit;margin-bottom:0.5rem}
 .btn-grad-gold{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;padding:0.7rem;width:100%;font-size:0.85rem;border:none;border-radius:20px;font-weight:500;cursor:pointer;font-family:inherit}
 
@@ -91,7 +91,7 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 .u-hidden{display:none}
 .u-text-center{text-align:center}
 .u-text-t2{color:var(--t2)}
-.u-text-muted{color:#64748b}
+.u-text-muted{color:var(--t3)}
 .u-fw-600{font-weight:600}
 .u-fs-085{font-size:0.85rem}
 .u-fs-078{font-size:0.78rem}
@@ -109,10 +109,10 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 .u-bg-panel{background:var(--panel)}
 .u-border-b-light{border-bottom:1px solid rgba(255,255,255,0.05)}
 .u-border-t{border-top:1px solid rgba(255,255,255,0.06)}
-.u-badge-blue{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#93c5fd}
-.u-badge-green{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#6ee7b7}
-.u-badge-red{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#fecaca}
-.u-badge-gold{background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);color:#fde68a}
+.u-badge-blue{background:rgba(59,130,246,0.3);border:1px solid rgba(59,130,246,0.5);color:#93c5fd}
+.u-badge-green{background:rgba(16,185,129,0.3);border:1px solid rgba(16,185,129,0.5);color:#6ee7b7}
+.u-badge-red{background:rgba(239,68,68,0.3);border:1px solid rgba(239,68,68,0.5);color:#fca5a5}
+.u-badge-gold{background:rgba(245,158,11,0.3);border:1px solid rgba(245,158,11,0.5);color:#fde68a}
 .u-stat-students{color:#93c5fd}
 .u-stat-lecturers{color:#6ee7b7}
 .u-stat-hods{color:#fde68a}
@@ -120,8 +120,8 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 .u-row-hover:hover{background:rgba(255,255,255,0.03)}
 .u-success-box{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:0.875rem;font-size:0.8rem;line-height:1.9}
 .u-error-text{color:#fca5a5}
-.u-empty-text{color:#64748b;font-size:0.8rem;text-align:center;padding:1.5rem}
-.u-loading-text{color:#64748b;text-align:center}
+.u-empty-text{color:var(--t3);font-size:0.8rem;text-align:center;padding:1.5rem}
+.u-loading-text{color:var(--t3);text-align:center}
 .u-divider{border-bottom:1px solid rgba(255,255,255,0.05);padding:0.4rem 0;font-size:0.78rem}
 .u-admin-green{color:#34d399;font-weight:600}
 .u-fee-total{color:#34d399;font-weight:600}
@@ -130,7 +130,7 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 .u-card-actions{display:flex;gap:0.5rem;justify-content:flex-end}
 .u-card-section-title{font-size:0.85rem;margin-bottom:0.75rem;font-weight:600}
 .u-flex-gap-sm{display:flex;gap:0.5rem;flex-wrap:wrap}
-.u-modal-success{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:0.875rem;font-size:0.8rem;line-height:1.9;color:#6ee7b7}
+.u-modal-success{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:0.875rem;font-size:0.8rem;line-height:1.9;color:#34d399}
 .u-mw-420{max-width:420px}
 .u-mw-620{max-width:620px}
 .u-preview-img{max-width:100%;max-height:180px;border-radius:10px;border:1px solid rgba(255,255,255,0.1)}
@@ -219,7 +219,7 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
     <div class="sb-sec">System</div>
     <button type="button" class="sb-item" onclick="go('settings',this)">⚙️ Settings</button>
   </div>
-  <div class="sidebar-overlay" id="sidebar-overlay" role="presentation" onclick="toggleSidebar()"></div>
+  <button type="button" class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></button>
 
   <div class="content">
 
@@ -474,8 +474,8 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
         <textarea id="cr-questions" rows="9" placeholder="[O] What is a stack? | Push,Pop,Queue,Tree | 0&#10;[O] Big-O of binary search? | O(n),O(log n),O(n^2),O(1) | 1&#10;[T] Explain recursion with an example. | keywords: base case, stack, function calls"></textarea>
         <div class="label">Upload Questions</div>
         <div class="u-flex-gap-sm u-mb-05">
-          <input id="cr-file" type="file" accept=".csv,.json,.txt,image/*" class="u-hidden" onchange="loadClassroomFile()">
-          <input id="cr-camera" type="file" accept="image/*" capture="environment" class="u-hidden" onchange="loadClassroomFile()">
+          <input id="cr-file" type="file" accept=".csv,.json,.txt,image/*" class="u-hidden" onchange="loadClassroomFile()" aria-label="Upload questions file">
+          <input id="cr-camera" type="file" accept="image/*" class="u-hidden" onchange="loadClassroomFile()" aria-label="Take photo of questions">
           <button type="button" class="btn-sm btn-blue" onclick="document.getElementById('cr-file').click()">📂 Upload File</button>
           <button type="button" class="btn-sm btn-green" onclick="document.getElementById('cr-camera').click()">📷 Take Photo</button>
         </div>
@@ -632,6 +632,7 @@ function toggleSidebar(){
   sidebar.classList.toggle('open');
   overlay.classList.toggle('open');
 }
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const sidebar=document.querySelector('.sidebar');const overlay=document.getElementById('sidebar-overlay');if(sidebar.classList.contains('open')){sidebar.classList.remove('open');overlay.classList.remove('open');}}});
 function go(page,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
@@ -1115,7 +1116,7 @@ function loadClassroomFile(){
   if(file.type.startsWith('image/')){
     const reader=new FileReader();
     reader.onload=()=>{
-      preview.innerHTML=`<img src="${reader.result}" class="u-preview-img"><div class="u-preview-caption">${escapeHtml(file.name)} — Type or paste questions below</div>`;
+      preview.innerHTML=`<img src="${reader.result}" class="u-preview-img" alt="Uploaded questions photo"><div class="u-preview-caption">${escapeHtml(file.name)} — Type or paste questions below</div>`;
       preview.classList.remove('u-hidden');
       msg.style.color='#34d399';msg.textContent='📷 Photo attached. Add questions in the text area below.';
     };
