@@ -458,48 +458,6 @@ function updateBackButton(){
 function closeM(id){ document.getElementById(id).classList.remove('open'); }
 
 // =====================================================================
-// MOBILE HORIZONTAL SWIPE SUPPORT
-// =====================================================================
-let touchStartX = 0;
-let touchEndX = 0;
-let isSwiping = false;
-
-function initMobileSwipe(){
-  const main = document.getElementById('main');
-  if(!main) return;
-  main.addEventListener('touchstart', function(e) {
-    touchStartX = e.changedTouches[0].screenX;
-    isSwiping = true;
-  }, { passive: true });
-  main.addEventListener('touchend', function(e) {
-    if(!isSwiping) return;
-    isSwiping = false;
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
-  }, { passive: true });
-}
-function handleSwipe(){
-  const diff = touchStartX - touchEndX;
-  const threshold = 80;
-  if(Math.abs(diff) < threshold) return;
-  if(!currentUser) return;
-  const navItems = NAV[currentUser.role] || [];
-  const tabs = document.querySelectorAll('.ntab');
-  let currentIdx = -1;
-  navItems.forEach((t,i) => {
-    const screen = document.getElementById('screen-' + t.id);
-    if(screen && screen.classList.contains('active')) currentIdx = i;
-  });
-  if(diff > 0 && currentIdx < navItems.length - 1){
-    showScreen(navItems[currentIdx + 1].id);
-  } else if(diff < 0 && currentIdx > 0){
-    showScreen(navItems[currentIdx - 1].id);
-  }
-}
-// Initialize swipe on app start
-setTimeout(initMobileSwipe, 500);
-
-// =====================================================================
 // HOME
 // =====================================================================
 async function loadHome(){

@@ -21,4 +21,6 @@ npm-debug.log*
 .vscode/
 .idea/
 
-.vercel
+# Local deployment config
+ecosystem.config.js
+logs/
