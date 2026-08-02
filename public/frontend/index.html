@@ -207,30 +207,118 @@ select.fi2 option{background:#0d1117}
 .ios-share-box{display:inline-block;background:#0066d6;color:#fff;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:700;font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-shadow:0 1px 2px rgba(0,0,0,0.2)}
 
 @media (max-width:768px){
-  nav{flex-wrap:wrap;height:auto;min-height:52px;padding:0.4rem 0.6rem;gap:0.4rem}
-  nav .ntabs{order:3;flex-basis:100%;padding-top:0.3rem}
-  nav .nav-r{flex-wrap:wrap;gap:0.3rem}
-  .btn-install{order:10;flex-basis:100%;justify-content:center;padding:0.35rem;font-size:0.78rem;border-radius:10px}
-  main{padding:84px 0.75rem 3.5rem}
-  .grid2,.grid3,.grid4{display:flex;overflow-x:auto;gap:0.875rem;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:0.5rem}
-  .grid2>*,.grid3>*,.grid4>*{flex:0 0 auto;width:min(85vw,380px);scroll-snap-align:start}
-  table{font-size:0.7rem;min-width:400px}
-  th,td{padding:0.35rem 0.25rem}
-  .gc{padding:0.75rem;margin-bottom:0.65rem;border-radius:10px;flex-shrink:0}
+  :root{
+    --nav-h: 52px;
+    --ticker-h: 28px;
+  }
+  body{
+    padding-top: calc(var(--nav-h) + var(--ticker-h));
+    overflow-x: hidden;
+  }
+  #main{
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
+  .screen{
+    display: none;
+    position: fixed;
+    top: calc(var(--nav-h) + var(--ticker-h));
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - var(--nav-h) - var(--ticker-h));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.75rem;
+    background: #0a0a0f;
+    scroll-snap-align: start;
+    transition: transform 0.25s ease;
+    will-change: transform;
+  }
+  .screen.active{
+    display: block;
+    transform: translateX(0);
+    z-index: 1;
+  }
+  .grid2,.grid3,.grid4{
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0.75rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+    scroll-snap-stop: always;
+  }
+  .grid2>*,.grid3>*,.grid4>*{
+    flex: 0 0 auto;
+    width: min(82vw, 360px);
+    scroll-snap-align: start;
+  }
+  .grid2 .sh,
+  .grid3 .sh,
+  .grid4 .sh{
+    flex-wrap: wrap;
+  }
+  .grid2 .sh-line,
+  .grid3 .sh-line,
+  .grid4 .sh-line{
+    display: none;
+  }
+  table{
+    font-size: 0.68rem;
+    min-width: 100%;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  th,td{
+    padding: 0.35rem 0.25rem;
+  }
+  .gc{
+    padding: 0.75rem;
+    margin-bottom: 0.65rem;
+    border-radius: 12px;
+    min-width: 0;
+  }
   .modal{max-width:100%;max-height:94vh;margin:0 0.25rem}
   .modal-bg{padding:0.5rem;align-items:flex-end}
   .notif-panel{width:100%;max-width:100%;right:0;border-radius:0}
-  #map-container{height:260px}
-  .id-card{padding:1rem;max-width:280px}
-  .chat-msgs{height:220px}
+  #map-container{height:220px}
+  .id-card{padding:1rem;max-width:260px}
+  .chat-msgs{height:200px}
   .sh{flex-wrap:wrap}
   .sh h2{font-size:0.78rem}
   .sh-line{display:none}
   .login-box{padding:1.25rem;border-radius:16px}
   .role-tabs{grid-template-columns:1fr;gap:0.4rem}
-  .btn-login{padding:0.6rem;font-size:0.82rem}
-  .fi{padding:0.55rem 0.75rem;font-size:0.82rem;margin-bottom:0.6rem}
-  #notice-ticker{top:auto;bottom:0;left:0;right:0;position:fixed;z-index:90;height:28px;font-size:0.68rem}
+  .btn-login{padding:0.6rem;font-size:0.82rem;width:100%}
+  .fi{padding:0.55rem 0.75rem;font-size:0.82rem;margin-bottom:0.6rem;width:100%}
+  .login-err{font-size:0.75rem;margin:0.4rem 0}
+  .notice{font-size:0.72rem;line-height:1.5}
+  #notice-ticker{
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
+    z-index: 90;
+    height: 28px;
+    font-size: 0.68rem;
+  }
+  .home-stats{
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0.6rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.4rem;
+  }
+  .home-stats>*{
+    flex: 0 0 auto;
+    min-width: 140px;
+    scroll-snap-align: start;
+  }
 }
 </style>
 </head>
