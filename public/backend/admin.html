@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>CampusIQ Admin — KsTU</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
@@ -10,7 +13,7 @@
 :root{--bg:#0a0a0f;--panel:#0d1117;--blue:#3b82f6;--cyan:#06b6d4;--gold:#f59e0b;--green:#10b981;--red:#ef4444;--t1:#f0f4ff;--t2:#cbd5e1;--t3:#94a3b8}
 html{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--t1)}
 body{min-height:100vh;background:linear-gradient(135deg,#0a0a0f 0%,#0d1117 60%,#0a0f1a 100%)}
-#login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;background:rgba(0,0,0,0.96)}
+#login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;padding:1rem;background:rgba(0,0,0,0.96);padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 .login-box{background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;width:100%;max-width:380px}
 .login-box h1{font-family:'Orbitron',sans-serif;font-size:1.3rem;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:0.3rem}
 .login-box .sub{text-align:center;color:var(--t3);font-size:0.72rem;letter-spacing:0.15em;margin-bottom:1.5rem}
@@ -20,20 +23,20 @@ button{cursor:pointer;font-family:inherit;border:none;border-radius:20px;font-we
 .btn-primary{background:linear-gradient(135deg,#b91c1c,#b45309);color:#fff;padding:0.7rem;width:100%;font-size:0.85rem}
 .btn-primary:hover{opacity:0.88}
 .err{color:#fca5a5;font-size:0.78rem;text-align:center;margin-top:0.5rem;min-height:1.1rem}
-.hint{margin-top:0.875rem;padding:0.6rem;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;font-size:0.7rem;color:#ef4444;text-align:center}
+.hint{margin-top:0.875rem;padding:0.6rem;background:#7f1d1d;border:1px solid rgba(239,68,68,0.35);border-radius:8px;font-size:0.7rem;color:#fecaca;text-align:center}
 
 .topbar{height:50px;display:flex;align-items:center;padding:0 1rem;gap:0.75rem;background:rgba(10,10,15,0.95);border-bottom:1px solid rgba(255,255,255,0.07);position:sticky;top:0;z-index:50}
 .tb-logo{font-family:'Orbitron',sans-serif;font-size:0.9rem;font-weight:700;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .tb-r{margin-left:auto;display:flex;align-items:center;gap:0.75rem;font-size:0.72rem;color:var(--t3)}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:blink 2s infinite}
 @keyframes blink{50%{opacity:0.3}}
-.logout{padding:0.25rem 0.7rem;border:1px solid rgba(239,68,68,0.4);background:rgba(239,68,68,0.5);color:#fff;border-radius:20px;font-size:0.7rem}
+.logout{padding:0.25rem 0.7rem;border:1px solid rgba(239,68,68,0.5);background:#b91c1c;color:#fff;border-radius:20px;font-size:0.7rem}
 
 .layout{display:flex;min-height:calc(100vh - 50px)}
 .sidebar{width:190px;background:rgba(13,17,23,0.7);border-right:1px solid rgba(255,255,255,0.06);padding:0.75rem 0;flex-shrink:0}
 .sb-item{display:flex;align-items:center;gap:0.55rem;padding:0.5rem 0.875rem;cursor:pointer;font-size:0.78rem;color:var(--t2);border-left:2px solid transparent;background:none;border-top:none;border-right:none;border-bottom:none;font-family:inherit;text-align:left;width:100%}
 .sb-item:hover{background:rgba(255,255,255,0.04)}
-.sb-item.active{background:rgba(239,68,68,0.15);color:#ef4444;border-left-color:var(--red)}
+.sb-item.active{background:#7f1d1d;color:#fca5a5;border-left-color:var(--red)}
 .sb-sec{font-size:0.6rem;color:var(--t3);text-transform:uppercase;letter-spacing:0.1em;padding:0.7rem 0.875rem 0.2rem}
 
 .content{flex:1;padding:1.25rem;overflow-x:hidden}
@@ -53,17 +56,17 @@ table{width:100%;border-collapse:collapse;font-size:0.78rem}
 th{text-align:left;padding:0.5rem;color:var(--t2);font-size:0.65rem;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08)}
 td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 .badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:20px;font-size:0.6rem;font-weight:600;text-transform:uppercase}
-.b-green{background:rgba(16,185,129,0.35);color:#6ee7b7}
-.b-red{background:rgba(239,68,68,0.35);color:#fca5a5}
-.b-gold{background:rgba(245,158,11,0.35);color:#fde68a}
-.b-blue{background:rgba(59,130,246,0.35);color:#93c5fd}
+.b-green{background:#065f46;color:#6ee7b7}
+.b-red{background:#991b1b;color:#fff}
+.b-gold{background:#92400e;color:#fde68a}
+.b-blue{background:#1e3a5f;color:#93c5fd}
 
 .btn-sm{padding:0.25rem 0.6rem;font-size:0.68rem;border-radius:14px}
-.btn-blue{background:rgba(59,130,246,0.3);border:1px solid rgba(59,130,246,0.5);color:#93c5fd}
-.btn-green{background:rgba(16,185,129,0.3);border:1px solid rgba(16,185,129,0.5);color:#6ee7b7}
-.btn-red{background:rgba(239,68,68,0.3);border:1px solid rgba(239,68,68,0.5);color:#fca5a5}
-.btn-grad-green{background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;padding:0.7rem;width:100%;font-size:0.85rem;border:none;border-radius:20px;font-weight:500;cursor:pointer;font-family:inherit;margin-bottom:0.5rem}
-.btn-grad-gold{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;padding:0.7rem;width:100%;font-size:0.85rem;border:none;border-radius:20px;font-weight:500;cursor:pointer;font-family:inherit}
+.btn-blue{background:#1e3a5f;border:1px solid rgba(59,130,246,0.5);color:#93c5fd}
+.btn-green{background:#065f46;border:1px solid rgba(16,185,129,0.5);color:#6ee7b7}
+.btn-red{background:#991b1b;border:1px solid rgba(239,68,68,0.5);color:#fff}
+.btn-grad-green{background:#065f46;color:#fff;padding:0.7rem;width:100%;font-size:0.85rem;border:none;border-radius:20px;font-weight:500;cursor:pointer;font-family:inherit;margin-bottom:0.5rem}
+.btn-grad-gold{background:#92400e;color:#fff;padding:0.7rem;width:100%;font-size:0.85rem;border:none;border-radius:20px;font-weight:500;cursor:pointer;font-family:inherit}
 
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;align-items:center;justify-content:center;padding:1rem}
 .modal-bg.open{display:flex}
@@ -109,10 +112,10 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 .u-bg-panel{background:var(--panel)}
 .u-border-b-light{border-bottom:1px solid rgba(255,255,255,0.05)}
 .u-border-t{border-top:1px solid rgba(255,255,255,0.06)}
-.u-badge-blue{background:rgba(59,130,246,0.3);border:1px solid rgba(59,130,246,0.5);color:#93c5fd}
-.u-badge-green{background:rgba(16,185,129,0.3);border:1px solid rgba(16,185,129,0.5);color:#6ee7b7}
-.u-badge-red{background:rgba(239,68,68,0.3);border:1px solid rgba(239,68,68,0.5);color:#fca5a5}
-.u-badge-gold{background:rgba(245,158,11,0.3);border:1px solid rgba(245,158,11,0.5);color:#fde68a}
+.u-badge-blue{background:#1e3a5f;border:1px solid rgba(59,130,246,0.5);color:#93c5fd}
+.u-badge-green{background:#065f46;border:1px solid rgba(16,185,129,0.5);color:#6ee7b7}
+.u-badge-red{background:#991b1b;border:1px solid rgba(239,68,68,0.5);color:#fff}
+.u-badge-gold{background:#92400e;border:1px solid rgba(245,158,11,0.5);color:#fde68a}
 .u-stat-students{color:#93c5fd}
 .u-stat-lecturers{color:#6ee7b7}
 .u-stat-hods{color:#fde68a}
@@ -130,7 +133,7 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 .u-card-actions{display:flex;gap:0.5rem;justify-content:flex-end}
 .u-card-section-title{font-size:0.85rem;margin-bottom:0.75rem;font-weight:600}
 .u-flex-gap-sm{display:flex;gap:0.5rem;flex-wrap:wrap}
-.u-modal-success{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:0.875rem;font-size:0.8rem;line-height:1.9;color:#34d399}
+.u-modal-success{background:#064e3b;border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:0.875rem;font-size:0.8rem;line-height:1.9;color:#6ee7b7}
 .u-mw-420{max-width:420px}
 .u-mw-620{max-width:620px}
 .u-preview-img{max-width:100%;max-height:180px;border-radius:10px;border:1px solid rgba(255,255,255,0.1)}
@@ -152,6 +155,9 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
   .card{padding:.75rem;margin-bottom:.65rem;border-radius:10px}
   .page-title{font-size:.85rem}
   .copyright-line{font-size:.55rem}
+  .login-box{padding:1.25rem;border-radius:16px}
+  .btn-primary{min-height:48px;font-size:0.9rem}
+  input,select,textarea{min-height:44px;font-size:0.9rem}
 }
 @media (max-width:480px){
   .content{padding:1rem .5rem}
@@ -180,19 +186,20 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
      <input id="a-user" placeholder="Username">
      <label for="a-pass" class="u-hidden">Password</label>
      <input id="a-pass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')adminLogin()">
-    <button class="btn-primary" onclick="adminLogin()">Sign In</button>
+     <button class="btn-primary" id="admin-signin-btn" type="button">Sign In</button>
     <div class="err" id="a-err"></div>
     <div class="hint">Default: <strong>admin</strong> / <strong>admin123</strong></div>
   </div>
 </div>
 
-<div class="topbar" id="topbar" class="u-hidden">
+<div class="topbar" id="topbar" style="display:none">
+  <button type="button" class="back-btn" id="admin-back-btn" onclick="adminGoBack()" style="display:none">← Back</button>
   <button type="button" class="hamburger" id="hamburger-btn" onclick="toggleSidebar()">☰</button>
   <span>🛡</span><span class="tb-logo">CampusIQ Admin</span>
   <div class="tb-r"><span class="dot"></span> API Connected <button class="logout" onclick="logout()">Sign Out</button></div>
 </div>
 
-<div class="layout" id="layout" class="u-hidden">
+<div class="layout" id="layout" style="display:none">
   <div class="sidebar">
     <div class="sb-sec">Overview</div>
     <button type="button" class="sb-item" onclick="go('dash',this)">📊 Dashboard</button>
@@ -354,6 +361,10 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
             </select>
           </div>
           <div><label class="label" for="notice-body">Message *</label><textarea id="notice-body" rows="5" placeholder="Write the announcement for all students, lecturers and HODs…"></textarea></div>
+          <div class="u-flex-between u-items-center">
+            <label class="label" style="margin-bottom:0;cursor:pointer" for="notice-marquee">📢 Display as Marquee (scrolling banner)</label>
+            <input type="checkbox" id="notice-marquee" style="width:auto;margin-bottom:0;cursor:pointer">
+          </div>
           <div id="notice-msg" class="u-fs-075 u-min-h-1"></div>
           <button class="btn-fill u-w-full" onclick="submitNotice()">Publish to All Users</button>
         </div>
@@ -611,20 +622,31 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
  <script src="../shared/api.js"></script>
 <script>
 let currentRole='student';
+let adminPageHistory = [];
+let adminCurrentPage = 'dash';
 
 function adminLogin(){
   const username=document.getElementById('a-user').value.trim();
   const password=document.getElementById('a-pass').value;
   const err=document.getElementById('a-err');
+  const btn=document.getElementById('admin-signin-btn');
+  if(btn){btn.disabled=true;btn.textContent='Signing in…';}
   CampusAPI.adminLogin(username,password).then((u)=>{
     window.__adminUser={id:u.id,name:u.name,role:u.role};
     document.getElementById('login-screen').style.display='none';
     document.getElementById('topbar').style.display='flex';
     document.getElementById('layout').style.display='flex';
     loadDashboard();
-  }).catch(e=>{err.textContent=e.message;});
+    if(btn){btn.disabled=false;btn.textContent='Sign In';}
+  }).catch(e=>{err.textContent=e.message;if(btn){btn.disabled=false;btn.textContent='Sign In';}});
 }
 document.getElementById('a-pass').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin();});
+// Ensure sign-in button works on all devices including touchscreen laptops
+document.getElementById('admin-signin-btn').addEventListener('click', adminLogin);
+document.getElementById('admin-signin-btn').addEventListener('touchend', function(e) {
+  e.preventDefault();
+  adminLogin();
+});
 function logout(){location.reload();}
 function toggleSidebar(){
   const sidebar=document.querySelector('.sidebar');
@@ -633,7 +655,12 @@ function toggleSidebar(){
   overlay.classList.toggle('open');
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){const sidebar=document.querySelector('.sidebar');const overlay=document.getElementById('sidebar-overlay');if(sidebar.classList.contains('open')){sidebar.classList.remove('open');overlay.classList.remove('open');}}});
-function go(page,el){
+function go(page,el,skipHistory){
+  if (!skipHistory && adminCurrentPage !== page) {
+    adminPageHistory.push(adminCurrentPage);
+    if (adminPageHistory.length > 20) adminPageHistory.shift();
+  }
+  adminCurrentPage = page;
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
   document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('active'));
@@ -641,6 +668,7 @@ function go(page,el){
   const sidebar=document.querySelector('.sidebar');
   const overlay=document.getElementById('sidebar-overlay');
   if(sidebar.classList.contains('open')){sidebar.classList.remove('open');overlay.classList.remove('open');}
+  updateAdminBackButton();
   if(page==='dash')loadDashboard();
   if(page==='students')loadUsers('student','students-tbody');
   if(page==='lecturers')loadUsers('lecturer','lecturers-tbody');
@@ -654,6 +682,23 @@ function go(page,el){
   if(page==='allocations')loadAllocations();
   if(page==='payments')loadPayments();
   if(page==='classrooms')loadClassrooms();
+}
+function adminGoBack(){
+  if (adminPageHistory.length > 0) {
+    const prev = adminPageHistory.pop();
+    adminCurrentPage = prev;
+    const prevBtn = document.querySelector('.sb-item[onclick*="' + prev + '"]');
+    go(prev, prevBtn, true);
+  } else {
+    const dashBtn = document.querySelector('.sb-item[onclick*="dash"]');
+    go('dash', dashBtn, true);
+  }
+}
+function updateAdminBackButton(){
+  const backBtn = document.getElementById('admin-back-btn');
+  if (backBtn) {
+    backBtn.style.display = (adminPageHistory.length > 0) ? '' : 'none';
+  }
 }
 
 function closeModal(id){document.getElementById(id).classList.remove('open');}
@@ -886,11 +931,12 @@ async function submitNotice(){
   const title=document.getElementById('notice-title').value.trim();
   const body=document.getElementById('notice-body').value.trim();
   const category=document.getElementById('notice-category').value;
+  const marquee=document.getElementById('notice-marquee').checked;
   const msg=document.getElementById('notice-msg');
   if(!title||!body){msg.style.color='#fca5a5';msg.textContent='Title and message are required.';return;}
   msg.style.color='#34d399';msg.textContent='Publishing…';
   try{
-    await CampusAPI.postNoticeAdmin({title,body,category});
+    await CampusAPI.postNoticeAdmin({title,body,category,marquee});
     closeModal('notice-modal');
     loadNotices();
   }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}

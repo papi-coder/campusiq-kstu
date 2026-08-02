@@ -1903,6 +1903,28 @@
 }
 
 /* Buttons */
+button, a, .btn, .btn-fill, .btn-p, .btn-g, .btn-o, .btn-r, .bs-blue, .bs-green, .bs-red, .bs-gold, .btn-sm, .btn-login, .platform-btn, .role-tab, .ntab, .sb-item, .fchip, .modal-close, .modal-close-install, .back-btn, .logout, .lang-btn, .theme-btn, .bell-btn, .install-btn, .btn-install-login, .btn-install, .hamburger, .sidebar-overlay, .nav-avatar, input[type="submit"], input[type="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+button:active, a:active, .btn:active {
+  opacity: 0.7;
+  transform: scale(0.98);
+}
+button, a {
+  cursor: pointer;
+  font-family: inherit;
+}
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+input, textarea, select {
+  touch-action: manipulation;
+  -webkit-user-select: text;
+  user-select: text;
+}
 .btn-fill {
   background: #2563eb;
   color: #ffffff;

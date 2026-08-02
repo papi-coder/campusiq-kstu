@@ -306,13 +306,22 @@ async function doLogin(){
   const email = document.getElementById('l-email').value.trim();
   const pass = document.getElementById('l-pass').value;
   const loginMessage = document.getElementById('l-err');
+  const btn = document.getElementById('student-signin-btn');
+  if(btn){btn.disabled=true;btn.textContent='Signing in…';}
   try {
     const user = await CampusAPI.login(email, pass, loginRole);
     currentUser = user;
     launchApp();
-   } catch(err){ console.warn(err); loginMessage.textContent = err.message; }
+    if(btn){btn.disabled=false;btn.textContent='Sign In to CampusIQ';}
+   } catch(err){ console.warn(err); loginMessage.textContent = err.message; if(btn){btn.disabled=false;btn.textContent='Sign In to CampusIQ';} }
 }
 document.getElementById('l-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+// Ensure sign-in works on all devices including touchscreen laptops
+document.getElementById('student-signin-btn').addEventListener('click', doLogin);
+document.getElementById('student-signin-btn').addEventListener('touchend', function(e) {
+  e.preventDefault();
+  doLogin();
+});
 
 function launchApp(){
    document.getElementById('login-screen').style.display = 'none';
@@ -432,10 +441,10 @@ function updateBackButton(){
   const backBtn = document.getElementById('back-btn');
   const homeBtn = document.getElementById('home-btn');
   if (backBtn) {
-    backBtn.style.display = (screenHistory.length > 0) ? '' : 'none';
+    backBtn.style.display = '';
   }
   if (homeBtn) {
-    homeBtn.style.display = (screenHistory.length > 0) ? '' : 'none';
+    homeBtn.style.display = '';
   }
 }
 function closeM(id){ document.getElementById(id).classList.remove('open'); }
@@ -740,22 +749,73 @@ document.addEventListener('click', e => {
 });
 
 // =====================================================================
-// NOTICE TICKER
+// NOTICE TICKER — JavaScript marquee for reliable cross-device animation
 // =====================================================================
-// Notices are global announcements — they are shown to EVERY user (students,
-// lecturers, HODs and admin) regardless of role. No role-based filtering.
+let tickerRAF = null;
+let tickerX = 0;
+let tickerSpeed = 1.2;
+let tickerPaused = false;
+
+function startTickerAnimation() {
+  const ticker = document.getElementById('notice-ticker');
+  const inner = document.getElementById('notice-ticker-inner');
+  if (!ticker || !inner) return;
+
+  // Pause on hover/touch
+  ticker.onmouseenter = () => { tickerPaused = true; };
+  ticker.onmouseleave = () => { tickerPaused = false; };
+  ticker.ontouchstart = () => { tickerPaused = true; };
+  ticker.ontouchend = () => { tickerPaused = false; };
+
+  const tick = () => {
+    if (!tickerPaused) {
+      tickerX -= tickerSpeed;
+      const innerWidth = inner.offsetWidth;
+      const tickerWidth = ticker.offsetWidth;
+      if (tickerX <= -innerWidth) {
+        tickerX = tickerWidth;
+      }
+      inner.style.transform = `translateX(${tickerX}px)`;
+    }
+    tickerRAF = requestAnimationFrame(tick);
+  };
+  if (tickerRAF) cancelAnimationFrame(tickerRAF);
+  tickerX = ticker.offsetWidth;
+  tickerRAF = requestAnimationFrame(tick);
+}
+
 async function loadNoticeTicker(){
   try {
     const ticker = document.getElementById('notice-ticker-inner');
-    if(!ticker) return;
     const notices = await CampusAPI.listNotices();
     if(!notices.length){
-      ticker.textContent = '📢 ' + t('nodata');
+      if(ticker) ticker.textContent = '📢 ' + t('nodata');
+      if(ticker) { ticker.style.display = 'inline-block'; ticker.style.whiteSpace = 'nowrap'; }
+      startTickerAnimation();
       return;
     }
-    const txt = notices.map(n=>`📢 ${n.title}: ${n.body.slice(0,60)}`).join('   ·   ');
-    ticker.textContent = txt + '   ·   ' + txt;
-  } catch(err){console.warn(err);}
+    // Prioritize marquee notices at the beginning
+    const marqueeNotices = notices.filter(n => n.marquee);
+    const regularNotices = notices.filter(n => !n.marquee);
+    const sorted = [...marqueeNotices, ...regularNotices];
+    const txt = sorted.map(n=>`📢 ${n.title}: ${n.body.slice(0,80)}`).join('   ·   ');
+    const content = txt + '   ·   ' + txt;
+    if(ticker) {
+      ticker.textContent = content;
+      ticker.style.display = 'inline-block';
+      ticker.style.whiteSpace = 'nowrap';
+    }
+    startTickerAnimation();
+  } catch(err){
+    console.warn(err);
+    const ticker = document.getElementById('notice-ticker-inner');
+    if(ticker) {
+      ticker.textContent = '📢 ' + t('loading');
+      ticker.style.display = 'inline-block';
+      ticker.style.whiteSpace = 'nowrap';
+      startTickerAnimation();
+    }
+  }
 }
 
 // =====================================================================

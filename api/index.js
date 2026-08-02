@@ -850,10 +850,9 @@ app.get('/api/notices', async (req, res) => {
   ok(res, sorted);
 });
 app.post('/api/notices', async (req, res) => {
-  const { title, body, category, adminName } = req.body || {};
+  const { title, body, category, adminName, marquee } = req.body || {};
   if (!title || !body) return fail(res, 400, 'title and body required');
-  const notice = await db.insert('notices', { title, body, category: category || 'general', adminName: adminName || 'Admin' });
-  // Push notification to all users
+  const notice = await db.insert('notices', { title, body, category: category || 'general', adminName: adminName || 'Admin', marquee: !!marquee, createdAt: new Date().toISOString() });
   await db.insert('notifications', { userId: 'all', title: '📢 ' + title, message: body.slice(0, 100), type: 'notice', read: false });
   ok(res, notice);
 });

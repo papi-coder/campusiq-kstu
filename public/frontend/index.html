@@ -60,9 +60,8 @@ body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
 .logout{padding:0.2rem 0.55rem;border:1px solid rgba(239,68,68,0.35);background:#7f1d1d;color:#ffffff;border-radius:20px;font-size:0.65rem;cursor:pointer;font-family:inherit}
 
 /* NOTICES TICKER */
-#notice-ticker{background:#111827;border-bottom:1px solid rgba(59,130,246,0.35);padding:0.35rem 1rem;font-size:0.71rem;color:#f8fafc;font-weight:700;overflow:hidden;white-space:nowrap;position:fixed;top:52px;left:0;right:0;z-index:90}
-#notice-ticker-inner{display:inline-block;animation:tickScroll 30s linear infinite}
-@keyframes tickScroll{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
+#notice-ticker{background:#111827;border-bottom:1px solid rgba(59,130,246,0.35);padding:0.35rem 0;font-size:0.71rem;color:#f8fafc;font-weight:700;overflow:hidden;white-space:nowrap;position:fixed;top:52px;left:0;right:0;z-index:90;height:32px;display:flex;align-items:center}
+#notice-ticker-inner{display:inline-block;will-change:transform;-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-perspective:1000px;perspective:1000px}
 
 /* NOTIFICATIONS PANEL */
 .notif-panel{position:fixed;top:52px;right:0;width:320px;max-height:420px;background:var(--panel);border:1px solid var(--card-border);border-radius:0 0 16px 16px;z-index:200;overflow-y:auto;display:none;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
@@ -212,7 +211,7 @@ select.fi2 option{background:#0d1117}
   nav .ntabs{order:3;flex-basis:100%;padding-top:0.3rem}
   nav .nav-r{flex-wrap:wrap;gap:0.3rem}
   .btn-install{order:10;flex-basis:100%;justify-content:center;padding:0.35rem;font-size:0.78rem;border-radius:10px}
-  main{padding:84px 0.75rem 1.25rem}
+  main{padding:84px 0.75rem 3.5rem}
   .grid2,.grid3,.grid4{display:flex;overflow-x:auto;gap:0.875rem;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:0.5rem}
   .grid2>*,.grid3>*,.grid4>*{flex:0 0 auto;width:min(85vw,380px);scroll-snap-align:start}
   table{font-size:0.7rem;min-width:400px}
@@ -227,6 +226,11 @@ select.fi2 option{background:#0d1117}
   .sh{flex-wrap:wrap}
   .sh h2{font-size:0.78rem}
   .sh-line{display:none}
+  .login-box{padding:1.25rem;border-radius:16px}
+  .role-tabs{grid-template-columns:1fr;gap:0.4rem}
+  .btn-login{padding:0.6rem;font-size:0.82rem}
+  .fi{padding:0.55rem 0.75rem;font-size:0.82rem;margin-bottom:0.6rem}
+  #notice-ticker{top:auto;bottom:0;left:0;right:0;position:fixed;z-index:90;height:28px;font-size:0.68rem}
 }
 </style>
 </head>
@@ -267,7 +271,7 @@ window.doLogin = async function () {
      <input class="fi" id="l-email" type="email" placeholder="Email address">
       <label for="l-pass" class="sr-only">Password</label>
       <input class="fi" id="l-pass" type="password" autocomplete="current-password" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
-      <button type="button" class="btn-login" onclick="window.doLogin()" data-i18n="signin_btn">Sign In to CampusIQ</button>
+      <button type="button" class="btn-login" id="student-signin-btn" data-i18n="signin_btn">Sign In to CampusIQ</button>
      <div class="login-err" id="l-err"></div>
      <div class="notice">🔐 <span data-i18n="accounts_note">Accounts are created by the KsTU Admin. Contact your department if you need login details.</span></div>
        <button type="button" class="btn-install-login hidden" id="install-btn-login" onclick="openInstallModal()"><span data-i18n="install_app">📲 Install CampusIQ App</span></button>
@@ -295,8 +299,8 @@ window.doLogin = async function () {
      <button type="button" class="lang-btn" onclick="toggleLang()" id="lang-btn">🇬🇭 TW</button>
      <button type="button" class="bell-btn" onclick="toggleNotifPanel()">🔔<span class="notif-badge" id="notif-badge"></span></button>
       <button type="button" class="btn-install hidden" id="install-btn" onclick="openInstallModal()">📲 Install App</button>
-     <button type="button" class="back-btn" onclick="goBack()" id="back-btn" style="display:none">← Back</button>
-     <button type="button" class="back-btn" onclick="showScreen('home')" id="home-btn" style="display:none">⌂ Home</button>
+      <button type="button" class="back-btn" onclick="goBack()" id="back-btn">← Back</button>
+      <button type="button" class="back-btn" onclick="showScreen('home')" id="home-btn">⌂ Home</button>
      <div class="av nav-avatar" id="nav-av">
        <span id="nav-av-text" class="nav-avatar-text"></span>
        <img id="nav-av-img" class="nav-av-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
