@@ -193,7 +193,7 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 </div>
 
 <div class="topbar" id="topbar" style="display:none">
-  <button type="button" class="back-btn" id="admin-back-btn" onclick="adminGoBack()" style="display:none">← Back</button>
+  <button type="button" class="back-btn" id="admin-back-btn" onclick="adminGoBack()">← Back</button>
   <button type="button" class="hamburger" id="hamburger-btn" onclick="toggleSidebar()">☰</button>
   <span>🛡</span><span class="tb-logo">CampusIQ Admin</span>
   <div class="tb-r"><span class="dot"></span> API Connected <button class="logout" onclick="logout()">Sign Out</button></div>
@@ -641,12 +641,7 @@ function adminLogin(){
   }).catch(e=>{err.textContent=e.message;if(btn){btn.disabled=false;btn.textContent='Sign In';}});
 }
 document.getElementById('a-pass').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin();});
-// Ensure sign-in button works on all devices including touchscreen laptops
 document.getElementById('admin-signin-btn').addEventListener('click', adminLogin);
-document.getElementById('admin-signin-btn').addEventListener('touchend', function(e) {
-  e.preventDefault();
-  adminLogin();
-});
 function logout(){location.reload();}
 function toggleSidebar(){
   const sidebar=document.querySelector('.sidebar');

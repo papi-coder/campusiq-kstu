@@ -324,6 +324,8 @@ document.getElementById('student-signin-btn').addEventListener('touchend', funct
 });
 
 function launchApp(){
+   if (!currentUser && window.currentUser) currentUser = window.currentUser;
+   if (!currentUser) return;
    document.getElementById('login-screen').style.display = 'none';
    document.getElementById('nav').classList.remove('hidden');
    document.getElementById('notice-ticker').classList.remove('hidden');
@@ -352,11 +354,16 @@ function logout(){
    clearInterval(notifInterval); clearInterval(chatInterval);
    currentUser = null; screenHistory = []; location.reload();
  }
-function hidePublicProfile(){
+ function hidePublicProfile(){
    const el = document.getElementById('public-profile-screen');
    if(el){ el.classList.add('hidden'); el.style.display = 'none'; }
    screenHistory = [];
  }
+
+ // Expose core functions globally so inline handlers and other scripts can use them
+ window.launchApp = launchApp;
+ window.doLogin = doLogin;
+ window.selRole = selRole;
 function showLogin(){
    const el = document.getElementById('login-screen');
    if(el){ el.classList.remove('hidden'); el.style.display = ''; }
