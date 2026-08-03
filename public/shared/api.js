@@ -366,7 +366,7 @@ Object.assign(CampusAPI, {
     useReferral: (id) => CampusAPI.put(`/api/referrals/${id}/use`, {}),
 
   // Papi AI
-  askAI: (payload) => CampusAPI.post('/api/ai/ask', payload),
+  askAI: (payload) => CampusAPI.post('/api/ai', payload),
 });
 
 // Virtual classrooms

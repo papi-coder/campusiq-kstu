@@ -286,15 +286,6 @@ function applyTranslations(){
 }
 
 // =====================================================================
-// THEME
-// =====================================================================
-function toggleTheme(){
-  isDark = !isDark;
-  document.body.classList.toggle('light', !isDark);
-  document.getElementById('theme-btn').textContent = isDark ? '☀️' : '🌙';
-}
-
-// =====================================================================
 // AUTH
 // =====================================================================
 function selRole(r, btn){
@@ -322,38 +313,90 @@ document.getElementById('student-signin-btn').addEventListener('touchend', funct
   e.preventDefault();
   doLogin();
 });
+// Ensure file upload works on mobile touch devices
+const aiFileInput = document.getElementById('ai-file');
+const aiUploadBtn = document.querySelector('[onclick*="ai-file"]');
+if(aiUploadBtn){
+  aiUploadBtn.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    if(aiFileInput) aiFileInput.click();
+  });
+}
+// Passport upload touch support
+const passportInput = document.getElementById('passport-input');
+const passportUploadBtn = passportInput ? passportInput.parentElement.querySelector('.passport-upload') : null;
+if(passportUploadBtn && passportInput){
+  passportUploadBtn.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    passportInput.click();
+  });
+}
 
-function launchApp(){
-   if (!currentUser && window.currentUser) currentUser = window.currentUser;
-   if (!currentUser) return;
-   document.getElementById('login-screen').style.display = 'none';
-   document.getElementById('nav').classList.remove('hidden');
-   document.getElementById('notice-ticker').classList.remove('hidden');
-   document.getElementById('main').classList.remove('hidden');
-   const navText = document.getElementById('nav-av-text');
-   const navImg = document.getElementById('nav-av-img');
-   if(currentUser.passportDataUrl){
-     navImg.src = currentUser.passportDataUrl;
-     navImg.style.display = 'block';
-     if(navText) navText.style.display = 'none';
-   } else {
-     navImg.style.display = 'none';
-     if(navText){ navText.style.display = 'flex'; navText.textContent = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
-   }
-   buildNav();
-   applyTranslations();
-   screenHistory = [];
-   updateBackButton();
-   showScreen('home');
-   loadNoticeTicker();
-   loadNotifications();
-   notifInterval = setInterval(loadNotifications, 30000);
+function keyFromLabel(label){
+   const entries = Object.entries(T[currentLang]||T.en);
+   for(const [k,v] of entries){ if(v===label) return k; }
+   return label.toLowerCase().replace(/[^a-z]/g,'');
  }
+ function launchApp(){
+    if (!currentUser && window.currentUser) currentUser = window.currentUser;
+    if (!currentUser) return;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('nav').classList.remove('hidden');
+    document.getElementById('notice-ticker').classList.remove('hidden');
+    document.getElementById('main').classList.remove('hidden');
+    const navText = document.getElementById('nav-av-text');
+    const navImg = document.getElementById('nav-av-img');
+    if(currentUser.passportDataUrl){
+      navImg.src = currentUser.passportDataUrl;
+      navImg.style.display = 'block';
+      if(navText) navText.style.display = 'none';
+    } else {
+      navImg.style.display = 'none';
+      if(navText){ navText.style.display = 'flex'; navText.textContent = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+    }
+    // Set profile name
+    const profileName = document.getElementById('nav-user-name');
+    if(profileName) profileName.textContent = currentUser.name.split(' ')[0];
+    // Set theme selector
+    const savedTheme = (typeof localStorage !== 'undefined' && localStorage.getItem('campusiq_theme')) || 'system';
+    const themeSelect = document.getElementById('theme-select');
+    if(themeSelect) themeSelect.value = savedTheme;
+    if(savedTheme === 'system'){
+      isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } else {
+      isDark = savedTheme === 'dark';
+    }
+    applyTheme();
+    buildNav();
+    applyTranslations();
+    screenHistory = [];
+    updateBackButton();
+    showScreen('home');
+    loadNoticeTicker();
+    loadNotifications();
+    notifInterval = setInterval(loadNotifications, 30000);
+    // Online/offline status
+    updateOnlineStatus(navigator.onLine);
+    window.addEventListener('online', () => updateOnlineStatus(true));
+    window.addEventListener('offline', () => updateOnlineStatus(false));
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      const themeSelect = document.getElementById('theme-select');
+      if(themeSelect && themeSelect.value === 'system'){
+        isDark = e.matches;
+        applyTheme();
+      }
+    });
+  }
 function logout(){
-   if(locationInterval){ clearInterval(locationInterval); CampusAPI.stopSharing(currentUser.id).catch(()=>{}); }
-   clearInterval(notifInterval); clearInterval(chatInterval);
-   currentUser = null; screenHistory = []; location.reload();
- }
+    if(locationInterval){ clearInterval(locationInterval); CampusAPI.stopSharing(currentUser.id).catch(()=>{}); }
+    clearInterval(notifInterval); clearInterval(chatInterval);
+    const mobileMenu = document.getElementById('mobile-menu');
+    if(mobileMenu && mobileMenu.classList.contains('open')) toggleMobileMenu();
+    const profileDropdown = document.getElementById('profile-dropdown');
+    if(profileDropdown && profileDropdown.classList.contains('open')) toggleProfileMenu();
+    currentUser = null; screenHistory = []; location.reload();
+  }
  function hidePublicProfile(){
    const el = document.getElementById('public-profile-screen');
    if(el){ el.classList.add('hidden'); el.style.display = 'none'; }
@@ -374,64 +417,241 @@ function showLogin(){
 
 // NAV CONFIG
 const NAV = {
-  student: [
-    {id:'home',icon:'🏠',tkey:'home'},{id:'ai',icon:'🧠',tkey:'ai'},
-    {id:'attendance',icon:'✅',tkey:'attendance'},
-    {id:'results',icon:'🏆',tkey:'results'},{id:'registration',icon:'📝',tkey:'register'},
-    {id:'fees',icon:'💰',tkey:'fees'},{id:'hostels',icon:'🏠',tkey:'hostels'},
-    {id:'timetable',icon:'📅',tkey:'tt'},{id:'locator',icon:'📍',tkey:'locator'},
-    {id:'idcard',icon:'🪪',tkey:'idcard'},{id:'chat',icon:'💬',tkey:'chat'},
-    {id:'calendar',icon:'📆',tkey:'calendar'},
-  ],
-  lecturer: [
-    {id:'home',icon:'🏠',tkey:'home'},{id:'ai',icon:'🧠',tkey:'ai'},
-    {id:'classroom',icon:'🧑‍💻',tkey:'classroom'},{id:'attendance',icon:'✅',tkey:'attendance'},
-    {id:'results',icon:'🏆',tkey:'results'},{id:'timetable',icon:'📅',tkey:'tt'},
-    {id:'locator',icon:'📍',tkey:'locator'},{id:'chat',icon:'💬',tkey:'chat'},
-    {id:'calendar',icon:'📆',tkey:'calendar'},
-  ],
-  hod: [
-    {id:'home',icon:'🏠',tkey:'home'},{id:'ai',icon:'🧠',tkey:'ai'},
-    {id:'classroom',icon:'🧑‍💻',tkey:'classroom'},{id:'results',icon:'🏆',tkey:'results'},
-    {id:'timetable',icon:'📅',tkey:'tt'},{id:'locator',icon:'📍',tkey:'locator'},
-    {id:'chat',icon:'💬',tkey:'chat'},{id:'calendar',icon:'📆',tkey:'calendar'},
-  ],
-};
-function buildNav(){
-  const tabs = document.getElementById('ntabs');
-  if(!tabs || !currentUser) return;
-  tabs.innerHTML = '';
-  (NAV[currentUser.role]||[]).forEach(item => {
-    const b = document.createElement('button');
-    b.className = 'ntab';
-    b.textContent = item.icon + ' ' + t(item.tkey);
-    b.onclick = () => showScreen(item.id);
-    tabs.appendChild(b);
-  });
-}
-function showScreen(id, skipHistory){
-  if (currentUser && id !== 'home' && !skipHistory) {
-    screenHistory.push(id);
+   student: [
+     {id:'home',icon:'🏠',tkey:'home'},{id:'ai',icon:'🧠',tkey:'ai'},
+     {id:'attendance',icon:'✅',tkey:'attendance'},
+     {id:'results',icon:'🏆',tkey:'results'},{id:'registration',icon:'📝',tkey:'register'},
+     {id:'fees',icon:'💰',tkey:'fees'},{id:'hostels',icon:'🏠',tkey:'hostels'},
+     {id:'timetable',icon:'📅',tkey:'tt'},{id:'locator',icon:'📍',tkey:'locator'},
+     {id:'idcard',icon:'🪪',tkey:'idcard'},{id:'chat',icon:'💬',tkey:'chat'},
+     {id:'calendar',icon:'📆',tkey:'calendar'},
+   ],
+   lecturer: [
+     {id:'home',icon:'🏠',tkey:'home'},{id:'ai',icon:'🧠',tkey:'ai'},
+     {id:'classroom',icon:'🧑‍💻',tkey:'classroom'},{id:'attendance',icon:'✅',tkey:'attendance'},
+     {id:'results',icon:'🏆',tkey:'results'},{id:'timetable',icon:'📅',tkey:'tt'},
+     {id:'locator',icon:'📍',tkey:'locator'},{id:'chat',icon:'💬',tkey:'chat'},
+     {id:'calendar',icon:'📆',tkey:'calendar'},
+   ],
+   hod: [
+     {id:'home',icon:'🏠',tkey:'home'},{id:'ai',icon:'🧠',tkey:'ai'},
+     {id:'classroom',icon:'🧑‍💻',tkey:'classroom'},{id:'results',icon:'🏆',tkey:'results'},
+     {id:'timetable',icon:'📅',tkey:'tt'},{id:'locator',icon:'📍',tkey:'locator'},
+     {id:'chat',icon:'💬',tkey:'chat'},{id:'calendar',icon:'📆',tkey:'calendar'},
+   ],
+   admin: [
+     {id:'home',icon:'🏠',tkey:'home'},{id:'ai',icon:'🧠',tkey:'ai'},
+     {id:'classroom',icon:'🧑‍💻',tkey:'classroom'},{id:'attendance',icon:'✅',tkey:'attendance'},
+     {id:'results',icon:'🏆',tkey:'results'},{id:'timetable',icon:'📅',tkey:'tt'},
+     {id:'locator',icon:'📍',tkey:'locator'},{id:'chat',icon:'💬',tkey:'chat'},
+     {id:'calendar',icon:'📆',tkey:'calendar'},
+   ],
+ };
+ function buildNav(){
+   const tabs = document.getElementById('ntabs');
+   if(!tabs || !currentUser) return;
+   tabs.innerHTML = '';
+   (NAV[currentUser.role]||[]).forEach(item => {
+     const b = document.createElement('button');
+     b.className = 'ntab';
+     b.textContent = item.icon + ' ' + t(item.tkey);
+     b.setAttribute('role','tab');
+     b.setAttribute('aria-selected','false');
+     b.setAttribute('aria-label', t(item.tkey));
+     b.onclick = () => showScreen(item.id);
+     tabs.appendChild(b);
+   });
+   updateActiveIndicator();
+ }
+ function buildMobileNav(){
+   const body = document.getElementById('mobile-menu-body');
+   if(!body || !currentUser) return;
+   body.innerHTML = '';
+   (NAV[currentUser.role]||[]).forEach(item => {
+     const b = document.createElement('button');
+     b.className = 'mobile-menu-item';
+     b.innerHTML = item.icon + ' ' + t(item.tkey);
+     b.setAttribute('role','menuitem');
+     b.onclick = () => { showScreen(item.id); toggleMobileMenu(); };
+     body.appendChild(b);
+   });
+ }
+ function updateActiveIndicator(){
+   const indicator = document.getElementById('nav-active-indicator');
+   const tabs = document.querySelectorAll('.ntab');
+   const activeTab = document.querySelector('.ntab.active');
+   if(!indicator || !activeTab || !tabs.length){ if(indicator) indicator.style.width='0'; return; }
+   const tabsContainer = document.getElementById('ntabs');
+   if(!tabsContainer) return;
+   const containerRect = tabsContainer.getBoundingClientRect();
+   const tabRect = activeTab.getBoundingClientRect();
+   indicator.style.left = (tabRect.left - containerRect.left + tabsContainer.scrollLeft) + 'px';
+   indicator.style.width = tabRect.width + 'px';
+ }
+ function toggleMobileMenu(){
+   const menu = document.getElementById('mobile-menu');
+   const overlay = document.getElementById('mobile-menu-overlay');
+   const btn = document.getElementById('hamburger-btn');
+   if(!menu) return;
+   const isOpen = menu.classList.contains('open');
+   if(isOpen){
+     menu.classList.remove('open');
+     menu.setAttribute('aria-hidden','true');
+     if(overlay) overlay.classList.remove('open');
+     if(btn){ btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+   } else {
+     menu.classList.add('open');
+     menu.setAttribute('aria-hidden','false');
+     if(overlay) overlay.classList.add('open');
+     if(btn){ btn.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
+     buildMobileNav();
+   }
+ }
+ function toggleProfileMenu(){
+   const dropdown = document.getElementById('profile-dropdown');
+   const menu = document.getElementById('profile-menu');
+   const btn = document.getElementById('profile-btn');
+   if(!dropdown || !menu) return;
+   const isOpen = dropdown.classList.contains('open');
+   if(isOpen){
+     dropdown.classList.remove('open');
+     menu.classList.remove('open');
+     if(btn) btn.setAttribute('aria-expanded','false');
+   } else {
+     dropdown.classList.add('open');
+     menu.classList.add('open');
+     if(btn) btn.setAttribute('aria-expanded','true');
+   }
+ }
+ function performSearch(){
+   const input = document.getElementById('nav-search-input');
+   const results = document.getElementById('nav-search-results');
+   if(!input || !results) return;
+   const query = input.value.trim().toLowerCase();
+   if(!query){ results.classList.remove('open'); return; }
+   const allTabs = document.querySelectorAll('.ntab');
+   const matches = [];
+   allTabs.forEach(tab => {
+     const text = tab.textContent.toLowerCase();
+     if(text.includes(query)){
+       matches.push({ id: tab.textContent.trim().split(' ')[0], label: tab.textContent.trim() });
+     }
+   });
+   if(matches.length){
+     results.innerHTML = matches.map(m => `<div class="nav-search-result-item" role="option" onclick="showScreen('${m.id}');document.getElementById('nav-search-results').classList.remove('open');document.getElementById('nav-search-input').value=''">${escHtml(m.label)}</div>`).join('');
+   } else {
+     results.innerHTML = '<div class="nav-search-empty">No results found</div>';
+   }
+   results.classList.add('open');
+ }
+ function setTheme(theme){
+   if(theme === 'system'){
+     isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+   } else {
+     isDark = theme === 'dark';
+   }
+   applyTheme();
+   try { localStorage.setItem('campusiq_theme', theme); } catch(e){}
+ }
+ function applyTheme(){
+   if(isDark){
+     document.body.classList.remove('light');
+     const themeSelect = document.getElementById('theme-select');
+     if(themeSelect) themeSelect.value = 'dark';
+   } else {
+     document.body.classList.add('light');
+     const themeSelect = document.getElementById('theme-select');
+     if(themeSelect) themeSelect.value = 'light';
+   }
+ }
+ function toggleTheme(){
+   isDark = !isDark;
+   applyTheme();
+   try { localStorage.setItem('campusiq_theme', isDark ? 'dark' : 'light'); } catch(e){}
+ }
+function updateOnlineStatus(online){
+    const dot = document.getElementById('status-dot');
+    const label = document.getElementById('status-label');
+    if(dot) dot.classList.toggle('offline', !online);
+    if(label) label.textContent = online ? 'Online' : 'Offline';
   }
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const target = document.getElementById('screen-'+id);
-  if(target) target.classList.add('active');
-  const tabs = document.querySelectorAll('.ntab');
-  (NAV[currentUser.role]||[]).forEach((t,i) => { if(tabs[i]) tabs[i].classList.toggle('active', t.id===id); });
-  updateBackButton();
-  if(id==='home') loadHome();
-  if(id==='classroom') loadClassroom();
-  if(id==='attendance') loadAttendanceScreen();
-  if(id==='results') loadResults();
-  if(id==='timetable') loadTimetable();
-  if(id==='registration') loadRegistration();
-  if(id==='fees') loadFees();
-  if(id==='hostels') loadHostels();
-  if(id==='locator') loadLocator();
-  if(id==='idcard') renderIDCard();
-  if(id==='calendar') loadCalendar();
-  if(id==='chat'){ clearInterval(chatInterval); }
-}
+  function showToast(message, type){
+    type = type || 'info';
+    const container = document.getElementById('toast-container');
+    if(!container) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    const icons = { error: '❌', warning: '⚠️', info: 'ℹ️' };
+    toast.innerHTML = '<span>' + (icons[type] || '') + '</span><span style="flex:1">' + escHtml(message) + '</span><button class="toast-close" onclick="this.parentElement.remove()" aria-label="Close notification">✕</button>';
+    container.appendChild(toast);
+    setTimeout(function(){
+      toast.style.animation = 'toastOut .3s ease forwards';
+      setTimeout(function(){ if(toast.parentNode) toast.remove(); }, 300);
+    }, 5000);
+  }
+  // Close profile menu when clicking outside
+ document.addEventListener('click', e => {
+   const dropdown = document.getElementById('profile-dropdown');
+   if(dropdown && !dropdown.contains(e.target)){
+     dropdown.classList.remove('open');
+     const menu = document.getElementById('profile-menu');
+     if(menu) menu.classList.remove('open');
+     const btn = document.getElementById('profile-btn');
+     if(btn) btn.setAttribute('aria-expanded','false');
+   }
+   const searchResults = document.getElementById('nav-search-results');
+   if(searchResults && !e.target.closest('#nav-search')){
+     searchResults.classList.remove('open');
+   }
+ });
+ // Keyboard navigation for navbar
+ document.addEventListener('keydown', e => {
+   if(e.key === 'Escape'){
+     const mobileMenu = document.getElementById('mobile-menu');
+     if(mobileMenu && mobileMenu.classList.contains('open')){
+       toggleMobileMenu();
+     }
+     const profileDropdown = document.getElementById('profile-dropdown');
+     if(profileDropdown && profileDropdown.classList.contains('open')){
+       toggleProfileMenu();
+     }
+   }
+ });
+function showScreen(id, skipHistory){
+   if (currentUser && id !== 'home' && !skipHistory) {
+     screenHistory.push(id);
+   }
+   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+   const target = document.getElementById('screen-'+id);
+   if(target) target.classList.add('active');
+   const tabs = document.querySelectorAll('.ntab');
+   (NAV[currentUser.role]||[]).forEach((t,i) => { if(tabs[i]) tabs[i].classList.toggle('active', t.id===id); });
+   updateActiveIndicator();
+   updateBackButton();
+   // Update mobile menu active state
+   const mobileItems = document.querySelectorAll('.mobile-menu-item');
+   const roleNav = NAV[currentUser.role]||[];
+   mobileItems.forEach((item, i) => {
+     item.classList.toggle('active', roleNav[i] && roleNav[i].id===id);
+   });
+   if(id==='home') loadHome();
+   if(id==='classroom') loadClassroom();
+   if(id==='attendance') loadAttendanceScreen();
+   if(id==='results') loadResults();
+   if(id==='timetable') loadTimetable();
+   if(id==='registration') loadRegistration();
+   if(id==='fees') loadFees();
+   if(id==='hostels') loadHostels();
+   if(id==='locator') loadLocator();
+   if(id==='idcard') renderIDCard();
+   if(id==='calendar') loadCalendar();
+   if(id==='chat'){ clearInterval(chatInterval); }
+   // Close mobile menu after navigation
+   const mobileMenu = document.getElementById('mobile-menu');
+   if(mobileMenu && mobileMenu.classList.contains('open')){
+     toggleMobileMenu();
+   }
+ }
 function goBack(){
   if (screenHistory.length > 0) {
     screenHistory.pop();
@@ -531,14 +751,28 @@ async function askPapi(prefill){
   if(sendBtn){ sendBtn.disabled = true; sendBtn.textContent = '…'; }
   // Display the user's question together with any attached files
   let displayMsg = msg;
-  if(files.length) displayMsg += (displayMsg ? '\n' : '') + '[Attachments: ' + files.map(f => f.name).join(', ') + ']';
+  const imageFiles = files.filter(f => f.type && f.type.startsWith('image/'));
+  const nonImageFiles = files.filter(f => !(f.type && f.type.startsWith('image/')));
+  if(imageFiles.length){
+    displayMsg += (displayMsg ? '\n' : '') + '[📷 Image attached: ' + imageFiles.map(f => f.name).join(', ') + '. Note: Papi cannot process images directly. Please describe the image in text so Papi can help.]';
+  }
+  if(nonImageFiles.length){
+    displayMsg += (displayMsg ? '\n' : '') + '[Attachments: ' + nonImageFiles.map(f => f.name).join(', ') + ']';
+  }
+  if(!displayMsg && files.length) displayMsg = '[File(s) attached: ' + files.map(f => f.name).join(', ') + ']';
   addAIMsgWithFiles(displayMsg, 'user', files);
   // Build the prompt text sent to the model (includes attachment context)
   let promptText = msg;
   if(files.length){
-    const names = files.map(f => f.name + (f.type ? ' (' + f.type + ')' : '')).join(', ');
-    const texts = files.map(f => (f.text ? '\n--- ' + f.name + ' ---\n' + f.text : '')).join('');
-    promptText += (promptText ? '\n' : '') + 'The user attached these files: ' + names + '.' + texts;
+    const imageFiles = files.filter(f => f.type && f.type.startsWith('image/'));
+    const nonImageFiles = files.filter(f => !(f.type && f.type.startsWith('image/')));
+    if(imageFiles.length){
+      promptText += (promptText ? '\n' : '') + 'The user attached image(s): ' + imageFiles.map(f => f.name).join(', ') + '. Note: The AI model cannot process images directly. The user will describe the image in text.';
+    }
+    const texts = nonImageFiles.map(f => (f.text ? '\n--- ' + f.name + ' ---\n' + f.text : '')).join('');
+    if(nonImageFiles.length){
+      promptText += (promptText ? '\n' : '') + 'The user attached these files: ' + nonImageFiles.map(f => f.name + (f.type ? ' (' + f.type + ')' : '')).join(', ') + '.' + texts;
+    }
   }
   const thinking = addAIMsg('Papi is thinking…', 'ai thinking');
   papiHistory.push({ role:'user', content: promptText });
@@ -549,7 +783,10 @@ async function askPapi(prefill){
     const data = await CampusAPI.askAI({ messages: papiHistory, system: PAPI_SYSTEM, locale: currentLang, fileContent, webSearch: true });
     if(data && data.reply) reply = data.reply;
     if(data && data.webResults && data.webResults.length) webResults = data.webResults;
-  } catch(err){ console.warn('Papi backend unavailable, using offline replies:', err); }
+  } catch(err){
+      console.warn('Papi backend unavailable, using offline replies:', err);
+      showToast(err.message || 'Papi is unavailable, using offline replies.', 'error');
+    }
   if(!reply) reply = getPapiOffline(msg);
   thinking.textContent = reply;
   thinking.classList.remove('thinking');
@@ -572,8 +809,12 @@ async function askPapi(prefill){
 }
 
 function addAiFiles(event){
-  const files = Array.from((event && event.target && event.target.files) || []);
-  files.forEach(f => {
+   const files = Array.from((event && event.target && event.target.files) || []);
+   const imageFiles = files.filter(f => f.type && f.type.startsWith('image/'));
+   if(imageFiles.length){
+     showToast('Papi cannot process images directly. Please describe the image in text.', 'warning');
+   }
+   files.forEach(f => {
     const reader = new FileReader();
     reader.onload = () => {
       readFileAsText(f).then(text => {
@@ -663,7 +904,7 @@ async function readFileAsText(file){
       return txt ? txt.slice(0, 12000) : '[PDF uploaded — text could not be auto-extracted. Please describe your question in text so Papi can help.]';
     }
     if(type.startsWith('image/')){
-      return '[Image uploaded: ' + file.name + ']. Describe what is in the image and Papi will help.';
+      return '[Image: ' + file.name + ']. Papi cannot process images directly. Please describe what is in the image in your own words and Papi will help you with it.';
     }
   } catch(e){ /* ignore */ }
   return ((await file.text().catch(() => '')) || '').slice(0, 12000);
