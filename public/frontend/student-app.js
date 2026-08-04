@@ -472,9 +472,36 @@ const NAV = {
      b.className = 'mobile-menu-item';
      b.innerHTML = item.icon + ' ' + t(item.tkey);
      b.setAttribute('role','menuitem');
-     b.onclick = () => { showScreen(item.id); toggleMobileMenu(); };
+     b.onclick = () => { showScreen(item.id); };
      body.appendChild(b);
    });
+   // Wire up hamburger menu
+   const hamburgerBtn = document.getElementById('hamburger-btn');
+   if(hamburgerBtn){
+     hamburgerBtn.addEventListener('click', function(e){
+       e.stopPropagation();
+       toggleMobileMenu();
+     });
+     hamburgerBtn.addEventListener('touchstart', function(e){
+       e.stopPropagation();
+     }, {passive: true});
+   }
+   // Close mobile menu when clicking a mobile menu item
+   const mobileMenuBody = document.getElementById('mobile-menu-body');
+   if(mobileMenuBody){
+     mobileMenuBody.addEventListener('click', function(e){
+       if(e.target.classList.contains('mobile-menu-item')){
+         toggleMobileMenu();
+       }
+     });
+   }
+   // Close mobile menu when clicking overlay
+   const mobileOverlay = document.getElementById('mobile-menu-overlay');
+   if(mobileOverlay){
+     mobileOverlay.addEventListener('click', function(){
+       toggleMobileMenu();
+     });
+   }
  }
  function updateActiveIndicator(){
    const indicator = document.getElementById('nav-active-indicator');
@@ -488,25 +515,27 @@ const NAV = {
    indicator.style.left = (tabRect.left - containerRect.left + tabsContainer.scrollLeft) + 'px';
    indicator.style.width = tabRect.width + 'px';
  }
- function toggleMobileMenu(){
-   const menu = document.getElementById('mobile-menu');
-   const overlay = document.getElementById('mobile-menu-overlay');
-   const btn = document.getElementById('hamburger-btn');
-   if(!menu) return;
-   const isOpen = menu.classList.contains('open');
-   if(isOpen){
-     menu.classList.remove('open');
-     menu.setAttribute('aria-hidden','true');
-     if(overlay) overlay.classList.remove('open');
-     if(btn){ btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
-   } else {
-     menu.classList.add('open');
-     menu.setAttribute('aria-hidden','false');
-     if(overlay) overlay.classList.add('open');
-     if(btn){ btn.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
-     buildMobileNav();
-   }
- }
+function toggleMobileMenu(){
+    const menu = document.getElementById('mobile-menu');
+    const overlay = document.getElementById('mobile-menu-overlay');
+    const btn = document.getElementById('hamburger-btn');
+    if(!menu) return;
+    const isOpen = menu.classList.contains('open');
+    if(isOpen){
+      menu.classList.remove('open');
+      menu.setAttribute('aria-hidden','true');
+      if(overlay) overlay.classList.remove('open');
+      if(btn){ btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+      document.body.style.overflow = '';
+    } else {
+      menu.classList.add('open');
+      menu.setAttribute('aria-hidden','false');
+      if(overlay) overlay.classList.add('open');
+      if(btn){ btn.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
+      buildMobileNav();
+      document.body.style.overflow = 'hidden';
+    }
+  }
  function toggleProfileMenu(){
    const dropdown = document.getElementById('profile-dropdown');
    const menu = document.getElementById('profile-menu');
