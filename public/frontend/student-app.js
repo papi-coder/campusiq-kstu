@@ -374,25 +374,28 @@ function keyFromLabel(label){
     showScreen('home');
     loadNoticeTicker();
     loadNotifications();
-    notifInterval = setInterval(loadNotifications, 30000);
-    // Online/offline status
-    updateOnlineStatus(navigator.onLine);
-    window.addEventListener('online', () => updateOnlineStatus(true));
-    window.addEventListener('offline', () => updateOnlineStatus(false));
-    // Listen for system theme changes
+notifInterval = setInterval(loadNotifications, 30000);
+     // Listen for system theme changes
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
       const themeSelect = document.getElementById('theme-select');
       if(themeSelect && themeSelect.value === 'system'){
         isDark = e.matches;
         applyTheme();
       }
-    });
-  }
-function logout(){
+});
+     // Update location indicator
+     updateLocationIndicator();
+     if(navigator.geolocation){
+       navigator.geolocation.watchPosition(
+         () => updateLocationIndicator(),
+         () => updateLocationIndicator(false),
+         {enableHighAccuracy:true,timeout:5000,maximumAge:30000}
+       );
+     }
+}
+  function logout(){
     if(locationInterval){ clearInterval(locationInterval); CampusAPI.stopSharing(currentUser.id).catch(()=>{}); }
     clearInterval(notifInterval); clearInterval(chatInterval);
-    const mobileMenu = document.getElementById('mobile-menu');
-    if(mobileMenu && mobileMenu.classList.contains('open')) toggleMobileMenu();
     const profileDropdown = document.getElementById('profile-dropdown');
     if(profileDropdown && profileDropdown.classList.contains('open')) toggleProfileMenu();
     currentUser = null; screenHistory = []; location.reload();
@@ -463,47 +466,7 @@ const NAV = {
    });
    updateActiveIndicator();
  }
- function buildMobileNav(){
-   const body = document.getElementById('mobile-menu-body');
-   if(!body || !currentUser) return;
-   body.innerHTML = '';
-   (NAV[currentUser.role]||[]).forEach(item => {
-     const b = document.createElement('button');
-     b.className = 'mobile-menu-item';
-     b.innerHTML = item.icon + ' ' + t(item.tkey);
-     b.setAttribute('role','menuitem');
-     b.onclick = () => { showScreen(item.id); };
-     body.appendChild(b);
-   });
-   // Wire up hamburger menu
-   const hamburgerBtn = document.getElementById('hamburger-btn');
-   if(hamburgerBtn){
-     hamburgerBtn.addEventListener('click', function(e){
-       e.stopPropagation();
-       toggleMobileMenu();
-     });
-     hamburgerBtn.addEventListener('touchstart', function(e){
-       e.stopPropagation();
-     }, {passive: true});
-   }
-   // Close mobile menu when clicking a mobile menu item
-   const mobileMenuBody = document.getElementById('mobile-menu-body');
-   if(mobileMenuBody){
-     mobileMenuBody.addEventListener('click', function(e){
-       if(e.target.classList.contains('mobile-menu-item')){
-         toggleMobileMenu();
-       }
-     });
-   }
-   // Close mobile menu when clicking overlay
-   const mobileOverlay = document.getElementById('mobile-menu-overlay');
-   if(mobileOverlay){
-     mobileOverlay.addEventListener('click', function(){
-       toggleMobileMenu();
-     });
-   }
- }
- function updateActiveIndicator(){
+function updateActiveIndicator(){
    const indicator = document.getElementById('nav-active-indicator');
    const tabs = document.querySelectorAll('.ntab');
    const activeTab = document.querySelector('.ntab.active');
@@ -515,28 +478,7 @@ const NAV = {
    indicator.style.left = (tabRect.left - containerRect.left + tabsContainer.scrollLeft) + 'px';
    indicator.style.width = tabRect.width + 'px';
  }
-function toggleMobileMenu(){
-    const menu = document.getElementById('mobile-menu');
-    const overlay = document.getElementById('mobile-menu-overlay');
-    const btn = document.getElementById('hamburger-btn');
-    if(!menu) return;
-    const isOpen = menu.classList.contains('open');
-    if(isOpen){
-      menu.classList.remove('open');
-      menu.setAttribute('aria-hidden','true');
-      if(overlay) overlay.classList.remove('open');
-      if(btn){ btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
-      document.body.style.overflow = '';
-    } else {
-      menu.classList.add('open');
-      menu.setAttribute('aria-hidden','false');
-      if(overlay) overlay.classList.add('open');
-      if(btn){ btn.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
-      buildMobileNav();
-      document.body.style.overflow = 'hidden';
-    }
-  }
- function toggleProfileMenu(){
+function toggleProfileMenu(){
    const dropdown = document.getElementById('profile-dropdown');
    const menu = document.getElementById('profile-menu');
    const btn = document.getElementById('profile-btn');
@@ -551,29 +493,8 @@ function toggleMobileMenu(){
      menu.classList.add('open');
      if(btn) btn.setAttribute('aria-expanded','true');
    }
- }
- function performSearch(){
-   const input = document.getElementById('nav-search-input');
-   const results = document.getElementById('nav-search-results');
-   if(!input || !results) return;
-   const query = input.value.trim().toLowerCase();
-   if(!query){ results.classList.remove('open'); return; }
-   const allTabs = document.querySelectorAll('.ntab');
-   const matches = [];
-   allTabs.forEach(tab => {
-     const text = tab.textContent.toLowerCase();
-     if(text.includes(query)){
-       matches.push({ id: tab.textContent.trim().split(' ')[0], label: tab.textContent.trim() });
-     }
-   });
-   if(matches.length){
-     results.innerHTML = matches.map(m => `<div class="nav-search-result-item" role="option" onclick="showScreen('${m.id}');document.getElementById('nav-search-results').classList.remove('open');document.getElementById('nav-search-input').value=''">${escHtml(m.label)}</div>`).join('');
-   } else {
-     results.innerHTML = '<div class="nav-search-empty">No results found</div>';
-   }
-   results.classList.add('open');
- }
- function setTheme(theme){
+}
+  function setTheme(theme){
    if(theme === 'system'){
      isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
    } else {
@@ -598,27 +519,58 @@ function toggleMobileMenu(){
    applyTheme();
    try { localStorage.setItem('campusiq_theme', isDark ? 'dark' : 'light'); } catch(e){}
  }
-function updateOnlineStatus(online){
-    const dot = document.getElementById('status-dot');
-    const label = document.getElementById('status-label');
-    if(dot) dot.classList.toggle('offline', !online);
-    if(label) label.textContent = online ? 'Online' : 'Offline';
-  }
-  function showToast(message, type){
-    type = type || 'info';
-    const container = document.getElementById('toast-container');
-    if(!container) return;
-    const toast = document.createElement('div');
-    toast.className = 'toast ' + type;
-    const icons = { error: '❌', warning: '⚠️', info: 'ℹ️' };
-    toast.innerHTML = '<span>' + (icons[type] || '') + '</span><span style="flex:1">' + escHtml(message) + '</span><button class="toast-close" onclick="this.parentElement.remove()" aria-label="Close notification">✕</button>';
-    container.appendChild(toast);
-    setTimeout(function(){
-      toast.style.animation = 'toastOut .3s ease forwards';
-      setTimeout(function(){ if(toast.parentNode) toast.remove(); }, 300);
-    }, 5000);
-  }
-  // Close profile menu when clicking outside
+function showNavError(message){
+      const tabs = document.getElementById('ntabs');
+      if(!tabs) return;
+      let errTab = document.getElementById('nav-error-tab');
+      if(!errTab){
+        errTab = document.createElement('button');
+        errTab.className = 'ntab ntab-error';
+        errTab.id = 'nav-error-tab';
+        errTab.setAttribute('role','tab');
+        errTab.setAttribute('aria-label','Error notification');
+        tabs.appendChild(errTab);
+      }
+      errTab.innerHTML = '⚠️ ' + escHtml(message);
+      errTab.classList.add('active');
+      clearTimeout(errTab._timeout);
+      errTab._timeout = setTimeout(function(){
+        errTab.classList.remove('active');
+        errTab.innerHTML = '';
+      }, 8000);
+      tabs.scrollLeft = tabs.scrollWidth;
+    }
+    function clearNavError(){
+      const errTab = document.getElementById('nav-error-tab');
+      if(errTab){ errTab.classList.remove('active'); errTab.innerHTML = ''; clearTimeout(errTab._timeout); }
+    }
+    function updateLocationIndicator(online){
+      const dot = document.getElementById('location-dot');
+      const label = document.getElementById('location-label');
+      if(!dot || !label) return;
+      if(online === false){
+        dot.className = 'location-dot offline';
+        label.textContent = '📍 Offline';
+      } else if(navigator.geolocation){
+        dot.className = 'location-dot locating';
+        label.textContent = '📍 Locating…';
+        navigator.geolocation.getCurrentPosition(
+          () => {
+            dot.className = 'location-dot';
+            label.textContent = '📍 Live';
+          },
+          () => {
+            dot.className = 'location-dot offline';
+            label.textContent = '📍 Unavailable';
+          },
+          {enableHighAccuracy:true,timeout:5000}
+        );
+      } else {
+        dot.className = 'location-dot offline';
+        label.textContent = '📍 N/A';
+      }
+    }
+    // Close profile menu when clicking outside
  document.addEventListener('click', e => {
    const dropdown = document.getElementById('profile-dropdown');
    if(dropdown && !dropdown.contains(e.target)){
@@ -628,19 +580,11 @@ function updateOnlineStatus(online){
      const btn = document.getElementById('profile-btn');
      if(btn) btn.setAttribute('aria-expanded','false');
    }
-   const searchResults = document.getElementById('nav-search-results');
-   if(searchResults && !e.target.closest('#nav-search')){
-     searchResults.classList.remove('open');
-   }
- });
- // Keyboard navigation for navbar
- document.addEventListener('keydown', e => {
-   if(e.key === 'Escape'){
-     const mobileMenu = document.getElementById('mobile-menu');
-     if(mobileMenu && mobileMenu.classList.contains('open')){
-       toggleMobileMenu();
-     }
-     const profileDropdown = document.getElementById('profile-dropdown');
+});
+  // Keyboard navigation for navbar
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape'){
+      const profileDropdown = document.getElementById('profile-dropdown');
      if(profileDropdown && profileDropdown.classList.contains('open')){
        toggleProfileMenu();
      }
@@ -655,15 +599,9 @@ function showScreen(id, skipHistory){
    if(target) target.classList.add('active');
    const tabs = document.querySelectorAll('.ntab');
    (NAV[currentUser.role]||[]).forEach((t,i) => { if(tabs[i]) tabs[i].classList.toggle('active', t.id===id); });
-   updateActiveIndicator();
-   updateBackButton();
-   // Update mobile menu active state
-   const mobileItems = document.querySelectorAll('.mobile-menu-item');
-   const roleNav = NAV[currentUser.role]||[];
-   mobileItems.forEach((item, i) => {
-     item.classList.toggle('active', roleNav[i] && roleNav[i].id===id);
-   });
-   if(id==='home') loadHome();
+updateActiveIndicator();
+    updateBackButton();
+    if(id==='home') loadHome();
    if(id==='classroom') loadClassroom();
    if(id==='attendance') loadAttendanceScreen();
    if(id==='results') loadResults();
@@ -674,13 +612,8 @@ function showScreen(id, skipHistory){
    if(id==='locator') loadLocator();
    if(id==='idcard') renderIDCard();
    if(id==='calendar') loadCalendar();
-   if(id==='chat'){ clearInterval(chatInterval); }
-   // Close mobile menu after navigation
-   const mobileMenu = document.getElementById('mobile-menu');
-   if(mobileMenu && mobileMenu.classList.contains('open')){
-     toggleMobileMenu();
-   }
- }
+if(id==='chat'){ clearInterval(chatInterval); }
+  }
 function goBack(){
   if (screenHistory.length > 0) {
     screenHistory.pop();
@@ -771,7 +704,8 @@ let papiHistory = [];
 let papiAttachments = []; // [{ name, type, size, dataUrl, text }]
 
 async function askPapi(prefill){
-  const input = document.getElementById('ai-input');
+   clearNavError();
+   const input = document.getElementById('ai-input');
   const msg = prefill || (input ? input.value.trim() : '');
   const files = papiAttachments.slice();
   if(!msg && !files.length) return;
@@ -814,7 +748,7 @@ async function askPapi(prefill){
     if(data && data.webResults && data.webResults.length) webResults = data.webResults;
   } catch(err){
       console.warn('Papi backend unavailable, using offline replies:', err);
-      showToast(err.message || 'Papi is unavailable, using offline replies.', 'error');
+      showNavError(err.message || 'Papi is unavailable, using offline replies.');
     }
   if(!reply) reply = getPapiOffline(msg);
   thinking.textContent = reply;
@@ -841,7 +775,7 @@ function addAiFiles(event){
    const files = Array.from((event && event.target && event.target.files) || []);
    const imageFiles = files.filter(f => f.type && f.type.startsWith('image/'));
    if(imageFiles.length){
-     showToast('Papi cannot process images directly. Please describe the image in text.', 'warning');
+     showNavError('Papi cannot process images directly. Please describe the image in text.');
    }
    files.forEach(f => {
     const reader = new FileReader();
