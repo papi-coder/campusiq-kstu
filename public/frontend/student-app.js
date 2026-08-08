@@ -484,7 +484,8 @@ const NAV = {
     const sidebar = document.getElementById('mobile-sidebar');
     const overlay = document.getElementById('mobile-sidebar-overlay');
     const hamburger = document.getElementById('mobile-hamburger');
-    const isOpen = sidebar && sidebar.classList.contains('open');
+    if(!sidebar || !overlay) return;
+    const isOpen = sidebar.classList.contains('open');
     if(isOpen){
       sidebar.classList.remove('open');
       overlay.classList.remove('open');
@@ -497,6 +498,7 @@ const NAV = {
       document.body.style.overflow = 'hidden';
     }
   }
+  window.toggleMobileNav = toggleMobileNav;
  function updateActiveIndicator(){
    const indicator = document.getElementById('nav-active-indicator');
    const tabs = document.querySelectorAll('.ntab');
