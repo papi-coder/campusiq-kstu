@@ -450,23 +450,54 @@ const NAV = {
      {id:'calendar',icon:'📆',tkey:'calendar'},
    ],
  };
- function buildNav(){
-   const tabs = document.getElementById('ntabs');
-   if(!tabs || !currentUser) return;
-   tabs.innerHTML = '';
-   (NAV[currentUser.role]||[]).forEach(item => {
-     const b = document.createElement('button');
-     b.className = 'ntab';
-     b.textContent = item.icon + ' ' + t(item.tkey);
-     b.setAttribute('role','tab');
-     b.setAttribute('aria-selected','false');
-     b.setAttribute('aria-label', t(item.tkey));
-     b.onclick = () => showScreen(item.id);
-     tabs.appendChild(b);
-   });
-   updateActiveIndicator();
- }
-function updateActiveIndicator(){
+  function buildNav(){
+    const tabs = document.getElementById('ntabs');
+    if(!tabs || !currentUser) return;
+    tabs.innerHTML = '';
+    (NAV[currentUser.role]||[]).forEach(item => {
+      const b = document.createElement('button');
+      b.className = 'ntab';
+      b.textContent = item.icon + ' ' + t(item.tkey);
+      b.setAttribute('role','tab');
+      b.setAttribute('aria-selected','false');
+      b.setAttribute('aria-label', t(item.tkey));
+      b.onclick = () => showScreen(item.id);
+      tabs.appendChild(b);
+    });
+    updateActiveIndicator();
+    buildMobileNav();
+  }
+  function buildMobileNav(){
+    const container = document.getElementById('mobile-sidebar-items');
+    if(!container || !currentUser) return;
+    container.innerHTML = '';
+    (NAV[currentUser.role]||[]).forEach(item => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'mobile-sidebar-item';
+      btn.innerHTML = `<span class="item-icon">${item.icon}</span><span>${t(item.tkey)}</span>`;
+      btn.onclick = () => { toggleMobileNav(); showScreen(item.id); };
+      container.appendChild(btn);
+    });
+  }
+  function toggleMobileNav(){
+    const sidebar = document.getElementById('mobile-sidebar');
+    const overlay = document.getElementById('mobile-sidebar-overlay');
+    const hamburger = document.getElementById('mobile-hamburger');
+    const isOpen = sidebar && sidebar.classList.contains('open');
+    if(isOpen){
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+      if(hamburger){ hamburger.classList.remove('open'); hamburger.setAttribute('aria-expanded','false'); }
+      document.body.style.overflow = '';
+    } else {
+      sidebar.classList.add('open');
+      overlay.classList.add('open');
+      if(hamburger){ hamburger.classList.add('open'); hamburger.setAttribute('aria-expanded','true'); }
+      document.body.style.overflow = 'hidden';
+    }
+  }
+ function updateActiveIndicator(){
    const indicator = document.getElementById('nav-active-indicator');
    const tabs = document.querySelectorAll('.ntab');
    const activeTab = document.querySelector('.ntab.active');
@@ -591,29 +622,52 @@ function showNavError(message){
    }
  });
 function showScreen(id, skipHistory){
-   if (currentUser && id !== 'home' && !skipHistory) {
-     screenHistory.push(id);
-   }
-   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-   const target = document.getElementById('screen-'+id);
-   if(target) target.classList.add('active');
-   const tabs = document.querySelectorAll('.ntab');
-   (NAV[currentUser.role]||[]).forEach((t,i) => { if(tabs[i]) tabs[i].classList.toggle('active', t.id===id); });
-updateActiveIndicator();
-    updateBackButton();
-    if(id==='home') loadHome();
-   if(id==='classroom') loadClassroom();
-   if(id==='attendance') loadAttendanceScreen();
-   if(id==='results') loadResults();
-   if(id==='timetable') loadTimetable();
-   if(id==='registration') loadRegistration();
-   if(id==='fees') loadFees();
-   if(id==='hostels') loadHostels();
-   if(id==='locator') loadLocator();
-   if(id==='idcard') renderIDCard();
-   if(id==='calendar') loadCalendar();
-if(id==='chat'){ clearInterval(chatInterval); }
+  const sidebar = document.getElementById('mobile-sidebar');
+  const overlay = document.getElementById('mobile-sidebar-overlay');
+  const hamburger = document.getElementById('mobile-hamburger');
+  if(sidebar && sidebar.classList.contains('open')){
+    sidebar.classList.remove('open');
+    if(overlay) overlay.classList.remove('open');
+    if(hamburger){ hamburger.classList.remove('open'); hamburger.setAttribute('aria-expanded','false'); }
+    document.body.style.overflow = '';
   }
+  if (currentUser && id !== 'home' && !skipHistory) {
+    screenHistory.push(id);
+  }
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById('screen-'+id);
+  if(target) target.classList.add('active');
+  const tabs = document.querySelectorAll('.ntab');
+  (NAV[currentUser.role]||[]).forEach((t,i) => { if(tabs[i]) tabs[i].classList.toggle('active', t.id===id); });
+  updateActiveIndicator();
+  updateMobileNavActive(id);
+  updateBackButton();
+  if(id==='home') loadHome();
+  if(id==='classroom') loadClassroom();
+  if(id==='attendance') loadAttendanceScreen();
+  if(id==='results') loadResults();
+  if(id==='timetable') loadTimetable();
+  if(id==='registration') loadRegistration();
+  if(id==='fees') loadFees();
+  if(id==='hostels') loadHostels();
+  if(id==='locator') loadLocator();
+  if(id==='idcard') renderIDCard();
+  if(id==='calendar') loadCalendar();
+  if(id==='chat'){ clearInterval(chatInterval); }
+}
+function updateMobileNavActive(id){
+  const items = document.querySelectorAll('#mobile-sidebar-items .mobile-sidebar-item');
+  items.forEach(item => {
+    const icon = item.querySelector('.item-icon')?.textContent || '';
+    const text = item.textContent?.trim() || '';
+    const navItem = (NAV[currentUser.role]||[]).find(n => n.id === id);
+    if(navItem && (icon === navItem.icon || text === t(navItem.tkey))){
+      item.classList.add('active');
+    } else {
+      item.classList.remove('active');
+    }
+  });
+}
 function goBack(){
   if (screenHistory.length > 0) {
     screenHistory.pop();
