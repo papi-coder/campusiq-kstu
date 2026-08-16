@@ -14,6 +14,9 @@
 html{font-family:"Exo 2",sans-serif;background:var(--bg);color:var(--t1);width:100%;max-width:100%;overflow-x:hidden}
 body{min-height:100vh;min-height:100dvh;background:linear-gradient(135deg,#0a0a0f 0%,#0d1117 60%,#0a0f1a 100%);padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);width:100%;max-width:100%;overflow-x:hidden;box-sizing:border-box}
 #login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;background:rgba(0,0,0,0.96);padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+html{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden}
+body{min-height:100vh;background:linear-gradient(135deg,#0a0a0f 0%,#0d1117 60%,#0a0f1a 100%);overflow-x:hidden}
+#login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;padding:1rem;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:rgba(0,0,0,0.96)}
 .login-box{background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;width:100%;max-width:380px}
 .login-box h1{font-family:'Orbitron',sans-serif;font-size:1.3rem;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:0.3rem}
 .login-box .sub{text-align:center;color:var(--t3);font-size:0.72rem;letter-spacing:0.15em;margin-bottom:1.5rem}
@@ -152,9 +155,10 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
   .sidebar.open{left:0}
   .sidebar-overlay.open{display:block}
   .content{margin-left:0;padding:1rem .75rem;max-width:100%;box-sizing:border-box}
+  .content{margin-left:0;padding:1rem .75rem;max-width:100%;overflow-x:hidden}
   .grid2{grid-template-columns:1fr!important}
-  table{font-size:.7rem;min-width:400px}
-  th,td{padding:.35rem .25rem}
+  table{font-size:.7rem;width:100%}
+  th,td{padding:.35rem .25rem;word-break:break-word}
   .card{padding:.75rem;margin-bottom:.65rem;border-radius:10px}
   .page-title{font-size:.85rem}
   .copyright-line{font-size:.55rem}
@@ -169,9 +173,10 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 }
 @media (max-width:480px){
   .content{padding:1rem .5rem;box-sizing:border-box}
+  .content{padding:1rem .5rem;overflow-x:hidden}
   .card{padding:.65rem;border-radius:8px}
-  table{min-width:320px;font-size:.65rem}
-  th,td{padding:.3rem .2rem}
+  table{min-width:auto;font-size:.65rem;width:100%}
+  th,td{padding:.3rem .2rem;word-break:break-word}
   .btn-fill{padding:.4rem .75rem;font-size:.72rem;border-radius:14px}
   .login-box{padding:1.25rem .875rem;border-radius:14px}
   .copyright-line{font-size:.5rem}
