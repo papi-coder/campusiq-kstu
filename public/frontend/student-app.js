@@ -829,12 +829,7 @@ async function askPapi(prefill){
 
 function addAiFiles(event){
    const files = Array.from((event && event.target && event.target.files) || []);
-   const imageFiles = files.filter(f => f.type && f.type.startsWith('image/'));
-   if(imageFiles.length){
-     showNavError('Papi cannot process images directly. Please describe the image in text.');
-   }
-   const nonImageFiles = files.filter(f => !(f.type && f.type.startsWith('image/')));
-   nonImageFiles.forEach(f => {
+   files.forEach(f => {
     const reader = new FileReader();
     reader.onload = () => {
       readFileAsText(f).then(text => {
