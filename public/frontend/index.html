@@ -774,7 +774,7 @@ window.doLogin = async function () {
         <label for="ai-input" class="sr-only">Ask Papi</label>
         <input type="text" class="fi2 m-0 flex-1" id="ai-input" placeholder="Ask Papi anything about your KsTU courses, exams, career…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();askPapi()}">
         <button class="btn-o whitespace-nowrap" type="button" onclick="document.getElementById('ai-file').click()" data-i18n="upload_q">📎 Upload</button>
-        <input type="file" id="ai-file" accept=".txt,.md,.csv,.json,.html,.log,image/*" class="hidden" onchange="addAiFiles(event)" aria-label="Attach file">
+         <input type="file" id="ai-file" accept=".txt,.md,.csv,.json,.html,.log" class="hidden" onchange="addAiFiles(event)" aria-label="Attach file">
         <button type="button" class="btn-sm bs-red" onclick="clearPapiChat()" title="Clear chat">🗑</button>
         <button type="button" class="btn-p whitespace-nowrap text-orbitron text-072" id="ai-send-btn" onclick="askPapi()">SEND</button>
     </div>
