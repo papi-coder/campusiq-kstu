@@ -2245,11 +2245,12 @@ td {
   }
   table {
     font-size: 0.65rem;
-    min-width: 320px;
+    width: 100%;
   }
   th,
   td {
     padding: 0.3rem 0.2rem;
+    word-break: break-word;
   }
 }
 
@@ -2260,11 +2261,12 @@ td {
   }
   table {
     font-size: 0.6rem;
-    min-width: 280px;
+    width: 100%;
   }
   th,
   td {
     padding: 0.25rem 0.15rem;
+    word-break: break-word;
   }
 }
 

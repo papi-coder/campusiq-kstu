@@ -87,6 +87,8 @@ body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
 .notif-badge{position:absolute;top:-3px;right:-3px;background:#dc2626;color:#ffffff;font-size:0.52rem;width:15px;height:15px;border-radius:50%;display:none;align-items:center;justify-content:center;font-weight:700;border:2px solid var(--bg)}
 .notif-badge.show{display:flex}
 .lang-btn,.theme-select-wrap{background:none;border:1px solid rgba(255,255,255,0.18);color:var(--t2);border-radius:20px;padding:0.2rem 0.55rem;font-size:0.68rem;cursor:pointer;font-family:inherit;transition:border-color .2s;flex-shrink:1;white-space:nowrap}
+.lang-btn{background:none;border:1px solid rgba(255,255,255,0.18);color:var(--t2);border-radius:20px;padding:0.2rem 0.55rem;font-size:0.68rem;cursor:pointer;font-family:inherit;transition:border-color .2s;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.theme-select-wrap{background:none;border:1px solid rgba(255,255,255,0.18);color:var(--t2);border-radius:20px;padding:0.2rem 0.55rem;font-size:0.68rem;cursor:pointer;font-family:inherit;transition:border-color .2s}
 .lang-btn:hover,.theme-select-wrap:hover{border-color:rgba(255,255,255,0.35)}
 .theme-select{background:transparent;border:none;color:var(--t2);font-size:0.68rem;cursor:pointer;font-family:inherit;outline:none;width:100%}
 .theme-select option{background:#0d1117;color:var(--t2)}
@@ -161,6 +163,13 @@ body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
   .back-btn{display:none}
   .home-btn{display:none}
   .profile-dropdown{display:none}
+  .nav-inner{gap:0.25rem}
+  .nav-logo{font-size:0.78rem}
+  .logo-icon{font-size:0.95rem}
+  .lang-btn{font-size:0.62rem;padding:0.15rem 0.4rem}
+  .bell-btn{font-size:1rem;padding:0 2px}
+  .btn-install{font-size:0.6rem;padding:0.12rem 0.4rem}
+  .nav-r{gap:0.2rem}
   .screen{
       display: none;
       position: fixed;
@@ -276,6 +285,14 @@ body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
 }
 @media (max-width:480px){
   .screen{padding:0.6rem}
+  .nav-inner{gap:0.2rem}
+  nav{padding:0 0.5rem}
+  .nav-logo{font-size:0.72rem}
+  .logo-icon{font-size:0.85rem}
+  .lang-btn{font-size:0.58rem;padding:0.1rem 0.3rem}
+  .bell-btn{font-size:0.9rem;padding:0 2px}
+  .btn-install{font-size:0.55rem;padding:0.1rem 0.35rem}
+  .nav-r{gap:0.15rem}
   .gc{padding:0.65rem;margin-bottom:0.5rem;border-radius:10px}
   .gc .sh h2{font-size:0.72rem}
   .modal{max-height:96vh;margin:0 0.15rem}
@@ -294,8 +311,8 @@ body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
   .id-card::before{font-size:3rem;right:-15px;top:8px}
   .chat-msgs{height:180px}
   .chat-msg{font-size:0.72rem;padding:0.5rem 0.7rem}
-  table{font-size:0.62rem;min-width:280px}
-  th,td{padding:0.3rem 0.2rem}
+  table{font-size:0.62rem;width:100%}
+  th,td{padding:0.3rem 0.2rem;word-break:break-word}
   .home-stats>*{min-width:110px}
   .home-stats .stat .v{font-size:1.05rem}
   .home-stats{gap:0.5rem}
@@ -309,6 +326,14 @@ body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
 }
 @media (max-width:360px){
   .screen{padding:0.5rem}
+  .nav-inner{gap:0.15rem}
+  nav{padding:0 0.4rem}
+  .nav-logo{font-size:0.68rem}
+  .logo-icon{font-size:0.8rem}
+  .lang-btn{font-size:0.55rem;padding:0.08rem 0.25rem}
+  .bell-btn{font-size:0.85rem;padding:0 2px}
+  .btn-install{font-size:0.52rem;padding:0.08rem 0.3rem}
+  .nav-r{gap:0.1rem}
   .gc{padding:0.55rem;margin-bottom:0.4rem;border-radius:8px}
   .gc .sh h2{font-size:0.68rem}
   .modal{max-height:97vh;margin:0}
@@ -327,8 +352,8 @@ body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
   .id-card::before{font-size:2.5rem;right:-12px;top:6px}
   .chat-msgs{height:160px}
   .chat-msg{font-size:0.68rem;padding:0.4rem 0.6rem}
-  table{font-size:0.58rem;min-width:240px}
-  th,td{padding:0.25rem 0.15rem}
+  table{font-size:0.58rem;width:100%}
+  th,td{padding:0.25rem 0.15rem;word-break:break-word}
   .home-stats>*{min-width:95px}
   .home-stats .stat .v{font-size:0.95rem}
   .home-stats{gap:0.4rem}
@@ -383,6 +408,7 @@ main{padding:88px 1rem calc(2rem + env(safe-area-inset-bottom));max-width:1050px
 
 /* TABLES */
 table{width:100%;border-collapse:collapse;font-size:0.78rem}
+.table-container{width:100%;max-width:100%;overflow-x:auto}
 th{text-align:left;padding:0.45rem;color:var(--t2);font-size:0.62rem;text-transform:uppercase;border-bottom:1px solid var(--card-border)}
 td{padding:0.45rem;border-bottom:1px solid rgba(255,255,255,0.04)}
 body.light td{border-bottom-color:rgba(0,0,0,0.05)}
