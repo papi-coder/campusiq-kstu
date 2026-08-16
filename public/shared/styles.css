@@ -493,7 +493,7 @@
 }
 .passport-upload:hover{background:rgba(59,130,246,0.18)}
 .passport-upload input[type="file"]{display:none}
-.passport-msg{font-size:0.72rem;margin-top:0.35rem;color:#94a3b8;min-height:1rem}
+.passport-msg{font-size:0.72rem;margin-top:0.35rem;color:#cbd5e1;min-height:1rem}
 .alumni-meta {
   font-size: 0.68rem;
   color: var(--t3);

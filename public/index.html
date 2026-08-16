@@ -13,10 +13,10 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@400;500;600&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-body{min-height:100vh;background:#0a0a0f;color:#f0f4ff;display:flex;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;padding:1.5rem}
+body{min-height:100vh;min-height:100dvh;background:#0a0a0f;color:#f0f4ff;display:flex;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;padding:1.5rem;padding-top:max(1.5rem, env(safe-area-inset-top));padding-bottom:max(1.5rem, env(safe-area-inset-bottom))}
 .wrap{text-align:center;max-width:580px;width:100%}
 .logo{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,7vw,3.5rem);font-weight:900;background:linear-gradient(135deg,#3b82f6,#06b6d4,#8b5cf6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.25rem}
-.sub{font-size:.75rem;color:#94a3b8;letter-spacing:.22em;text-transform:uppercase;margin-bottom:2.5rem}
+.sub{font-size:.75rem;color:#cbd5e1;letter-spacing:.22em;text-transform:uppercase;margin-bottom:2.5rem}
 .cards{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:1rem}
 a{text-decoration:none}
 .card{border-radius:16px;padding:1.5rem 1rem;transition:transform .2s,opacity .2s;cursor:pointer;display:block}
@@ -28,10 +28,10 @@ a{text-decoration:none}
 .c4::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(139,92,246,0.15),transparent 60%);pointer-events:none}
 .card-icon{font-size:2rem;margin-bottom:.5rem}
 .card-title{font-family:'Orbitron',sans-serif;font-size:.82rem;font-weight:700;margin-bottom:.2rem;color:#f0f4ff}
-.card-sub{font-size:.68rem;color:#94a3b8}
-.papi{font-size:.62rem;color:#94a3b8;letter-spacing:.2em;margin-top:1.5rem}
+.card-sub{font-size:.68rem;color:#cbd5e1}
+.papi{font-size:.62rem;color:#cbd5e1;letter-spacing:.2em;margin-top:1.5rem}
 
-.lang-toggle{position:fixed;top:.8rem;right:.8rem;z-index:10;background:none;border:1px solid rgba(255,255,255,0.18);color:#94a3b8;border-radius:20px;padding:.25rem .6rem;font-size:.7rem;cursor:pointer;font-family:inherit}
+.lang-toggle{position:fixed;top:.8rem;top:max(.8rem, env(safe-area-inset-top));right:.8rem;z-index:10;background:none;border:1px solid rgba(255,255,255,0.18);color:#cbd5e1;border-radius:20px;padding:.25rem .6rem;font-size:.7rem;cursor:pointer;font-family:inherit}
 .install-btn{margin-top:1rem;padding:.4rem 1rem;border:1px solid rgba(96,165,250,0.7);background:#1d4ed8;color:#ffffff;border-radius:20px;font-size:.72rem;font-family:inherit;cursor:pointer;display:none}
 
 .modal-overlay{margin:auto;padding:0;background:linear-gradient(160deg,#1e293b,#0f172a);border:1px solid rgba(96,165,250,0.3);border-radius:20px;max-width:420px;width:100%;text-align:center;box-shadow:0 25px 60px rgba(0,0,0,0.5);color:#f0f4ff}
@@ -84,7 +84,7 @@ a{text-decoration:none}
   .step-text{font-size:.72rem}
 }
 @media (max-width:480px){
-  body{padding:.75rem}
+  body{padding:.75rem;padding-top:max(.75rem, env(safe-area-inset-top));padding-bottom:max(.75rem, env(safe-area-inset-bottom))}
   .cards{gap:.5rem}
   .card{padding:1rem .75rem;border-radius:14px}
   .card-icon{font-size:1.4rem}
@@ -99,6 +99,26 @@ a{text-decoration:none}
   .platform-name{font-size:.72rem}
   .platform-hint{font-size:.55rem}
   .modal-close{font-size:.72rem;padding:.4rem 1rem}
+  .lang-toggle{top:.5rem;top:max(.5rem, env(safe-area-inset-top));right:.5rem;font-size:.62rem;padding:.2rem .5rem}
+  .wrap{margin-top:1.5rem}
+}
+@media (max-width:360px){
+  body{padding:.6rem;padding-top:max(.6rem, env(safe-area-inset-top));padding-bottom:max(.6rem, env(safe-area-inset-bottom))}
+  .cards{grid-template-columns:1fr;gap:.4rem}
+  .card{padding:.875rem .65rem;border-radius:12px}
+  .card-icon{font-size:1.2rem;margin-bottom:.3rem}
+  .card-title{font-size:.68rem}
+  .card-sub{font-size:.55rem}
+  .sub{font-size:.58rem;margin-bottom:1rem;letter-spacing:.08em}
+  .logo{font-size:clamp(1.4rem,9vw,1.8rem)}
+  .platform-grid{gap:.4rem}
+  .platform-btn{padding:.75rem .4rem;border-radius:10px}
+  .platform-icon{font-size:1.4rem}
+  .platform-name{font-size:.68rem}
+  .platform-hint{font-size:.52rem}
+  .modal-box{padding:1rem .75rem}
+  .lang-toggle{top:.4rem;top:max(.4rem, env(safe-area-inset-top));right:.4rem;font-size:.58rem;padding:.15rem .4rem}
+  .wrap{margin-top:1.2rem}
 }
 </style>
 </head>
@@ -250,7 +270,7 @@ async function installForIOS(){
   }
 }
 
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW registration failed:',e));
+(async()=>{try{if('serviceWorker' in navigator)await navigator.serviceWorker.register('sw.js');}catch(e){console.warn('SW registration failed:',e);}})();
 
 // ---- Twi language (shared with the other portals via localStorage) ----
 const LANDING_T = {

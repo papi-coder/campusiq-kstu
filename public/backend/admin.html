@@ -12,8 +12,8 @@
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0a0a0f;--panel:#0d1117;--blue:#3b82f6;--cyan:#06b6d4;--gold:#f59e0b;--green:#10b981;--red:#ef4444;--t1:#f0f4ff;--t2:#cbd5e1;--t3:#94a3b8}
 html{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--t1)}
-body{min-height:100vh;background:linear-gradient(135deg,#0a0a0f 0%,#0d1117 60%,#0a0f1a 100%)}
-#login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;padding:1rem;background:rgba(0,0,0,0.96);padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+body{min-height:100vh;min-height:100dvh;background:linear-gradient(135deg,#0a0a0f 0%,#0d1117 60%,#0a0f1a 100%);padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+#login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;background:rgba(0,0,0,0.96);padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 .login-box{background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;width:100%;max-width:380px}
 .login-box h1{font-family:'Orbitron',sans-serif;font-size:1.3rem;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:0.3rem}
 .login-box .sub{text-align:center;color:var(--t3);font-size:0.72rem;letter-spacing:0.15em;margin-bottom:1.5rem}
@@ -24,8 +24,9 @@ button{cursor:pointer;font-family:inherit;border:none;border-radius:20px;font-we
 .btn-primary:hover{opacity:0.88}
 .err{color:#fca5a5;font-size:0.78rem;text-align:center;margin-top:0.5rem;min-height:1.1rem}
 .hint{margin-top:0.875rem;padding:0.6rem;background:#7f1d1d;border:1px solid rgba(239,68,68,0.35);border-radius:8px;font-size:0.7rem;color:#fecaca;text-align:center}
+.hidden{display:none}.u-mb-0{margin-bottom:0}.u-cursor-pointer{cursor:pointer}.u-w-auto{width:auto}
 
-.topbar{height:50px;display:flex;align-items:center;padding:0 1rem;gap:0.75rem;background:rgba(10,10,15,0.95);border-bottom:1px solid rgba(255,255,255,0.07);position:fixed;top:0;left:0;right:0;z-index:100}
+.topbar{height:50px;display:flex;align-items:center;padding:0 1rem;padding-top:env(safe-area-inset-top);gap:0.75rem;background:rgba(10,10,15,0.95);border-bottom:1px solid rgba(255,255,255,0.07);position:fixed;top:0;left:0;right:0;z-index:100}
 .tb-logo{font-family:'Orbitron',sans-serif;font-size:0.9rem;font-weight:700;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .tb-r{margin-left:auto;display:flex;align-items:center;gap:0.75rem;font-size:0.72rem;color:var(--t3)}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:blink 2s infinite}
@@ -219,14 +220,14 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
   </div>
 </div>
 
-<div class="topbar" id="topbar" style="display:none">
+<div class="topbar hidden" id="topbar">
   <button type="button" class="back-btn" id="admin-back-btn" onclick="adminGoBack()">← Back</button>
   <button type="button" class="hamburger" id="hamburger-btn" onclick="toggleSidebar()">☰</button>
   <span>🛡</span><span class="tb-logo">CampusIQ Admin</span>
   <div class="tb-r"><span class="dot"></span> API Connected <button class="logout" onclick="logout()">Sign Out</button></div>
 </div>
 
-<div class="layout" id="layout" style="display:none">
+<div class="layout hidden" id="layout">
   <div class="sidebar">
     <div class="sb-sec">Overview</div>
     <button type="button" class="sb-item" onclick="go('dash',this)">📊 Dashboard</button>
@@ -389,8 +390,8 @@ td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
           </div>
           <div><label class="label" for="notice-body">Message *</label><textarea id="notice-body" rows="5" placeholder="Write the announcement for all students, lecturers and HODs…"></textarea></div>
           <div class="u-flex-between u-items-center">
-            <label class="label" style="margin-bottom:0;cursor:pointer" for="notice-marquee">📢 Display as Marquee (scrolling banner)</label>
-            <input type="checkbox" id="notice-marquee" style="width:auto;margin-bottom:0;cursor:pointer">
+            <label class="label u-mb-0 u-cursor-pointer" for="notice-marquee">📢 Display as Marquee (scrolling banner)</label>
+            <input type="checkbox" id="notice-marquee" class="u-w-auto u-mb-0 u-cursor-pointer">
           </div>
           <div id="notice-msg" class="u-fs-075 u-min-h-1"></div>
           <button class="btn-fill u-w-full" onclick="submitNotice()">Publish to All Users</button>
@@ -678,6 +679,7 @@ function toggleSidebar(){
   overlay.classList.toggle('open');
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){const sidebar=document.querySelector('.sidebar');const overlay=document.getElementById('sidebar-overlay');if(sidebar.classList.contains('open')){sidebar.classList.remove('open');overlay.classList.remove('open');}}});
+const PAGE_LOADERS={dash:loadDashboard,students:()=>loadUsers('student','students-tbody'),lecturers:()=>loadUsers('lecturer','lecturers-tbody'),hods:()=>loadUsers('hod','hods-tbody'),timetable:loadTimetable,results:loadResults,hostels:loadHostels,fees:loadFees,notices:loadNotices,calendar:loadCalendar,allocations:loadAllocations,payments:loadPayments,classrooms:loadClassrooms};
 function go(page,el,skipHistory){
   if (!skipHistory && adminCurrentPage !== page) {
     adminPageHistory.push(adminCurrentPage);
@@ -692,19 +694,8 @@ function go(page,el,skipHistory){
   const overlay=document.getElementById('sidebar-overlay');
   if(sidebar.classList.contains('open')){sidebar.classList.remove('open');overlay.classList.remove('open');}
   updateAdminBackButton();
-  if(page==='dash')loadDashboard();
-  if(page==='students')loadUsers('student','students-tbody');
-  if(page==='lecturers')loadUsers('lecturer','lecturers-tbody');
-  if(page==='hods')loadUsers('hod','hods-tbody');
-  if(page==='timetable')loadTimetable();
-  if(page==='results')loadResults();
-  if(page==='hostels')loadHostels();
-  if(page==='fees')loadFees();
-  if(page==='notices')loadNotices();
-  if(page==='calendar')loadCalendar();
-  if(page==='allocations')loadAllocations();
-  if(page==='payments')loadPayments();
-  if(page==='classrooms')loadClassrooms();
+  const loader=PAGE_LOADERS[page];
+  if(loader)loader();
 }
 function adminGoBack(){
   if (adminPageHistory.length > 0) {
@@ -751,17 +742,17 @@ async function loadDashboard(){
 }
 
 // ---------- USERS ----------
+function buildUserRow(u,role){
+  if(role==='student') return `<tr><td>${u.name}</td><td>${u.email}</td><td>${u.programme||'—'}</td><td>${u.level||'—'}</td><td>${u.studentId||'—'}</td><td><button class="btn-sm btn-red" onclick="deleteUser('${u.id}','${role}')">Delete</button></td></tr>`;
+  return `<tr><td>${u.title?u.title+' ':''}${u.name}</td><td>${u.email}</td><td>${u.department||'—'}</td><td>${u.staffId||'—'}</td><td><button class="btn-sm btn-red" onclick="deleteUser('${u.id}','${role}')">Delete</button></td></tr>`;
+}
 async function loadUsers(role,tbodyId){
   const tbody=document.getElementById(tbodyId);
   tbody.innerHTML='<tr><td colspan="6" class="u-text-center u-loading-text">Loading…</td></tr>';
   try{
     const users=await CampusAPI.listUsers(role);
     if(!users.length){tbody.innerHTML=`<tr><td colspan="6" class="u-empty-text">No ${role}s yet.</td></tr>`;return;}
-    if(role==='student'){
-      tbody.innerHTML=users.map(u=>`<tr><td>${u.name}</td><td>${u.email}</td><td>${u.programme||'—'}</td><td>${u.level||'—'}</td><td>${u.studentId||'—'}</td><td><button class="btn-sm btn-red" onclick="deleteUser('${u.id}','${role}')">Delete</button></td></tr>`).join('');
-    }else{
-      tbody.innerHTML=users.map(u=>`<tr><td>${u.title?u.title+' ':''}${u.name}</td><td>${u.email}</td><td>${u.department||'—'}</td><td>${u.staffId||'—'}</td><td><button class="btn-sm btn-red" onclick="deleteUser('${u.id}','${role}')">Delete</button></td></tr>`).join('');
-    }
+    tbody.innerHTML=users.map(u=>buildUserRow(u,role)).join('');
   }catch(e){tbody.innerHTML=`<tr><td colspan="6" class="u-error-text">Error: ${e.message}</td></tr>`;}
 }
 async function deleteUser(id,role){
@@ -1041,27 +1032,29 @@ async function deleteAllocation(id){
 }
 
 // ---------- FEES PAYMENTS ----------
+function getPaymentStatusBadge(status){
+  if (status === 'confirmed') return 'b-green';
+  if (status === 'pending_confirmation') return 'b-gold';
+  return 'b-blue';
+}
+function buildPaymentRow(p){
+  const confirmBtn = p.status !== 'confirmed' ? `<button class="btn-sm btn-green" onclick="confirmPayment('${p.id}')">Confirm</button> ` : '';
+  return `<tr>
+    <td>${escapeHtml(p.studentId||'—')}</td>
+    <td>${Number(p.amount).toFixed(2)}</td>
+    <td>${escapeHtml(p.method||'—')}</td>
+    <td><span class="badge ${getPaymentStatusBadge(p.status)}">${escapeHtml(p.status||'completed')}</span></td>
+    <td>${new Date(p.createdAt).toLocaleDateString()}</td>
+    <td>${confirmBtn}<button class="btn-sm btn-red" onclick="deletePayment('${p.id}')">Delete</button></td>
+  </tr>`;
+}
 async function loadPayments(){
   const tbody=document.getElementById('payments-tbody');
   tbody.innerHTML='<tr><td colspan="6" class="u-text-center u-loading-text">Loading…</td></tr>';
   try{
     const rows=await CampusAPI.listPayments();
     if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="u-empty-text">No payments recorded yet.</td></tr>';return;}
-    tbody.innerHTML=rows.slice().reverse().map(p=>{
-      let statusBadge;
-      if (p.status === 'confirmed') statusBadge = 'b-green';
-      else if (p.status === 'pending_confirmation') statusBadge = 'b-gold';
-      else statusBadge = 'b-blue';
-      const confirmBtn = p.status !== 'confirmed' ? `<button class="btn-sm btn-green" onclick="confirmPayment('${p.id}')">Confirm</button> ` : '';
-      return `<tr>
-        <td>${escapeHtml(p.studentId||'—')}</td>
-        <td>${Number(p.amount).toFixed(2)}</td>
-        <td>${escapeHtml(p.method||'—')}</td>
-        <td><span class="badge ${statusBadge}">${escapeHtml(p.status||'completed')}</span></td>
-        <td>${new Date(p.createdAt).toLocaleDateString()}</td>
-        <td>${confirmBtn}<button class="btn-sm btn-red" onclick="deletePayment('${p.id}')">Delete</button></td>
-      </tr>`;
-    }).join('');
+    tbody.innerHTML=rows.slice().reverse().map(buildPaymentRow).join('');
   }catch(e){tbody.innerHTML=`<tr><td colspan="6" class="u-error-text">Error: ${e.message}</td></tr>`;}
 }
 function openPaymentModal(){
@@ -1091,17 +1084,14 @@ async function deletePayment(id){
 }
 
 // ---------- BULK IMPORT ----------
-function parseBulk(text){
-  text=text.trim();
-  if(!text)return [];
-  if(text.startsWith('[')||text.startsWith('{')){
-    const data=JSON.parse(text);
-    let bulkData;
-    if (Array.isArray(data)) bulkData = data;
-    else if (data) bulkData = [data];
-    else bulkData = [];
-    return bulkData;
-  }
+function normalizeBulkData(data){
+  let bulkData;
+  if (Array.isArray(data)) bulkData = data;
+  else if (data) bulkData = [data];
+  else bulkData = [];
+  return bulkData;
+}
+function parseCsvToObjects(text){
   const lines=text.split(/\r?\n/).filter(l=>l.trim());
   if(lines.length<2)throw new Error('CSV needs a header row and at least one data row');
   const headers=lines[0].split(',').map(h=>h.trim());
@@ -1111,6 +1101,15 @@ function parseBulk(text){
     headers.forEach((h,i)=>{obj[h]=vals[i]!==undefined?vals[i]:'';});
     return obj;
   });
+}
+function parseBulk(text){
+  text=text.trim();
+  if(!text)return [];
+  if(text.startsWith('[')||text.startsWith('{')){
+    const data=JSON.parse(text);
+    return normalizeBulkData(data);
+  }
+  return parseCsvToObjects(text);
 }
 async function submitBulk(){
   const collection=document.getElementById('bulk-collection').value;
@@ -1157,20 +1156,23 @@ function openClassroomModal(){
   document.getElementById('cr-camera').value='';
   document.getElementById('classroom-modal').classList.add('open');
 }
+function normalizeClassroomData(data){
+  let arr;
+  if (Array.isArray(data)) arr = data;
+  else if (data && data.questions) arr = data.questions;
+  else arr = [data];
+  return arr;
+}
+function mapClassroomQuestion(q, idx){
+  if(q.type==='theory'||q.theory) return {type:'theory',text:q.text||q.question,q:idx,modelAnswer:q.modelAnswer||'',keywords:Array.isArray(q.keywords)?q.keywords:String(q.keywords||'').split(',').map(s=>s.trim()).filter(Boolean),points:Number(q.points||5)};
+  return {type:'objective',text:q.text||q.question,options:Array.isArray(q.options)?q.options:String(q.options||'').split(',').map(s=>s.trim()),correctIndex:Number(q.correctIndex!=null?q.correctIndex:0),points:Number(q.points||1)};
+}
 function parseClassroomFile(text){
-  // Supports: [O]/[T] line format, JSON array, or CSV (type,text,options,correctIndex,keywords)
   text=text.trim();
   if(text.startsWith('[')||text.startsWith('{')){
     const data=JSON.parse(text);
-    let arr;
-    if (Array.isArray(data)) arr = data;
-    else if (data && data.questions) arr = data.questions;
-    else arr = [data];
-    let id = 0;
-    return arr.map((q,i)=>{
-      if(q.type==='theory'||q.theory) return {type:'theory',text:q.text||q.question,q:id++,modelAnswer:q.modelAnswer||'',keywords:Array.isArray(q.keywords)?q.keywords:String(q.keywords||'').split(',').map(s=>s.trim()).filter(Boolean),points:Number(q.points||5)};
-      return {type:'objective',text:q.text||q.question,options:Array.isArray(q.options)?q.options:String(q.options||'').split(',').map(s=>s.trim()),correctIndex:Number(q.correctIndex!=null?q.correctIndex:0),points:Number(q.points||1)};
-    });
+    const arr=normalizeClassroomData(data);
+    return arr.map(mapClassroomQuestion);
   }
   return parseClassroomQuestions(text);
 }
@@ -1204,25 +1206,40 @@ function loadClassroomFile(){
     }catch(e){msg.style.color='#fca5a5';msg.textContent='File parse error: '+e.message;}
   }).catch(()=>{msg.style.color='#fca5a5';msg.textContent='Could not read file.';});
 }
+function parseObjectiveLine(line){
+  const body=line.slice(3).trim();
+  const parts=body.split('|').map(s=>s.trim());
+  if(parts.length<2)return null;
+  const opts=parts[1].split(',').map(s=>s.trim());
+  const correct=Number.parseInt(parts[2],10);
+  return {type:'objective',text:parts[0],options:opts,correctIndex:Number.isNaN(correct)?0:correct,points:1};
+}
+function parseTheoryLine(line){
+  const body=line.slice(3).trim();
+  const parts=body.split('|').map(s=>s.trim());
+  const kw=parts[1]?parts[1].split(',').map(s=>s.trim()).filter(Boolean):[];
+  return {type:'theory',text:parts[0],modelAnswer:'',keywords:kw,points:5};
+}
 function parseClassroomQuestions(text){
   const lines=text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
-  const questions=[];
-  for(const line of lines){
-    if(line.startsWith('[O]')||line.startsWith('[o]')){
-      const body=line.slice(3).trim();
-      const parts=body.split('|').map(s=>s.trim());
-      if(parts.length<2)continue;
-      const opts=parts[1].split(',').map(s=>s.trim());
-      const correct=Number.parseInt(parts[2],10);
-      questions.push({type:'objective',text:parts[0],options:opts,correctIndex:Number.isNaN(correct)?0:correct,points:1});
-    }else if(line.startsWith('[T]')||line.startsWith('[t]')){
-      const body=line.slice(3).trim();
-      const parts=body.split('|').map(s=>s.trim());
-      const kw=parts[1]?parts[1].split(',').map(s=>s.trim()).filter(Boolean):[];
-      questions.push({type:'theory',text:parts[0],modelAnswer:'',keywords:kw,points:5});
-    }
-  }
-  return questions;
+  return lines.flatMap(line=>{
+    const lower=line.toLowerCase();
+    if(lower.startsWith('[o]')){const q=parseObjectiveLine(line);return q?[q]:[];}
+    if(lower.startsWith('[t]')){return [parseTheoryLine(line)];}
+    return [];
+  });
+}
+async function parseQuestionsFromInput(){
+  const rawText=document.getElementById('cr-questions').value;
+  const fileInput=document.getElementById('cr-file');
+  const file=fileInput&&fileInput.files&&fileInput.files[0];
+  if(rawText.trim()) return parseClassroomQuestions(rawText);
+  if(file) return await file.text().then(text=>parseClassroomFile(text)).catch(()=>{throw new Error('read failed');});
+  return [];
+}
+function buildClassroomPayload(title,courseCode,durationMinutes,openAt,closeAt,questions){
+  const me=window.__adminUser||{id:'admin',name:'Admin'};
+  return {title,courseCode,durationMinutes:Number(durationMinutes||30),openAt:openAt?new Date(openAt).toISOString():null,closeAt:new Date(closeAt).toISOString(),lecturerId:me.id||'admin',lecturerName:me.name||'Admin',questions};
 }
 async function submitClassroom(){
   const title=document.getElementById('cr-title').value.trim();
@@ -1234,26 +1251,12 @@ async function submitClassroom(){
   if(!title||!courseCode){msg.style.color='#fca5a5';msg.textContent='Title and course code are required.';return;}
   if(!closeAt){msg.style.color='#fca5a5';msg.textContent='A closing deadline is required (system auto-grades when it passes).';return;}
   let questions;
-  const rawText=document.getElementById('cr-questions').value;
-  const fileInput=document.getElementById('cr-file');
-  const file=fileInput&&fileInput.files&&fileInput.files[0];
-  try{
-     if(rawText.trim()) questions=parseClassroomQuestions(rawText);
-     else if(file) questions=await file.text().then(text=>parseClassroomFile(text)).catch(()=>{throw new Error('read failed');});
-     else questions=[];
-  }catch(e){ msg.style.color='#fca5a5'; msg.textContent='Question parse error: '+e.message; return; }
+  try{ questions=await parseQuestionsFromInput(); }
+  catch(e){ msg.style.color='#fca5a5'; msg.textContent='Question parse error: '+e.message; return; }
   if(!questions.length){msg.style.color='#fca5a5';msg.textContent='Add at least one question ([O] objective or [T] theory).';return;}
-  // Lecturer context: use current admin/login. Fallback to admin.
-  const me=window.__adminUser||{id:'admin',name:'Admin'};
   msg.style.color='#34d399';msg.textContent='Publishing…';
   try{
-    await CampusAPI.createClassroom({
-      title,courseCode,durationMinutes:Number(durationMinutes||30),
-      openAt:openAt?new Date(openAt).toISOString():null,
-      closeAt:new Date(closeAt).toISOString(),
-      lecturerId:me.id||'admin',lecturerName:me.name||'Admin',
-      questions
-    });
+    await CampusAPI.createClassroom(buildClassroomPayload(title,courseCode,durationMinutes,openAt,closeAt,questions));
     closeModal('classroom-modal');loadClassrooms();
   }catch(e){msg.style.color='#fca5a5';msg.textContent=e.message;}
 }
@@ -1321,24 +1324,25 @@ async function deleteTimetable(id){
 }
 
 // ---------- RESULTS ----------
+function getGradeBadge(grade){
+  if (grade === 'F') return 'b-red';
+  if (grade === 'A') return 'b-green';
+  return 'b-blue';
+}
+function buildResultRow(r){
+  return `<tr>
+    <td>${r.studentName||r.studentId}</td><td>${r.courseCode}</td><td>${r.caScore}</td><td>${r.examScore}</td><td>${r.total}</td>
+    <td><span class="badge ${getGradeBadge(r.grade)}">${r.grade}</span></td>
+    <td><button class="btn-sm btn-red" onclick="deleteResult('${r.id}')">Delete</button></td>
+  </tr>`;
+}
 async function loadResults(){
   const tbody=document.getElementById('results-tbody');
   tbody.innerHTML='<tr><td colspan="7" class="u-text-center u-loading-text">Loading…</td></tr>';
   try{
     const rows=await CampusAPI.listResults();
     if(!rows.length){tbody.innerHTML='<tr><td colspan="7" class="u-empty-text">No results yet.</td></tr>';return;}
-    const html=rows.map(r=>{
-      let gradeBadge;
-      if (r.grade === 'F') gradeBadge = 'b-red';
-      else if (r.grade === 'A') gradeBadge = 'b-green';
-      else gradeBadge = 'b-blue';
-      return `<tr>
-        <td>${r.studentName||r.studentId}</td><td>${r.courseCode}</td><td>${r.caScore}</td><td>${r.examScore}</td><td>${r.total}</td>
-        <td><span class="badge ${gradeBadge}">${r.grade}</span></td>
-        <td><button class="btn-sm btn-red" onclick="deleteResult('${r.id}')">Delete</button></td>
-      </tr>`;
-    }).join('');
-    tbody.innerHTML=html;
+    tbody.innerHTML=rows.map(buildResultRow).join('');
   }catch(e){tbody.innerHTML=`<tr><td colspan="7" class="u-error-text">Error: ${e.message}</td></tr>`;}
 }
 function openResultModal(){

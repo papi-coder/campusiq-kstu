@@ -833,7 +833,8 @@ function addAiFiles(event){
    if(imageFiles.length){
      showNavError('Papi cannot process images directly. Please describe the image in text.');
    }
-   files.forEach(f => {
+   const nonImageFiles = files.filter(f => !(f.type && f.type.startsWith('image/')));
+   nonImageFiles.forEach(f => {
     const reader = new FileReader();
     reader.onload = () => {
       readFileAsText(f).then(text => {
@@ -847,8 +848,8 @@ function addAiFiles(event){
     reader.onerror = () => console.warn('Could not read file', f.name);
     reader.readAsDataURL(f);
   });
-  if(event && event.target) event.target.value = '';
-}
+   if(event && event.target) event.target.value = '';
+ }
 function renderAiAttachments(){
   const wrap = document.getElementById('ai-attachments');
   if(!wrap) return;
