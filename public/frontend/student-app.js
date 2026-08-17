@@ -1,9 +1,7 @@
 
 
-// =====================================================================
-// STATE
-// =====================================================================
-let currentUser = null;
+// ==============================================================// STATE
+// ==============================================================let currentUser = null;
 let loginRole = 'student';
 let currentLang = (typeof localStorage !== 'undefined' && localStorage.getItem('campusiq_lang')) || 'en';
 let isDark = true;
@@ -126,10 +124,8 @@ let googleMap = null;
 let leafletMap = null;
 let mapMarkers = {};
 
-// =====================================================================
-// TRANSLATIONS
-// =====================================================================
-const T = {
+// ==============================================================// TRANSLATIONS
+// ==============================================================const T = {
   en: {
     // Navigation
     home:'Home', ai:'Papi AI', attendance:'Attendance',
@@ -285,10 +281,8 @@ function applyTranslations(){
   if(lb) lb.textContent = currentLang === 'en' ? '🇬🇭 TW' : '🇬🇧 EN';
 }
 
-// =====================================================================
-// AUTH
-// =====================================================================
-function selRole(r, btn){
+// ==============================================================// AUTH
+// ==============================================================function selRole(r, btn){
   loginRole = r;
   document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
@@ -695,10 +689,8 @@ function updateBackButton(){
 }
 function closeM(id){ document.getElementById(id).classList.remove('open'); }
 
-// =====================================================================
-// HOME
-// =====================================================================
-async function loadHome(){
+// ==============================================================// HOME
+// ==============================================================async function loadHome(){
   document.getElementById('home-greet').textContent = 'Welcome back, ' + currentUser.name.split(' ')[0] + ' 👋';
   document.getElementById('home-sub').textContent = (currentUser.programme||currentUser.department||currentUser.role) + ' · ' + currentUser.email;
   try {
@@ -742,10 +734,8 @@ async function loadHome(){
    } catch(err){ console.warn(err); console.error(err); }
 }
 
-// =====================================================================
-// PAPI AI — Claude API (with KsTU system prompt)
-// =====================================================================
-const PAPI_SYSTEM = `You are Papi, the official AI academic assistant and tutor for Kumasi Technical University (KsTU) in Ghana. You have expert knowledge of all KsTU programmes: Engineering, Applied Sciences (Computer Technology, AI, Data Science), Business School, Creative Arts, Health Sciences, Built Environment, and Entrepreneurship.
+// ==============================================================// PAPI AI — Claude API (with KsTU system prompt)
+// ==============================================================const PAPI_SYSTEM = `You are Papi, the official AI academic assistant and tutor for Kumasi Technical University (KsTU) in Ghana. You have expert knowledge of all KsTU programmes: Engineering, Applied Sciences (Computer Technology, AI, Data Science), Business School, Creative Arts, Health Sciences, Built Environment, and Entrepreneurship.
 
 Your abilities:
 - Explain any academic concept clearly with step-by-step examples
@@ -829,16 +819,13 @@ async function askPapi(prefill){
 
 function addAiFiles(event){
    const files = Array.from((event && event.target && event.target.files) || []);
-<<<<<<< HEAD
    files.forEach(f => {
-=======
    const imageFiles = files.filter(f => f.type && f.type.startsWith('image/'));
    if(imageFiles.length){
      showNavError('Papi cannot process images directly. Please describe the image in text.');
    }
    const nonImageFiles = files.filter(f => !(f.type && f.type.startsWith('image/')));
    nonImageFiles.forEach(f => {
->>>>>>> b107f07 (Update website)
     const reader = new FileReader();
     reader.onload = () => {
       readFileAsText(f).then(text => {
@@ -984,10 +971,8 @@ function getPapiOffline(msg){
   return "Great question! I can help you with:\n📚 Any KsTU course concept\n📝 Exam preparation and past questions\n💼 Career advice in Ghana\n🗓 Study plans and time management\n\nCould you give me more detail? For example:\n- 'Explain [topic] from CPT 301'\n- 'Help me prepare for [exam]'\n- 'What career paths suit [my programme]'";
 }
 
-// =====================================================================
-// NOTIFICATIONS
-// =====================================================================
-async function loadNotifications(){
+// ==============================================================// NOTIFICATIONS
+// ==============================================================async function loadNotifications(){
   if(!currentUser) return;
   try {
     const notifs = await CampusAPI.getNotifications(currentUser.id);
@@ -1021,10 +1006,8 @@ document.addEventListener('click', e => {
     document.getElementById('notif-panel').classList.remove('open');
 });
 
-// =====================================================================
-// NOTICE TICKER — JavaScript marquee for reliable cross-device animation
-// =====================================================================
-let tickerRAF = null;
+// ==============================================================// NOTICE TICKER — JavaScript marquee for reliable cross-device animation
+// ==============================================================let tickerRAF = null;
 let tickerX = 0;
 let tickerSpeed = 1.2;
 let tickerPaused = false;
@@ -1091,10 +1074,8 @@ async function loadNoticeTicker(){
   }
 }
 
-// =====================================================================
-// VIRTUAL CLASSROOM
-// =====================================================================
-async function loadClassroom(){
+// ==============================================================// VIRTUAL CLASSROOM
+// ==============================================================async function loadClassroom(){
   const isLec = currentUser.role !== 'student';
   const tools = document.getElementById('lec-classroom-tools');
   tools.style.display = isLec ? 'flex' : 'none';
@@ -1321,10 +1302,8 @@ async function delMaterial(id){
   loadClassroom();
 }
 
-// =====================================================================
-// ATTENDANCE
-// =====================================================================
-async function loadAttendanceScreen(){
+// ==============================================================// ATTENDANCE
+// ==============================================================async function loadAttendanceScreen(){
   const isLec = currentUser.role !== 'student';
   document.getElementById('att-student-view').style.display = isLec ? 'none' : 'block';
   document.getElementById('att-lecturer-view').style.display = isLec ? 'block' : 'none';
@@ -1453,10 +1432,8 @@ function generateAttQR(){
   document.getElementById('att-qr-code').textContent = 'Code: '+code+' · Expires in 15 min';
 }
 
-// =====================================================================
-// RESULTS & GPA
-// =====================================================================
-const GRADE_POINTS = { A:4.0, B:3.0, C:2.0, D:1.0, F:0.0 };
+// ==============================================================// RESULTS & GPA
+// ==============================================================const GRADE_POINTS = { A:4.0, B:3.0, C:2.0, D:1.0, F:0.0 };
 async function loadResults(){
   const isLec = currentUser.role !== 'student';
   document.getElementById('results-student-view').style.display = isLec ? 'none' : 'block';
@@ -1497,10 +1474,8 @@ document.getElementById("results-lec-tbody").innerHTML = results.length ? lecRes
    } catch(err){ console.warn(err); console.error(err); }
 }
 
-// =====================================================================
-// TIMETABLE
-// =====================================================================
-async function loadTimetable(){
+// ==============================================================// TIMETABLE
+// ==============================================================async function loadTimetable(){
   const tbody = document.getElementById('tt-tbody');
   try {
     const rows = await CampusAPI.listTimetable();
@@ -1508,10 +1483,8 @@ async function loadTimetable(){
   } catch(err){ console.warn(err); tbody.innerHTML='<tr><td colspan="5" class="table-empty-center text-red">Error loading timetable</td></tr>'; }
 }
 
-// =====================================================================
-// COURSE REGISTRATION
-// =====================================================================
-const AVAIL_COURSES = [
+// ==============================================================// COURSE REGISTRATION
+// ==============================================================const AVAIL_COURSES = [
   {code:'CPT 301',name:'Data Structures & Algorithms',lecturer:'Dr. Mensah K.',credits:3},
   {code:'CPT 305',name:'AI & Machine Learning',lecturer:'Dr. Boateng A.',credits:3},
   {code:'MAT 201',name:'Calculus II',lecturer:'Mr. Asante C.',credits:3},
@@ -1540,10 +1513,8 @@ async function unregisterCourse(id){
   await CampusAPI.unregisterCourse(id).catch(()=>{}); loadRegistration();
 }
 
-// =====================================================================
-// FEES & PAYMENTS
-// =====================================================================
-async function loadFees(){
+// ==============================================================// FEES & PAYMENTS
+// ==============================================================async function loadFees(){
   try {
     const [feeStructures, payments] = await Promise.all([CampusAPI.listFeeStructures(), CampusAPI.getPayments(currentUser.id)]);
     const myFee = feeStructures.find(f => f.programme === currentUser.programme && f.level === currentUser.level) || feeStructures[0];
@@ -1568,10 +1539,8 @@ async function submitPaymentReceipt(){
    try { await CampusAPI.submitReceipt(currentUser.id,{amount:Number(amount),method,reference:ref,receiptNote:note}); msg.style.color='#34d399'; msg.textContent='✅ Receipt submitted! Admin will confirm your payment within 24 hours.'; loadFees(); } catch(err){ console.warn(err);msg.style.color='#fca5a5';msg.textContent=err.message;}
 }
 
-// =====================================================================
-// HOSTELS
-// =====================================================================
-async function loadHostels(){
+// ==============================================================// HOSTELS
+// ==============================================================async function loadHostels(){
   try {
     const [hostels, myApps] = await Promise.all([CampusAPI.listHostels(), CampusAPI.listHostelApplications({studentId:currentUser.id})]);
     const myApp = myApps[0];
@@ -1598,10 +1567,8 @@ async function applyHostel(hostelId, hostelName){
   try { await CampusAPI.applyHostel({studentId:currentUser.id,studentName:currentUser.name,hostelId,hostelName,programme:currentUser.programme||'',level:currentUser.level||''}); loadHostels();    } catch(err){ console.warn(err); alert(err.message); }
 }
 
-// =====================================================================
-// CAMPUS LOCATOR — Google Maps (if key set) or Leaflet/OpenStreetMap
-// =====================================================================
-let sharingLocation = false;
+// ==============================================================// CAMPUS LOCATOR — Google Maps (if key set) or Leaflet/OpenStreetMap
+// ==============================================================let sharingLocation = false;
 let mapProvider = null; // 'google' | 'leaflet'
 const KSTU_CENTER = { lat: 6.6885, lng: -1.6244 };
 
@@ -1811,10 +1778,8 @@ function getBuildingName(lat, lng){
   return minDist < 0.002 ? closest : 'On campus';
 }
 
-// =====================================================================
-// STUDENT ID CARD
-// =====================================================================
-function renderIDCard(){
+// ==============================================================// STUDENT ID CARD
+// ==============================================================function renderIDCard(){
   if(!currentUser) return;
   const initials = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   const avatarEl = document.getElementById('id-avatar');
@@ -1844,10 +1809,8 @@ function printIDCard(){
   setTimeout(() => w.print(), 200);
 }
 
-// =====================================================================
-// COURSE CHAT
-// =====================================================================
-async function loadChat(){
+// ==============================================================// COURSE CHAT
+// ==============================================================async function loadChat(){
   const sel = document.getElementById('chat-course-select');
   currentChatCourse = sel.value;
   if(!currentChatCourse){ document.getElementById('chat-box').style.display='none'; return; }
@@ -1878,10 +1841,8 @@ async function sendChat(){
   await renderChatMessages();
 }
 
-// =====================================================================
-// CALENDAR
-// =====================================================================
-async function loadCalendar(){
+// ==============================================================// CALENDAR
+// ==============================================================async function loadCalendar(){
   try {
     const events = await CampusAPI.listCalendar();
     const typeColors = {semester:'b-blue',exam:'b-red',holiday:'b-green',event:'b-gold'};
@@ -1894,10 +1855,8 @@ async function loadCalendar(){
    } catch(err){ console.warn(err); console.error(err); }
 }
 
-// =====================================================================
-// EXAM TAKING — implementations for handlers referenced by the UI
-// =====================================================================
-function escAttr(s){
+// ==============================================================// EXAM TAKING — implementations for handlers referenced by the UI
+// ==============================================================function escAttr(s){
   return String(s==null?'':s)
     .replaceAll('&','&amp;')
     .replaceAll('"','&quot;')
@@ -1977,10 +1936,8 @@ function showResult(id){
   document.getElementById('exam-result-modal').classList.add('open');
 }
 
-// =====================================================================
-// ASSIGNMENTS — implementations for handlers referenced by the UI
-// =====================================================================
-function openAssignmentModal(){
+// ==============================================================// ASSIGNMENTS — implementations for handlers referenced by the UI
+// ==============================================================function openAssignmentModal(){
   document.getElementById('asgn-title').value='';
   document.getElementById('asgn-course').value='';
   document.getElementById('asgn-desc').value='';

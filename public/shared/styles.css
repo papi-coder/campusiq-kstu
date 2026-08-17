@@ -1,5 +1,4 @@
-/* ============================================================
-   CampusIQ Shared Styles
+/* =====================================================   CampusIQ Shared Styles
    Utility classes to eliminate inline styles
    ============================================================ */
 
@@ -1025,8 +1024,7 @@
   color: var(--color, inherit);
 }
 
-/* ============================================================
-   u- prefixed utility aliases used by careers.html & index.html
+/* =====================================================   u- prefixed utility aliases used by careers.html & index.html
    ============================================================ */
 .u-fw-wrap { flex-wrap: wrap; }
 .u-fs-1 { flex: 1; }
@@ -1640,8 +1638,7 @@
   display: block;
 }
 
-/* ============================================================
-   ADMIN PORTAL STYLES
+/* =====================================================   ADMIN PORTAL STYLES
    ============================================================ */
 
 /* Admin login screen */
