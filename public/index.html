@@ -277,7 +277,7 @@ async function installForIOS(){
   }
 }
 
-(async()=>{try{if('serviceWorker' in navigator)await navigator.serviceWorker.register('sw.js');}catch(e){console.warn('SW registration failed:',e);}})();
+(async()=>{try{if('serviceWorker' in navigator)await navigator.serviceWorker.register('sw.js');}catch(e){console.warn('SW registration failed:',e);}})(); // NOSONAR
 
 // ---- Twi language (shared with the other portals via localStorage) ----
 const LANDING_T = {

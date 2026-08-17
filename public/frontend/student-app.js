@@ -823,30 +823,28 @@ async function askPapi(prefill){
 }
 
 function addAiFiles(event){
-   const files = Array.from((event && event.target && event.target.files) || []);
-   files.forEach(f => {
-   const imageFiles = files.filter(f => f.type && f.type.startsWith('image/'));
-   if(imageFiles.length){
-     showNavError('Papi cannot process images directly. Please describe the image in text.');
-   }
-   const nonImageFiles = files.filter(f => !(f.type && f.type.startsWith('image/')));
-   nonImageFiles.forEach(f => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      readFileAsText(f).then(text => {
-        papiAttachments.push({ name:f.name, type:f.type, size:f.size, dataUrl:reader.result, text });
-        renderAiAttachments();
-      }).catch(() => {
-        papiAttachments.push({ name:f.name, type:f.type, size:f.size, dataUrl:reader.result, text:'' });
-        renderAiAttachments();
-      });
-    };
-    reader.onerror = () => console.warn('Could not read file', f.name);
-    reader.readAsDataURL(f);
-   });
+    const files = Array.from((event && event.target && event.target.files) || []);
+    const imageFiles = files.filter(f => f.type && f.type.startsWith('image/'));
+    const nonImageFiles = files.filter(f => !(f.type && f.type.startsWith('image/')));
+    if(imageFiles.length){
+      showNavError('Papi cannot process images directly. Please describe the image in text.');
+    }
+    nonImageFiles.forEach(f => {
+     const reader = new FileReader();
+     reader.onload = () => {
+       readFileAsText(f).then(text => {
+         papiAttachments.push({ name:f.name, type:f.type, size:f.size, dataUrl:reader.result, text });
+         renderAiAttachments();
+       }).catch(() => {
+         papiAttachments.push({ name:f.name, type:f.type, size:f.size, dataUrl:reader.result, text:'' });
+         renderAiAttachments();
+       });
+     };
+     reader.onerror = () => console.warn('Could not read file', f.name);
+     reader.readAsDataURL(f);
+    });
     if(event && event.target) event.target.value = '';
-  });
-}
+  }
 function renderAiAttachments(){
   const wrap = document.getElementById('ai-attachments');
   if(!wrap) return;

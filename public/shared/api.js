@@ -80,7 +80,7 @@ const CampusAPI = (() => {
       if (dot) { dot.style.background = '#ef4444'; dot.style.animation = 'none'; }
       if (label) label.textContent = 'Offline — API unavailable';
     } else if (online === true) {
-      el.textContent = '● API Connected';
+      el.textContent = '✅ API connected successfully';
       el.style.background = '#064e3b';
       el.style.color = '#a7f3d0';
       el.style.borderBottom = '1px solid #047857';

@@ -52,7 +52,8 @@ body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
 .nav-logo{font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.95rem;background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0;text-decoration:none;display:flex;align-items:center;gap:0.35rem;padding:0.25rem 0;transition:opacity .2s}
 .nav-logo:hover{opacity:0.85}
 .logo-icon{font-size:1.1rem}
-.nav-links{display:flex;align-items:center;flex:1;position:relative;min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none}
+.nav-links{display:flex;align-items:center;flex:1;position:relative;min-width:0;overflow-x:auto;overflow-y:hidden;-ms-overflow-style:none}
+@supports(scrollbar-width:none){.nav-links{scrollbar-width:none}}
 .nav-links::-webkit-scrollbar{display:none}
 .ntabs{display:flex;gap:0.08rem;flex:1;overflow-x:auto;-ms-overflow-style:none}
 @supports(scrollbar-width:none){.ntabs{scrollbar-width:none}}
@@ -654,8 +655,8 @@ window.doLogin = async function () {
      <div class="notice">🔐 <span data-i18n="accounts_note">Accounts are created by the KsTU Admin. Contact your department if you need login details.</span></div>
        <button type="button" class="btn-install-login hidden" id="install-btn-login" onclick="openInstallModal()"><span data-i18n="install_app">📲 Install CampusIQ App</span></button>
        <button type="button" class="btn-login btn-login-back" onclick="location.href='/'">← <span data-i18n="back_home">Back to Home</span></button>
-   </div>
- </div>
+  </div>
+</nav>
 
 <div id="public-profile-screen" class="hidden">
   <div class="login-box">
