@@ -105,7 +105,7 @@ const CampusAPI = (() => {
       console.log('[CampusAPI] Probing API endpoints:', order.slice(0, 5).join(', ') + (order.length > 5 ? '...' : ''));
       for (const candidate of order) {
         const ctrl = new AbortController();
-        const tid = setTimeout(() => ctrl.abort(), 700);
+        const tid = setTimeout(() => ctrl.abort(), 2000);
         try {
           const r = await fetch(candidate + '/api/health', { method: 'GET', signal: ctrl.signal });
           clearTimeout(tid);
