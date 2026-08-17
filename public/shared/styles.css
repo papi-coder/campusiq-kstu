@@ -2021,11 +2021,8 @@ input, textarea, select {
 }
 
 /* Tables */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.78rem;
-}
+table{width:100%;max-width:100%;box-sizing:border-box;border-collapse:collapse;font-size:0.78rem}
+.table-wrap{width:100%;max-width:100%;overflow-x:auto}.table-container{width:100%;max-width:100%;overflow-x:auto}
 th {
   text-align: left;
   padding: 0.45rem;
@@ -2227,10 +2224,9 @@ td {
   }
   table {
     font-size: 0.7rem;
-    min-width: 100%;
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
+    max-width: 100%;
+    box-sizing: border-box;
+    width: 100%;
   }
   th,
   td {
@@ -2245,6 +2241,8 @@ td {
   }
   table {
     font-size: 0.65rem;
+    max-width: 100%;
+    box-sizing: border-box;
     width: 100%;
   }
   th,
@@ -2261,6 +2259,8 @@ td {
   }
   table {
     font-size: 0.6rem;
+    max-width: 100%;
+    box-sizing: border-box;
     width: 100%;
   }
   th,

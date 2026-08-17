@@ -3,8 +3,8 @@
 // STALE-WHILE-REVALIDATE strategy for other static assets, so that updates to
 // pages such as careers.html are always picked up on the next visit instead of
 // being served from a stale cached copy forever.
-const CACHE_NAME = 'campusiq-v6';
-const RUNTIME_CACHE = 'campusiq-runtime-v6';
+const CACHE_NAME = 'campusiq-v7';
+const RUNTIME_CACHE = 'campusiq-runtime-v7';
 const STATIC_ASSETS = [
   '/index.html',
   '/frontend/index.html',
@@ -12,6 +12,13 @@ const STATIC_ASSETS = [
   '/backend/admin.html',
   '/shared/api.js',
   '/shared/styles.css',
+  '/logo.svg',
+  '/logo-icon.svg',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png',
+  '/maskable-512.png',
+  '/manifest.json',
   '/',
 ];
 

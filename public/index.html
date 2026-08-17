@@ -9,15 +9,16 @@
 <meta name="apple-mobile-web-app-title" content="CampusIQ">
 <title>CampusIQ — KsTU | Powered by Papi</title>
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="logo-icon.svg" type="image/svg+xml">
+<link rel="icon" href="logo-icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@400;500;600&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-body{min-height:100vh;min-height:100dvh;background:#0a0a0f;color:#f0f4ff;display:flex;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;padding:1.5rem;padding-top:max(1.5rem, env(safe-area-inset-top));padding-bottom:max(1.5rem, env(safe-area-inset-bottom))}
 html{overflow-x:hidden}
 body{min-height:100vh;min-height:100dvh;background:#0a0a0f;color:#f0f4ff;display:flex;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;padding:1.5rem;padding-top:max(1.5rem, env(safe-area-inset-top));padding-bottom:max(1.5rem, env(safe-area-inset-bottom));overflow-x:hidden}
 .wrap{text-align:center;max-width:580px;width:100%}
-.logo{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,7vw,3.5rem);font-weight:900;background:linear-gradient(135deg,#3b82f6,#06b6d4,#8b5cf6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.25rem}
+.logo{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,7vw,3.5rem);font-weight:900;background:linear-gradient(135deg,#3b82f6,#06b6d4,#8b5cf6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.25rem;display:inline-flex;align-items:center;gap:.4rem}
+.logo-img{width:clamp(1.5rem,4vw,2.5rem);height:auto;flex-shrink:0}
 .sub{font-size:.75rem;color:#cbd5e1;letter-spacing:.22em;text-transform:uppercase;margin-bottom:2.5rem}
 .cards{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:1rem}
 a{text-decoration:none}
@@ -29,6 +30,7 @@ a{text-decoration:none}
 .c4{background:linear-gradient(135deg,rgba(139,92,246,0.22),rgba(59,130,246,0.18));border:1px solid rgba(139,92,246,0.5);position:relative;overflow:hidden}
 .c4::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(139,92,246,0.15),transparent 60%);pointer-events:none}
 .card-icon{font-size:2rem;margin-bottom:.5rem}
+.card-icon img{width:2.5rem;height:2.5rem}
 .card-title{font-family:'Orbitron',sans-serif;font-size:.82rem;font-weight:700;margin-bottom:.2rem;color:#f0f4ff}
 .card-sub{font-size:.68rem;color:#cbd5e1}
 .papi{font-size:.62rem;color:#cbd5e1;letter-spacing:.2em;margin-top:1.5rem}
@@ -69,7 +71,8 @@ a{text-decoration:none}
   .modal-overlay{max-width:calc(100% - 1rem)}
   .lang-toggle{top:.5rem;right:.5rem;font-size:.65rem;padding:.2rem .5rem}
   .card{padding:1.25rem .875rem}
-  .card-icon{font-size:1.6rem;margin-bottom:.35rem}
+   .card-icon{font-size:1.6rem;margin-bottom:.35rem}
+   .card-icon img{width:2rem;height:2rem}
   .card-title{font-size:.78rem}
   .card-sub{font-size:.62rem}
   .sub{font-size:.68rem;margin-bottom:1.5rem;letter-spacing:.15em}
@@ -89,7 +92,8 @@ a{text-decoration:none}
   body{padding:.75rem;padding-top:max(.75rem, env(safe-area-inset-top));padding-bottom:max(.75rem, env(safe-area-inset-bottom))}
   .cards{gap:.5rem}
   .card{padding:1rem .75rem;border-radius:14px}
-  .card-icon{font-size:1.4rem}
+   .card-icon{font-size:1.4rem}
+   .card-icon img{width:1.8rem;height:1.8rem}
   .card-title{font-size:.72rem}
   .card-sub{font-size:.58rem}
   .sub{font-size:.62rem;margin-bottom:1.25rem;letter-spacing:.1em}
@@ -109,6 +113,7 @@ a{text-decoration:none}
   .cards{grid-template-columns:1fr;gap:.4rem}
   .card{padding:.875rem .65rem;border-radius:12px}
   .card-icon{font-size:1.2rem;margin-bottom:.3rem}
+  .card-icon img{width:1.6rem;height:1.6rem}
   .card-title{font-size:.68rem}
   .card-sub{font-size:.55rem}
   .sub{font-size:.58rem;margin-bottom:1rem;letter-spacing:.08em}
@@ -127,7 +132,7 @@ a{text-decoration:none}
 <body>
 <div class="wrap">
   <button type="button" class="lang-toggle" id="landing-lang" onclick="toggleLandingLang()">🇬🇭 TW</button>
-  <div class="logo">⬡ CampusIQ</div>
+  <div class="logo"><img src="logo-icon.svg" class="logo-img" alt="CampusIQ Logo" width="40" height="40"> CampusIQ</div>
   <div class="sub" data-i18n="kstu">Kumasi Technical University · Powered by Papi</div>
   <div class="cards">
     <a href="frontend/index.html" class="card c1">
@@ -136,7 +141,7 @@ a{text-decoration:none}
       <div class="card-sub" data-i18n="students_sub">Students · Lecturers · HODs</div>
     </a>
     <a href="backend/admin.html" class="card c2">
-      <div class="card-icon">🛡</div>
+      <div class="card-icon"><img src="logo-icon.svg" class="logo-img" alt="CampusIQ Admin" width="32" height="32"></div>
       <div class="card-title" data-i18n="admin_backend">Admin Backend</div>
       <div class="card-sub" data-i18n="admin_sub">Accounts · Fees · Results · Notices</div>
     </a>
