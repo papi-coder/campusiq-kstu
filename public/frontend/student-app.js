@@ -1,7 +1,8 @@
 
 
 // ==============================================================// STATE
-// ==============================================================let currentUser = null;
+// ==============================================================
+let currentUser = null;
 let loginRole = 'student';
 let currentLang = (typeof localStorage !== 'undefined' && localStorage.getItem('campusiq_lang')) || 'en';
 let isDark = true;
@@ -125,7 +126,8 @@ let leafletMap = null;
 let mapMarkers = {};
 
 // ==============================================================// TRANSLATIONS
-// ==============================================================const T = {
+// ==============================================================
+const T = {
   en: {
     // Navigation
     home:'Home', ai:'Papi AI', attendance:'Attendance',
@@ -282,7 +284,8 @@ function applyTranslations(){
 }
 
 // ==============================================================// AUTH
-// ==============================================================function selRole(r, btn){
+// ==============================================================
+function selRole(r, btn){
   loginRole = r;
   document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
@@ -690,7 +693,8 @@ function updateBackButton(){
 function closeM(id){ document.getElementById(id).classList.remove('open'); }
 
 // ==============================================================// HOME
-// ==============================================================async function loadHome(){
+// ==============================================================
+async function loadHome(){
   document.getElementById('home-greet').textContent = 'Welcome back, ' + currentUser.name.split(' ')[0] + ' 👋';
   document.getElementById('home-sub').textContent = (currentUser.programme||currentUser.department||currentUser.role) + ' · ' + currentUser.email;
   try {
@@ -735,7 +739,8 @@ function closeM(id){ document.getElementById(id).classList.remove('open'); }
 }
 
 // ==============================================================// PAPI AI — Claude API (with KsTU system prompt)
-// ==============================================================const PAPI_SYSTEM = `You are Papi, the official AI academic assistant and tutor for Kumasi Technical University (KsTU) in Ghana. You have expert knowledge of all KsTU programmes: Engineering, Applied Sciences (Computer Technology, AI, Data Science), Business School, Creative Arts, Health Sciences, Built Environment, and Entrepreneurship.
+// ==============================================================
+const PAPI_SYSTEM = `You are Papi, the official AI academic assistant and tutor for Kumasi Technical University (KsTU) in Ghana. You have expert knowledge of all KsTU programmes: Engineering, Applied Sciences (Computer Technology, AI, Data Science), Business School, Creative Arts, Health Sciences, Built Environment, and Entrepreneurship.
 
 Your abilities:
 - Explain any academic concept clearly with step-by-step examples
@@ -838,9 +843,10 @@ function addAiFiles(event){
     };
     reader.onerror = () => console.warn('Could not read file', f.name);
     reader.readAsDataURL(f);
+   });
+    if(event && event.target) event.target.value = '';
   });
-   if(event && event.target) event.target.value = '';
- }
+}
 function renderAiAttachments(){
   const wrap = document.getElementById('ai-attachments');
   if(!wrap) return;
@@ -972,7 +978,8 @@ function getPapiOffline(msg){
 }
 
 // ==============================================================// NOTIFICATIONS
-// ==============================================================async function loadNotifications(){
+// ==============================================================
+async function loadNotifications(){
   if(!currentUser) return;
   try {
     const notifs = await CampusAPI.getNotifications(currentUser.id);
@@ -1007,7 +1014,8 @@ document.addEventListener('click', e => {
 });
 
 // ==============================================================// NOTICE TICKER — JavaScript marquee for reliable cross-device animation
-// ==============================================================let tickerRAF = null;
+// ==============================================================
+let tickerRAF = null;
 let tickerX = 0;
 let tickerSpeed = 1.2;
 let tickerPaused = false;
@@ -1075,7 +1083,8 @@ async function loadNoticeTicker(){
 }
 
 // ==============================================================// VIRTUAL CLASSROOM
-// ==============================================================async function loadClassroom(){
+// ==============================================================
+async function loadClassroom(){
   const isLec = currentUser.role !== 'student';
   const tools = document.getElementById('lec-classroom-tools');
   tools.style.display = isLec ? 'flex' : 'none';
@@ -1303,7 +1312,8 @@ async function delMaterial(id){
 }
 
 // ==============================================================// ATTENDANCE
-// ==============================================================async function loadAttendanceScreen(){
+// ==============================================================
+async function loadAttendanceScreen(){
   const isLec = currentUser.role !== 'student';
   document.getElementById('att-student-view').style.display = isLec ? 'none' : 'block';
   document.getElementById('att-lecturer-view').style.display = isLec ? 'block' : 'none';
@@ -1433,7 +1443,8 @@ function generateAttQR(){
 }
 
 // ==============================================================// RESULTS & GPA
-// ==============================================================const GRADE_POINTS = { A:4.0, B:3.0, C:2.0, D:1.0, F:0.0 };
+// ==============================================================
+const GRADE_POINTS = { A:4.0, B:3.0, C:2.0, D:1.0, F:0.0 };
 async function loadResults(){
   const isLec = currentUser.role !== 'student';
   document.getElementById('results-student-view').style.display = isLec ? 'none' : 'block';
@@ -1475,7 +1486,8 @@ document.getElementById("results-lec-tbody").innerHTML = results.length ? lecRes
 }
 
 // ==============================================================// TIMETABLE
-// ==============================================================async function loadTimetable(){
+// ==============================================================
+async function loadTimetable(){
   const tbody = document.getElementById('tt-tbody');
   try {
     const rows = await CampusAPI.listTimetable();
@@ -1484,7 +1496,8 @@ document.getElementById("results-lec-tbody").innerHTML = results.length ? lecRes
 }
 
 // ==============================================================// COURSE REGISTRATION
-// ==============================================================const AVAIL_COURSES = [
+// ==============================================================
+const AVAIL_COURSES = [
   {code:'CPT 301',name:'Data Structures & Algorithms',lecturer:'Dr. Mensah K.',credits:3},
   {code:'CPT 305',name:'AI & Machine Learning',lecturer:'Dr. Boateng A.',credits:3},
   {code:'MAT 201',name:'Calculus II',lecturer:'Mr. Asante C.',credits:3},
@@ -1514,7 +1527,8 @@ async function unregisterCourse(id){
 }
 
 // ==============================================================// FEES & PAYMENTS
-// ==============================================================async function loadFees(){
+// ==============================================================
+async function loadFees(){
   try {
     const [feeStructures, payments] = await Promise.all([CampusAPI.listFeeStructures(), CampusAPI.getPayments(currentUser.id)]);
     const myFee = feeStructures.find(f => f.programme === currentUser.programme && f.level === currentUser.level) || feeStructures[0];
@@ -1540,7 +1554,8 @@ async function submitPaymentReceipt(){
 }
 
 // ==============================================================// HOSTELS
-// ==============================================================async function loadHostels(){
+// ==============================================================
+async function loadHostels(){
   try {
     const [hostels, myApps] = await Promise.all([CampusAPI.listHostels(), CampusAPI.listHostelApplications({studentId:currentUser.id})]);
     const myApp = myApps[0];
@@ -1568,7 +1583,8 @@ async function applyHostel(hostelId, hostelName){
 }
 
 // ==============================================================// CAMPUS LOCATOR — Google Maps (if key set) or Leaflet/OpenStreetMap
-// ==============================================================let sharingLocation = false;
+// ==============================================================
+let sharingLocation = false;
 let mapProvider = null; // 'google' | 'leaflet'
 const KSTU_CENTER = { lat: 6.6885, lng: -1.6244 };
 
@@ -1779,7 +1795,8 @@ function getBuildingName(lat, lng){
 }
 
 // ==============================================================// STUDENT ID CARD
-// ==============================================================function renderIDCard(){
+// ==============================================================
+function renderIDCard(){
   if(!currentUser) return;
   const initials = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   const avatarEl = document.getElementById('id-avatar');
@@ -1810,7 +1827,8 @@ function printIDCard(){
 }
 
 // ==============================================================// COURSE CHAT
-// ==============================================================async function loadChat(){
+// ==============================================================
+async function loadChat(){
   const sel = document.getElementById('chat-course-select');
   currentChatCourse = sel.value;
   if(!currentChatCourse){ document.getElementById('chat-box').style.display='none'; return; }
@@ -1842,7 +1860,8 @@ async function sendChat(){
 }
 
 // ==============================================================// CALENDAR
-// ==============================================================async function loadCalendar(){
+// ==============================================================
+async function loadCalendar(){
   try {
     const events = await CampusAPI.listCalendar();
     const typeColors = {semester:'b-blue',exam:'b-red',holiday:'b-green',event:'b-gold'};
@@ -1856,7 +1875,8 @@ async function sendChat(){
 }
 
 // ==============================================================// EXAM TAKING — implementations for handlers referenced by the UI
-// ==============================================================function escAttr(s){
+// ==============================================================
+function escAttr(s){
   return String(s==null?'':s)
     .replaceAll('&','&amp;')
     .replaceAll('"','&quot;')
@@ -1937,7 +1957,8 @@ function showResult(id){
 }
 
 // ==============================================================// ASSIGNMENTS — implementations for handlers referenced by the UI
-// ==============================================================function openAssignmentModal(){
+// ==============================================================
+function openAssignmentModal(){
   document.getElementById('asgn-title').value='';
   document.getElementById('asgn-course').value='';
   document.getElementById('asgn-desc').value='';
