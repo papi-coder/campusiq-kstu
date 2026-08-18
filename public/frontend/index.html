@@ -25,7 +25,7 @@ html{font-family:"Exo 2",sans-serif;background:var(--bg);color:var(--t1);transit
 body{min-height:100vh;width:100%;max-width:100%;overflow-x:hidden;box-sizing:border-box}
 
 /* Logo images */
-.logo-icon-img{height:1.3em;width:auto;flex-shrink:0;vertical-align:middle}
+.logo-icon-img{height:auto;width:auto;max-height:3rem;flex-shrink:0;vertical-align:middle}
 .nav-logo-svg{height:1.1rem;width:auto;flex-shrink:0;vertical-align:middle}
 /* LOGIN */
 #login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;padding:1rem;padding-top:max(1rem, env(safe-area-inset-top));padding-bottom:max(1rem, env(safe-area-inset-bottom));background:radial-gradient(ellipse at 50% 40%,rgba(59,130,246,0.08),transparent 70%)}
@@ -34,6 +34,7 @@ body{min-height:100vh;width:100%;max-width:100%;overflow-x:hidden;box-sizing:bor
 #public-id-card strong{color:#60c8ff}
 .login-box{background:#0f172a;border:1px solid rgba(255,255,255,0.14);border-radius:22px;padding:2rem;width:100%;max-width:400px;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
 .logo-txt{display:flex;align-items:center;justify-content:center;gap:0.4rem;margin-bottom:0.5rem}
+.logo-txt img{height:auto;width:auto;max-height:3rem;flex-shrink:0}
 .logo-sub{text-align:center;color:#f8fafc;font-size:0.68rem;letter-spacing:0.18em;margin:3px 0 1.5rem}
 .role-tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1.25rem}
 .role-tab{padding:0.6rem 0.4rem;border-radius:10px;border:1px solid rgba(255,255,255,0.18);background:#111827;color:#dbeafe;cursor:pointer;font-size:0.75rem;text-align:center;font-family:inherit}
@@ -50,6 +51,7 @@ nav{position:fixed;top:0;left:0;right:0;height:56px;display:flex;align-items:cen
 body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
 .nav-inner{display:flex;align-items:center;width:100%;max-width:1200px;margin:0 auto;gap:0.5rem;min-width:0;overflow:hidden}
 .nav-logo{display:inline-flex;align-items:center;gap:0.35rem;padding:0.25rem 0;transition:opacity .2s;text-decoration:none;flex-shrink:0}
+.nav-logo img{height:auto;width:auto;max-height:1.6rem;flex-shrink:0}
 .nav-logo:hover{opacity:0.85}
 .logo-icon{font-size:1.1rem}
 .nav-links{display:flex;align-items:center;flex:1;position:relative;min-width:0;overflow-x:auto;overflow-y:hidden;-ms-overflow-style:none}
@@ -642,7 +644,7 @@ window.doLogin = async function () {
 
 <div id="login-screen">
    <div class="login-box">
-       <div class="logo-txt"><img src="../logo-icon.svg" class="logo-icon-img" alt="CampusIQ Logo" width="24" height="24"></div>
+        <div class="logo-txt"><img src="../logo-icon.svg" class="logo-icon-img" alt="CampusIQ Logo" width="140" height="42"></div>
       <div class="logo-sub">KUMASI TECHNICAL UNIVERSITY</div>
       <div class="role-tabs">
         <button type="button" class="role-tab active" onclick="window.selRole('student',this)">🎓 <span data-i18n="student_label">Student</span></button>
@@ -663,7 +665,7 @@ window.doLogin = async function () {
 
 <div id="public-profile-screen" class="hidden">
   <div class="login-box">
-      <div class="logo-txt"><img src="../logo-icon.svg" class="logo-icon-img" alt="CampusIQ Logo" width="24" height="24"></div>
+      <div class="logo-txt"><img src="../logo-icon.svg" class="logo-icon-img" alt="CampusIQ Logo" width="140" height="42"></div>
      <div class="logo-sub">STUDENT ID CARD</div>
     <div id="public-id-card"></div>
         <button type="button" class="btn-login" onclick="if(window.showLogin)window.showLogin()">🔑 <span data-i18n="login_to">Login to CampusIQ</span></button>
@@ -677,7 +679,7 @@ window.doLogin = async function () {
    <div class="nav-inner">
  <!-- Brand/Logo -->
           <button type="button" class="nav-logo" onclick="showScreen('home')" aria-label="Home">
-             <img src="../logo-icon.svg" class="logo-icon-img" alt="CampusIQ Logo" width="22" height="22">
+             <img src="../logo-icon.svg" class="logo-icon-img" alt="CampusIQ Logo" width="120" height="36">
           </button>
 
        <!-- Hamburger (mobile) -->

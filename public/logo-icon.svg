@@ -1,68 +1,14 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#3b82f6"/>
       <stop offset="50%" style="stop-color:#06b6d4"/>
       <stop offset="100%" style="stop-color:#8b5cf6"/>
     </linearGradient>
-    <linearGradient id="cap" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#ffffff"/>
-      <stop offset="100%" style="stop-color:#e0f2fe"/>
-    </linearGradient>
-    <linearGradient id="aiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#f59e0b"/>
-      <stop offset="100%" style="stop-color:#facc15"/>
-    </linearGradient>
     <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
-    <filter id="aiGlow" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur stdDeviation="2" result="blur"/>
       <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
   </defs>
-
-  <!-- Outer hexagon background -->
-  <path d="M100 10 L170 50 L170 130 L100 170 L30 130 L30 50 Z" fill="url(#bg)" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
-
-  <!-- Inner hexagon ring -->
-  <path d="M100 30 L150 60 L150 120 L100 150 L50 120 L50 60 Z" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
-
-  <!-- Circuit traces radiating from center -->
-  <g stroke="rgba(59,130,246,0.3)" stroke-width="1">
-    <line x1="100" y1="150" x2="100" y2="175"/>
-    <line x1="50" y1="120" x2="40" y2="135"/>
-    <line x1="150" y1="120" x2="160" y2="135"/>
-    <line x1="100" y1="30" x2="100" y2="15"/>
-  </g>
-
-  <!-- Circuit connection nodes -->
-  <circle cx="100" cy="175" r="3" fill="#06b6d4"/>
-  <circle cx="40" cy="135" r="3" fill="#3b82f6"/>
-  <circle cx="160" cy="135" r="3" fill="#8b5cf6"/>
-  <circle cx="100" cy="15" r="3" fill="#f59e0b"/>
-
-  <!-- Graduation cap + AI circuit/tassel (centered in hexagon) -->
-  <g transform="translate(100, 95)" filter="url(#glow)">
-    <!-- Cap top -->
-    <path d="M-28 0 L0 -18 L28 0 L0 18 Z" fill="url(#cap)" opacity="0.95"/>
-    <!-- Cap base -->
-    <rect x="-20" y="18" width="40" height="4" rx="2" fill="url(#cap)" opacity="0.9"/>
-    <!-- AI Brain nodes on cap -->
-    <circle cx="-14" cy="6" r="3.5" fill="#3b82f6" filter="url(#aiGlow)"/>
-    <circle cx="14" cy="6" r="3.5" fill="#06b6d4" filter="url(#aiGlow)"/>
-    <circle cx="0" cy="14" r="3.5" fill="#8b5cf6" filter="url(#aiGlow)"/>
-    <!-- Connection lines between AI nodes -->
-    <line x1="-14" y1="6" x2="0" y2="14" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/>
-    <line x1="14" y1="6" x2="0" y2="14" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/>
-    <!-- AI-powered tassel (replaces traditional tassel) -->
-    <line x1="0" y1="-18" x2="0" y2="-35" stroke="url(#aiGrad)" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="0" cy="-37" r="5" fill="url(#aiGrad)" filter="url(#aiGlow)"/>
-    <!-- Neural network pattern on tassel -->
-    <circle cx="-4" cy="-26" r="1.5" fill="#ffffff"/>
-    <circle cx="4" cy="-26" r="1.5" fill="#ffffff"/>
-    <circle cx="-4" cy="-30" r="1.5" fill="#ffffff"/>
-    <circle cx="4" cy="-30" r="1.5" fill="#ffffff"/>
-  </g>
+  <text x="100" y="42" text-anchor="middle" font-family="'Orbitron', 'Exo 2', sans-serif" font-size="38" font-weight="900" fill="url(#textGrad)" filter="url(#glow)">CampusIQ</text>
 </svg>

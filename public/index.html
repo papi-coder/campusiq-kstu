@@ -18,7 +18,7 @@ html{overflow-x:hidden}
 body{min-height:100vh;min-height:100dvh;background:#0a0a0f;color:#f0f4ff;display:flex;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;padding:1.5rem;padding-top:max(1.5rem, env(safe-area-inset-top));padding-bottom:max(1.5rem, env(safe-area-inset-bottom));overflow-x:hidden}
 .wrap{text-align:center;max-width:580px;width:100%}
 .logo{display:inline-flex;align-items:center;gap:.4rem;margin-bottom:.25rem}
-.logo-img{width:clamp(1.5rem,4vw,2.5rem);height:auto;flex-shrink:0}
+.logo-img{height:clamp(2.5rem,7vw,4rem);width:auto;flex-shrink:0}
 .sub{font-size:.75rem;color:#cbd5e1;letter-spacing:.22em;text-transform:uppercase;margin-bottom:2.5rem}
 .cards{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:1rem}
 a{text-decoration:none}
@@ -285,7 +285,7 @@ a.portal-card {
 <body>
 <div class="wrap">
   <button type="button" class="lang-toggle" id="landing-lang" onclick="toggleLandingLang()">🇬🇭 TW</button>
-  <div class="logo"><img src="logo-icon.svg" class="logo-img" alt="CampusIQ Logo" width="40" height="40"></div>
+  <div class="logo"><img src="logo-icon.svg" class="logo-img" alt="CampusIQ Logo" width="180" height="54"></div>
   <div class="sub" data-i18n="kstu">Kumasi Technical University · Powered by Papi</div>
   <div class="cards">
     <a href="frontend/index.html" class="card c1 portal-card" onclick="if(window.PortalOverlay){event.preventDefault();PortalOverlay.open('frontend/index.html','Student Portal')}else{location.href='frontend/index.html'}">
@@ -294,7 +294,7 @@ a.portal-card {
       <div class="card-sub" data-i18n="students_sub">Students · Lecturers · HODs</div>
     </a>
     <a href="backend/admin.html" class="card c2 portal-card" onclick="if(window.PortalOverlay){event.preventDefault();PortalOverlay.open('backend/admin.html','Admin Backend')}else{location.href='backend/admin.html'}">
-      <div class="card-icon"><img src="logo-icon.svg" class="logo-img" alt="CampusIQ Admin" width="32" height="32"></div>
+      <div class="card-icon"><img src="logo-icon.svg" class="logo-img" alt="CampusIQ Admin" width="140" height="42"></div>
       <div class="card-title" data-i18n="admin_backend">Admin Backend</div>
       <div class="card-sub" data-i18n="admin_sub">Accounts · Fees · Results · Notices</div>
     </a>
