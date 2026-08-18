@@ -27,6 +27,11 @@ const CampusAPI = (() => {
   } else {
     candidates.push(fallbackOrigin);
   }
+  if (!isLocal && !isFile && protocol === 'http:') {
+    for (let p = 3001; p <= 3010; p++) {
+      if (!candidates.includes(`http://${hostname}:${p}`)) candidates.push(`http://${hostname}:${p}`);
+    }
+  }
 
   let online = null;
   const statusListeners = [];
@@ -105,7 +110,7 @@ const CampusAPI = (() => {
       console.log('[CampusAPI] Probing API endpoints:', order.slice(0, 5).join(', ') + (order.length > 5 ? '...' : ''));
       for (const candidate of order) {
         const ctrl = new AbortController();
-        const tid = setTimeout(() => ctrl.abort(), 2000);
+        const tid = setTimeout(() => ctrl.abort(), 3000);
         try {
           const r = await fetch(candidate + '/api/health', { method: 'GET', signal: ctrl.signal });
           clearTimeout(tid);
@@ -135,7 +140,15 @@ const CampusAPI = (() => {
 
   async function _discoverApi() {
     console.log('[CampusAPI] Initial probe timed out, trying direct discovery...');
-    for (const candidate of candidates.filter(Boolean)) {
+    const allCandidates = [...candidates.filter(Boolean)];
+    if (!allCandidates.includes('http://localhost:3001')) allCandidates.unshift('http://localhost:3001');
+    if (!allCandidates.includes('http://localhost:3002')) allCandidates.unshift('http://localhost:3002');
+    if (!isLocal && !isFile && protocol === 'http:') {
+      const lanCandidates = [];
+      for (let p = 3001; p <= 3010; p++) lanCandidates.push(`http://${hostname}:${p}`);
+      lanCandidates.reverse().forEach(c => { if (!allCandidates.includes(c)) allCandidates.unshift(c); });
+    }
+    for (const candidate of allCandidates) {
       const ctrl = new AbortController();
       const tid = setTimeout(() => ctrl.abort(), 400);
       try {
@@ -151,16 +164,14 @@ const CampusAPI = (() => {
   }
 
   async function _waitForBase() {
-    if (!BASE && (isLocal || isFile)) {
-      const deadline = Date.now() + 8000;
-      while (Date.now() < deadline) {
-        if (BASE) break;
-        await sleep(100);
-      }
-      if (!BASE && !await _discoverApi()) {
-        if (!BASE) BASE = fallbackOrigin || candidates.at(-1);
-        console.log('[CampusAPI] Final BASE:', BASE);
-      }
+    const deadline = Date.now() + 10000;
+    while (Date.now() < deadline) {
+      if (BASE) break;
+      await sleep(100);
+    }
+    if (!BASE && !await _discoverApi()) {
+      if (!BASE) BASE = fallbackOrigin || candidates.at(-1) || '';
+      console.log('[CampusAPI] Final BASE:', BASE);
     }
   }
 
@@ -173,6 +184,19 @@ const CampusAPI = (() => {
     } catch (netErr) {
       console.error('[CampusAPI] Network error for', url, ':', netErr.message);
       if (online === false) {
+        await safeProbe();
+        if (online === true) {
+          const retryUrl = BASE + path;
+          console.log('[CampusAPI] Retrying after reconnected:', retryUrl);
+          try {
+            return await fetch(retryUrl, {
+              headers: { 'Content-Type': 'application/json' },
+              ...options,
+            });
+          } catch (retryErr) {
+            console.error('[CampusAPI] Retry also failed:', retryErr.message);
+          }
+        }
         throw new Error('Offline — API unavailable. Connect the CampusIQ server or check your network.');
       }
       safeProbe();
@@ -195,7 +219,25 @@ const CampusAPI = (() => {
 
   async function request(path, options = {}) {
     if (online === false) {
-      safeProbe();
+      await safeProbe();
+      if (online === true) {
+        const url = BASE + path;
+        console.log('[CampusAPI] Request after reconnect:', options.method || 'GET', url);
+        const res = await _fetchWithRetry(url, path, options);
+        let json;
+        const contentType = res.headers.get('content-type') || '';
+        try { json = await res.json(); }
+        catch {
+          if (contentType.includes('text/html') || contentType.includes('text/plain')) {
+            throw new Error('The server returned a web page instead of data. Make sure the CampusIQ backend server is running. Try running "npm start" in the project folder.');
+          }
+          throw new Error('The server returned an unexpected response. Make sure the CampusIQ backend server is running.');
+        }
+        if (!res.ok || (json?.success === false)) {
+          throw new Error(json?.message || `Request failed (${res.status})`);
+        }
+        return json.data;
+      }
       if (isFile) {
         throw new Error('Cannot connect to the server. Please open the app using a web server (e.g. "npm start" or "npx serve") instead of opening the HTML file directly.');
       }
