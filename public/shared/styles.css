@@ -1663,14 +1663,10 @@
   backdrop-filter: blur(20px);
 }
 .login-box h1 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.4rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #3b82f6, #06b6d4);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   margin-bottom: 0.25rem;
 }
 .sub {
@@ -1744,13 +1740,8 @@
   z-index: 100;
 }
 .tb-logo {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 700;
-  font-size: 0.85rem;
-  background: linear-gradient(135deg, #3b82f6, #06b6d4);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  display: inline-flex;
+  align-items: center;
   flex-shrink: 0;
 }
 .tb-r {
