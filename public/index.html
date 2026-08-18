@@ -108,6 +108,162 @@ a{text-decoration:none}
   .lang-toggle{top:.5rem;top:max(.5rem, env(safe-area-inset-top));right:.5rem;font-size:.62rem;padding:.2rem .5rem}
   .wrap{margin-top:1.5rem}
 }
+
+/* Portal Overlay */
+.portal-overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  z-index: 400;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.portal-overlay-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.portal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 410;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.portal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.portal-overlay-panel {
+  width: 94vw;
+  height: 92vh;
+  max-width: 1200px;
+  max-height: 900px;
+  background: #0d1117;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+  transform: translateY(20px) scale(0.98);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.portal-overlay.open .portal-overlay-panel {
+  transform: translateY(0) scale(1);
+}
+.portal-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: rgba(10, 10, 15, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+  gap: 0.5rem;
+}
+.portal-overlay-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.portal-overlay-title img {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+}
+.portal-overlay-close {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.35rem 0.75rem;
+  border-radius: 10px;
+  font-family: inherit;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.portal-overlay-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f0f4ff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.portal-overlay-frame {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: #0a0a0f;
+  display: block;
+}
+@media (max-width: 768px) {
+  .portal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .portal-overlay-panel {
+    width: 100vw;
+    height: 96vh;
+    max-width: 100vw;
+    max-height: 96vh;
+    border-radius: 18px 18px 0 0;
+    transform: translateY(40px) scale(0.97);
+  }
+  .portal-overlay.open .portal-overlay-panel {
+    transform: translateY(0) scale(1);
+  }
+  .portal-overlay-header {
+    padding: 0.6rem 0.875rem;
+  }
+  .portal-overlay-title {
+    font-size: 0.78rem;
+  }
+  .portal-overlay-close {
+    font-size: 0.78rem;
+    padding: 0.3rem 0.6rem;
+  }
+}
+@media (max-width: 480px) {
+  .portal-overlay-panel {
+    height: 98vh;
+    max-height: 98vh;
+    border-radius: 14px 14px 0 0;
+  }
+  .portal-overlay-header {
+    padding: 0.5rem 0.75rem;
+  }
+  .portal-overlay-title {
+    font-size: 0.72rem;
+  }
+  .portal-overlay-close {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+@media (max-width: 360px) {
+  .portal-overlay-panel {
+    border-radius: 12px 12px 0 0;
+  }
+}
+a.portal-card {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
 @media (max-width:360px){
   body{padding:.6rem;padding-top:max(.6rem, env(safe-area-inset-top));padding-bottom:max(.6rem, env(safe-area-inset-bottom))}
   .cards{grid-template-columns:1fr;gap:.4rem}
@@ -135,17 +291,17 @@ a{text-decoration:none}
   <div class="logo"><img src="logo-icon.svg" class="logo-img" alt="CampusIQ Logo" width="40" height="40"> CampusIQ</div>
   <div class="sub" data-i18n="kstu">Kumasi Technical University · Powered by Papi</div>
   <div class="cards">
-    <a href="frontend/index.html" class="card c1">
+    <a href="frontend/index.html" class="card c1 portal-card" onclick="if(window.PortalOverlay){event.preventDefault();PortalOverlay.open('frontend/index.html','Student Portal')}else{location.href='frontend/index.html'}">
       <div class="card-icon">🎓</div>
       <div class="card-title" data-i18n="student_portal">Student Portal</div>
       <div class="card-sub" data-i18n="students_sub">Students · Lecturers · HODs</div>
     </a>
-    <a href="backend/admin.html" class="card c2">
+    <a href="backend/admin.html" class="card c2 portal-card" onclick="if(window.PortalOverlay){event.preventDefault();PortalOverlay.open('backend/admin.html','Admin Backend')}else{location.href='backend/admin.html'}">
       <div class="card-icon"><img src="logo-icon.svg" class="logo-img" alt="CampusIQ Admin" width="32" height="32"></div>
       <div class="card-title" data-i18n="admin_backend">Admin Backend</div>
       <div class="card-sub" data-i18n="admin_sub">Accounts · Fees · Results · Notices</div>
     </a>
-    <a href="frontend/careers.html" class="card c3">
+    <a href="frontend/careers.html" class="card c3 portal-card" onclick="if(window.PortalOverlay){event.preventDefault();PortalOverlay.open('frontend/careers.html','Career Hub')}else{location.href='frontend/careers.html'}">
       <div class="card-icon">💼</div>
       <div class="card-title" data-i18n="career_hub">Career Hub</div>
       <div class="card-sub" data-i18n="career_sub">Jobs · Skills · CV · Alumni · Salary Map</div>
@@ -302,5 +458,6 @@ function toggleLandingLang(){
 }
 applyLandingLang();
 </script>
+<script src="../shared/portal-overlay.js"></script>
 </body>
 </html>
