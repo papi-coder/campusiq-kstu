@@ -25,7 +25,7 @@ html{font-family:"Exo 2",sans-serif;background:var(--bg);color:var(--t1);transit
 body{min-height:100vh;width:100%;max-width:100%;overflow-x:hidden;box-sizing:border-box}
 
 /* Logo images */
-.logo-icon-img{height:1.3em;width:auto;flex-shrink:0;display:inline-flex;vertical-align:middle}
+.logo-icon-img{height:1.3em;width:auto;flex-shrink:0;vertical-align:middle}
 .nav-logo-svg{height:1.1rem;width:auto;flex-shrink:0;vertical-align:middle}
 /* LOGIN */
 #login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;padding:1rem;padding-top:max(1rem, env(safe-area-inset-top));padding-bottom:max(1rem, env(safe-area-inset-bottom));background:radial-gradient(ellipse at 50% 40%,rgba(59,130,246,0.08),transparent 70%)}
@@ -33,7 +33,7 @@ body{min-height:100vh;width:100%;max-width:100%;overflow-x:hidden;box-sizing:bor
 #public-id-card{color:#f8fafc;font-size:0.85rem;line-height:1.8;text-align:center;margin-top:0.5rem}
 #public-id-card strong{color:#60c8ff}
 .login-box{background:#0f172a;border:1px solid rgba(255,255,255,0.14);border-radius:22px;padding:2rem;width:100%;max-width:400px;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
-.logo-txt{font-family:'Orbitron',sans-serif;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);font-size:1.5rem;font-weight:900;background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-align:center}
+.logo-txt{font-family:'Orbitron',sans-serif;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);font-size:1.5rem;font-weight:900;background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-align:center;color:#ffffff}
 .logo-sub{text-align:center;color:#f8fafc;font-size:0.68rem;letter-spacing:0.18em;margin:3px 0 1.5rem}
 .role-tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1.25rem}
 .role-tab{padding:0.6rem 0.4rem;border-radius:10px;border:1px solid rgba(255,255,255,0.18);background:#111827;color:#dbeafe;cursor:pointer;font-size:0.75rem;text-align:center;font-family:inherit}
@@ -49,7 +49,7 @@ body{min-height:100vh;width:100%;max-width:100%;overflow-x:hidden;box-sizing:bor
 nav{position:fixed;top:0;left:0;right:0;height:56px;display:flex;align-items:center;padding:0 0.875rem;padding-top:env(safe-area-inset-top);gap:0.6rem;background:rgba(10,10,15,0.94);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.08);z-index:100;box-shadow:0 1px 12px rgba(0,0,0,0.3)}
 body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
 .nav-inner{display:flex;align-items:center;width:100%;max-width:1200px;margin:0 auto;gap:0.5rem;min-width:0;overflow:hidden}
-.nav-logo{font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.95rem;background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0;text-decoration:none;display:flex;align-items:center;gap:0.35rem;padding:0.25rem 0;transition:opacity .2s}
+.nav-logo{font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.95rem;background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0;text-decoration:none;display:flex;align-items:center;gap:0.35rem;padding:0.25rem 0;transition:opacity .2s;color:#ffffff}
 .nav-logo:hover{opacity:0.85}
 .logo-icon{font-size:1.1rem}
 .nav-links{display:flex;align-items:center;flex:1;position:relative;min-width:0;overflow-x:auto;overflow-y:hidden;-ms-overflow-style:none}
@@ -133,6 +133,21 @@ body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
 .mobile-sidebar-footer .mobile-sidebar-item{border-left:none;padding:0.7rem 0;font-size:0.8rem;color:var(--t3)}
 .mobile-sidebar-footer .mobile-sidebar-item:hover{color:var(--t1)}
 
+/* Profile Dropdown */
+.profile-dropdown{position:relative;flex-shrink:0}
+.profile-btn{display:flex;align-items:center;gap:0.35rem;padding:0.25rem 0.4rem;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:var(--t1);cursor:pointer;font-family:inherit;transition:background .2s,border-color .2s;white-space:nowrap}
+.profile-btn:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2)}
+.profile-name{font-size:0.72rem;font-weight:600;color:var(--t1);max-width:80px;overflow:hidden;text-overflow:ellipsis}
+.profile-chevron{font-size:0.65rem;color:var(--t3);transition:transform .2s}
+.profile-dropdown.open .profile-chevron{transform:rotate(180deg)}
+.profile-menu{position:absolute;top:calc(100% + 6px);right:0;min-width:180px;background:rgba(15,20,30,0.98);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:0.4rem 0;z-index:200;display:none;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 12px 40px rgba(0,0,0,0.5)}
+.profile-menu.open{display:block;animation:fadeIn .15s ease}
+.profile-menu-item{display:flex;align-items:center;gap:0.5rem;width:100%;padding:0.55rem 0.9rem;background:none;border:none;color:var(--t2);font-size:0.78rem;cursor:pointer;font-family:inherit;text-align:left;transition:background .15s,color .15s}
+.profile-menu-item:hover{background:rgba(255,255,255,0.06);color:var(--t1)}
+.profile-menu-divider{height:1px;background:rgba(255,255,255,0.08);margin:0.35rem 0}
+.profile-menu-signout{color:#fca5a5}
+.profile-menu-signout:hover{color:#fef2f2;background:rgba(239,68,68,0.25)}
+
 /* Responsive */
 @media(max-width:1024px){
   .nav-inner{gap:0.3rem}
@@ -157,7 +172,6 @@ body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
   }
   .mobile-hamburger{display:flex}
   .nav-links{display:none}
-  .nav-r{gap:0.25rem}
   .nav-location{display:none}
   .theme-select-wrap{display:none}
   .back-btn{display:none}
@@ -168,8 +182,6 @@ body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
   .logo-icon{font-size:0.95rem}
   .lang-btn{font-size:0.62rem;padding:0.15rem 0.4rem}
   .bell-btn{font-size:1rem;padding:0 2px}
-  .btn-install{font-size:0.6rem;padding:0.12rem 0.4rem}
-  .nav-r{gap:0.2rem}
   .screen{
       display: none;
       position: fixed;
@@ -302,7 +314,7 @@ body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
   .chat-msgs{height:180px}
   .chat-msg{font-size:0.72rem;padding:0.5rem 0.7rem}
   table{font-size:0.62rem;width:100%}
-  th,td{padding:0.3rem 0.2rem;word-break:break-word}
+  th,td{padding:0.3rem 0.2rem;overflow-wrap:break-word}
   .home-stats>*{min-width:110px}
   .home-stats .stat .v{font-size:1.05rem}
   .home-stats{gap:0.5rem}
@@ -318,7 +330,6 @@ body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
   .screen{padding:0.5rem}
   .nav-inner{gap:0.15rem}
   nav{padding:0 0.4rem}
-  .nav-logo{font-size:0.68rem}
   .logo-icon{font-size:0.8rem}
   .lang-btn{font-size:0.55rem;padding:0.08rem 0.25rem}
   .bell-btn{font-size:0.85rem;padding:0 2px}
@@ -343,7 +354,7 @@ body.light nav{background:rgba(240,244,255,0.95);border-color:rgba(0,0,0,0.1)}
   .chat-msgs{height:160px}
   .chat-msg{font-size:0.68rem;padding:0.4rem 0.6rem}
   table{font-size:0.58rem;width:100%}
-  th,td{padding:0.25rem 0.15rem;word-break:break-word}
+  th,td{padding:0.25rem 0.15rem;overflow-wrap:break-word}
   .home-stats>*{min-width:95px}
   .home-stats .stat .v{font-size:0.95rem}
   .home-stats{gap:0.4rem}
@@ -655,8 +666,8 @@ window.doLogin = async function () {
      <div class="notice">🔐 <span data-i18n="accounts_note">Accounts are created by the KsTU Admin. Contact your department if you need login details.</span></div>
        <button type="button" class="btn-install-login hidden" id="install-btn-login" onclick="openInstallModal()"><span data-i18n="install_app">📲 Install CampusIQ App</span></button>
        <button type="button" class="btn-login btn-login-back" onclick="location.href='/'">← <span data-i18n="back_home">Back to Home</span></button>
-  </div>
-</nav>
+    </div>
+</div>
 
 <div id="public-profile-screen" class="hidden">
   <div class="login-box">
@@ -734,9 +745,9 @@ window.doLogin = async function () {
             <button type="button" class="profile-btn" onclick="toggleProfileMenu()" id="profile-btn" aria-haspopup="true" aria-expanded="false" aria-label="User profile">
                <div class="av nav-avatar" id="nav-av">
                   <span id="nav-av-text" class="nav-avatar-text"></span>
-                  <img id="nav-av-img" class="nav-av-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
-               </div>
-               <span class="profile-name" id="nav-user-name"></span>
+                   <img id="nav-av-img" class="nav-av-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
+</div>
+                <span class="profile-name" id="nav-user-name"></span>
                <span class="profile-chevron">▾</span>
             </button>
             <div class="profile-menu" id="profile-menu" role="menu" aria-label="User menu">
@@ -744,10 +755,10 @@ window.doLogin = async function () {
                <button type="button" class="profile-menu-item" role="menuitem" onclick="showScreen('idcard')">🪪 ID Card</button>
                <button type="button" class="profile-menu-item" role="menuitem" onclick="showScreen('ai')">🧠 Papi AI</button>
                 <hr class="profile-menu-divider">
-               <button type="button" class="profile-menu-item profile-menu-signout" role="menuitem" onclick="logout()">🚪 Sign Out</button>
-            </div>
-         </div>
-      </div>
+                <button type="button" class="profile-menu-item profile-menu-signout" role="menuitem" onclick="logout()">🚪 Sign Out</button>
+             </div>
+          </div>
+       </div>
    </div>
 
 </nav>
@@ -767,7 +778,7 @@ window.doLogin = async function () {
     <button type="button" class="mobile-sidebar-item" onclick="toggleMobileNav();window.location.href='../frontend/careers.html'">💼 Career Hub</button>
     <button type="button" class="mobile-sidebar-item" onclick="toggleMobileNav();logout()">🚪 Sign Out</button>
   </div>
-</div>
+</nav>
 
 <div id="notice-ticker" class="hidden"><span id="notice-ticker-inner">Loading announcements…</span></div>
 <div class="notif-panel" id="notif-panel">

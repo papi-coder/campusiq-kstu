@@ -4,7 +4,7 @@
 // Works when opened via http(s) or file:// on the local machine.
 
 const CampusAPI = (() => {
-  let BASE = '';
+  let BASE = null;
   const { protocol, hostname } = window.location;
   const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
   const isFile = protocol === 'file:';
@@ -107,10 +107,16 @@ const CampusAPI = (() => {
     probing = true;
     try {
       const order = (BASE ? [BASE, ...candidates] : candidates).filter(Boolean);
+      
+      if (!isLocal && !isFile && protocol === 'http:') {
+        const sameOrigin = window.location.origin;
+        if (!order.includes(sameOrigin)) order.unshift(sameOrigin);
+      }
+      
       console.log('[CampusAPI] Probing API endpoints:', order.slice(0, 5).join(', ') + (order.length > 5 ? '...' : ''));
       for (const candidate of order) {
         const ctrl = new AbortController();
-        const tid = setTimeout(() => ctrl.abort(), 3000);
+        const tid = setTimeout(() => ctrl.abort(), 1500);
         try {
           const r = await fetch(candidate + '/api/health', { method: 'GET', signal: ctrl.signal });
           clearTimeout(tid);
@@ -121,7 +127,10 @@ const CampusAPI = (() => {
         }
       }
       if (!isFile && !isLocal) {
-        const r = await fetch('/api/health', { method: 'GET' }).catch(() => null);
+        const ctrl = new AbortController();
+        const tid = setTimeout(() => ctrl.abort(), 1500);
+        const r = await fetch('/api/health', { method: 'GET', signal: ctrl.signal }).catch(() => null);
+        clearTimeout(tid);
         if (r?.ok) { BASE = ''; console.log('[CampusAPI] API found at same-origin /api'); setStatus(true); return true; }
       }
       console.warn('[CampusAPI] API probe failed. No backend reachable at:', candidates.join(', '));
@@ -166,11 +175,11 @@ const CampusAPI = (() => {
   async function _waitForBase() {
     const deadline = Date.now() + 10000;
     while (Date.now() < deadline) {
-      if (BASE) break;
+      if (BASE !== null) break;
       await sleep(100);
     }
-    if (!BASE && !await _discoverApi()) {
-      if (!BASE) BASE = fallbackOrigin || candidates.at(-1) || '';
+    if (BASE === null && !await _discoverApi()) {
+      BASE = fallbackOrigin || candidates.at(-1) || '';
       console.log('[CampusAPI] Final BASE:', BASE);
     }
   }

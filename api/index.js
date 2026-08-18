@@ -14,7 +14,9 @@ app.disable('x-powered-by');
 // CORS must come BEFORE body parsing / routes so preflight + actual requests succeed
 const cors = require('cors');
 app.use(cors({
-  origin: true, // reflect request origin
+  origin: function(origin, callback){
+    callback(null, true);
+  },
   credentials: true,
 }));
 app.use(express.json());
@@ -1005,6 +1007,14 @@ app.post('/api/ai', async (req, res) => {
   if (!Array.isArray(messages) || !messages.length) {
     return fail(res, 400, 'messages are required');
   }
+  const imageInMessages = messages.some(m => {
+    const c = typeof m.content === 'string' ? m.content : JSON.stringify(m.content || '');
+    return /data:image\/[a-zA-Z]+;base64,/.test(c) || /\.(png|jpg|jpeg|gif|webp|bmp|svg)(\?|$)/i.test(c);
+  });
+  const imageInFileContent = typeof fileContent === 'string' && (/data:image\/[a-zA-Z]+;base64,/.test(fileContent) || /\.(png|jpg|jpeg|gif|webp|bmp|svg)(\?|$)/i.test(fileContent));
+  if (imageInMessages || imageInFileContent) {
+    return fail(res, 400, 'Images are not supported by the AI model. Please describe the image in text so Papi can help you.');
+  }
   let sys = system || PAPI_SYSTEM;
   if (locale === 'tw') sys += '\n\nRespond in Twi (Akan) where natural; keep technical terms clear.';
   // Attach any uploaded file content to the latest user message
@@ -1185,4 +1195,5 @@ app.post('/api/ai/ask', async (req, res) => {
     return fail(res, 502, 'AI provider request failed');
   }
 });
+
 
