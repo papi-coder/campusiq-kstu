@@ -9,6 +9,8 @@
     { "src": "/frontend/(.*)", "dest": "/public/frontend/$1" },
     { "src": "/backend/(.*)", "dest": "/public/backend/$1" },
     { "src": "/shared/(.*)", "dest": "/public/shared/$1" },
+    { "src": "/logo-icon.svg", "dest": "/public/logo-icon.svg" },
+    { "src": "/logo.svg", "dest": "/public/logo.svg" },
     { "src": "/manifest.json", "dest": "/public/manifest.json" },
     { "src": "/apple-touch-icon.png", "dest": "/public/apple-touch-icon.png" },
     { "src": "/icon-192.png", "dest": "/public/icon-192.png" },
